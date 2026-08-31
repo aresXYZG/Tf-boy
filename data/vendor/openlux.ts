@@ -1,6 +1,6 @@
 /**
  * Toonflow AI供应商模板 - OpenLux
- * @version 2.3
+ * @version 2.4
  *
  * 说明：
  * 1) OpenLux 为 AI 模型聚合中转平台，OpenAI 兼容格式
@@ -9,7 +9,11 @@
  *    - 文生图：POST /images/generations（JSON）
  *    - 图生图：POST /images/edits（multipart，参考图随 form-data 上传）
  *    支持 gpt-image-2、gemini-3.1-flash-image（Nano Banana 2）等
- * 4) 模型列表可在 OpenLux 控制台查看（Console → supported models）或 GET /v1/models
+ * 4) TTS 接口：
+ *    - OpenAI 兼容：POST /v1/audio/speech（tts-1、gpt-4o-mini-tts 等）
+ *    - MiniMax 异步：POST /minimax/v1/t2a_async_v2（MiniMax-Voice-Design 海螺音色设计）
+ *    支持 tts-1、tts-1-hd、gpt-4o-mini-tts、MiniMax-Voice-Design 等
+ * 5) 模型列表可在 OpenLux 控制台查看（Console → supported models）或 GET /v1/models
  */
 
 // ============================================================
@@ -128,7 +132,7 @@ declare const exports: {
 // ============================================================
 const vendor: VendorConfig = {
   id: "openlux",
-  version: "2.3",
+  version: "2.4",
   author: "Toonflow",
   name: "OpenLux",
   description:
@@ -154,6 +158,45 @@ const vendor: VendorConfig = {
     // ---- 图片生成（文生图 + 图生图）----
     { name: "GPT Image 2", modelName: "gpt-image-2", type: "image", mode: ["text", "singleImage", "multiReference"] },
     { name: "Nano Banana 2", modelName: "gemini-3.1-flash-image", type: "image", mode: ["text", "singleImage", "multiReference"] },
+    // ---- TTS 语音合成 ----
+    {
+      name: "GPT-4o Mini TTS",
+      modelName: "gpt-4o-mini-tts",
+      type: "tts",
+      voices: [
+        { title: "Alloy（均衡）", voice: "alloy" },
+        { title: "Echo（温暖）", voice: "echo" },
+        { title: "Fable（明亮）", voice: "fable" },
+        { title: "Onyx（低沉）", voice: "onyx" },
+        { title: "Nova（柔和）", voice: "nova" },
+        { title: "Shimmer（清亮）", voice: "shimmer" },
+      ],
+    },
+    {
+      name: "TTS-1",
+      modelName: "tts-1",
+      type: "tts",
+      voices: [
+        { title: "Alloy（均衡）", voice: "alloy" },
+        { title: "Echo（温暖）", voice: "echo" },
+        { title: "Fable（明亮）", voice: "fable" },
+        { title: "Onyx（低沉）", voice: "onyx" },
+        { title: "Nova（柔和）", voice: "nova" },
+        { title: "Shimmer（清亮）", voice: "shimmer" },
+      ],
+    },
+    {
+      name: "MiniMax-Voice-Design（海螺音色设计）",
+      modelName: "MiniMax-Voice-Design",
+      type: "tts",
+      voices: [
+        { title: "温柔女声-轻清", voice: "female-qn-qingse" },
+        { title: "活泼女声-甜甜", voice: "female-tianmei" },
+        { title: "磁性男声-沉稳", voice: "male-qn-jingying" },
+        { title: "青年男声-阳光", voice: "male-calm" },
+        { title: "默认音色", voice: "male-qn-qingse" },
+      ],
+    },
   ],
 };
 // ============================================================
@@ -228,7 +271,85 @@ const videoRequest = async (config: VideoConfig, model: VideoModel): Promise<str
   return "";
 };
 const ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {
-  return "";
+  if (!vendor.inputValues.apiKey) throw new Error("缺少API Key");
+  const baseUrl = vendor.inputValues.baseUrl.replace(/\/+$/, "");
+  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\s+/i, "");
+  const modelName = model.modelName;
+  const headers = getHeaders();
+
+  // ---- MiniMax 系模型：走异步 TTS（t2a_async_v2）----
+  if (/minimax/i.test(modelName)) {
+    const apiRoot = baseUrl.replace(/\/v1$/, ""); // https://api.openlux.ai
+    logger(`MiniMax TTS 提交任务，模型：${modelName}，音色：${config.voice}`);
+    const submitResp = await fetch(`${apiRoot}/minimax/v1/t2a_async_v2`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        model: modelName,
+        text: config.text,
+        voice_setting: {
+          voice_id: config.voice || "female-qn-qingse",
+          speed: config.speechRate || 1,
+          vol: config.volume || 1,
+          pitch: config.pitchRate || 0,
+        },
+        audio_setting: { sample_rate: 32000, bitrate: 128000, format: "mp3", channel: 1 },
+      }),
+    });
+    const submitData = await submitResp.json();
+    if (submitData?.base_resp?.status_code !== 0) {
+      throw new Error(`MiniMax TTS 提交失败：${submitData?.base_resp?.status_msg || JSON.stringify(submitData).slice(0, 200)}`);
+    }
+    const taskId = submitData?.data?.task_id;
+    if (!taskId) throw new Error(`MiniMax TTS 提交失败：无 task_id ${JSON.stringify(submitData).slice(0, 200)}`);
+    logger(`MiniMax TTS 任务提交成功，task_id: ${taskId}`);
+
+    // 轮询任务结果
+    const pollResult = await pollTask(
+      async () => {
+        const queryResp = await fetch(`${apiRoot}/minimax/v1/query_async_t2a_v2`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ task_id: taskId }),
+        });
+        const queryData = await queryResp.json();
+        if (queryData?.base_resp?.status_code !== 0) {
+          return { completed: true, error: queryData?.base_resp?.status_msg || "查询失败" };
+        }
+        const status = queryData?.data?.status;
+        if (status === "Success") {
+          const audioFile = queryData?.data?.audio_file;
+          return { completed: true, data: audioFile };
+        }
+        if (status === "Fail") {
+          return { completed: true, error: queryData?.data?.fail_reason || "语音生成失败" };
+        }
+        return { completed: false };
+      },
+      3000,
+      120000,
+    );
+    if (pollResult.error) throw new Error(pollResult.error);
+    logger(`MiniMax TTS 生成成功，下载音频`);
+    return await urlToBase64(pollResult.data!);
+  }
+
+  // ---- 其他模型：OpenAI 兼容 /audio/speech ----
+  logger(`OpenLux TTS 合成，模型：${modelName}，音色：${config.voice}`);
+  const resp = await fetch(`${baseUrl}/audio/speech`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      model: modelName,
+      input: config.text,
+      voice: config.voice || "alloy",
+      response_format: "mp3",
+      speed: config.speechRate || 1,
+    }),
+  });
+  if (!resp.ok) throw new Error(`TTS 生成失败：${await resp.text()}`);
+  const audioBuffer = await resp.arrayBuffer();
+  return `data:audio/mp3;base64,${Buffer.from(audioBuffer).toString("base64")}`;
 };
 const checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {
   return { hasUpdate: false, latestVersion: "2.3", notice: "" };
