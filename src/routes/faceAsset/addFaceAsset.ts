@@ -24,7 +24,7 @@ export default router.post(
 
     try {
       const imagePath = `/faceAssets/${uuidv4()}.jpg`;
-      const matches = fileUrl.match(/^data:image/[a-zA-Z0-9+.-]+;base64,(.+)$/);
+      const matches = fileUrl.match(/^data:image\/[a-zA-Z0-9+.-]+;base64,(.+)$/);
       const realBase64 = matches ? matches[1] : fileUrl;
 
       await u.oss.writeFile(imagePath, Buffer.from(realBase64, "base64"));
