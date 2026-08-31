@@ -66,8 +66,24 @@ export default async (knex: Knex): Promise<void> => {
   // 添加新字段
   await addColumn("o_agentDeploy", "maxOutputTokens", "integer");
   await addColumn("o_assets", "audioBindState", "integer");
+  await addColumn("o_assets", "faceAssetIds", "text"); // 记录使用的两张人脸资产ID，如 "[1, 5]"
   await addColumn("o_modelPrompt", "fileName", "string");
   await addColumn("o_modelPrompt", "path", "string");
+
+  // 确保 o_faceAsset 表存在
+  if (!(await knex.schema.hasTable("o_faceAsset"))) {
+    await knex.schema.createTable("o_faceAsset", (table) => {
+      table.increments("id").primary();
+      table.string("name");
+      table.text("filePath");
+      table.string("gender"); // "男" | "女"
+      table.string("ageGroup"); // "少年" | "青年" | "中年" | "老年"
+      table.string("ethnicity"); // "东亚" | "欧美" | "混血" | "非裔" | "其他"
+      table.text("tags"); // JSON 数组，如 ["单眼皮", "高鼻梁"]
+      table.text("description"); // 视觉分析详细描述
+      table.integer("createTime");
+    });
+  }
   const vendorDataSelect = await u.db("o_vendorConfig").whereIn("id", ["deepseek", "atlascloud"]).select("*");
   if (!vendorDataSelect.find((i) => i.id == "deepseek")) {
     await u.db("o_vendorConfig").insert({

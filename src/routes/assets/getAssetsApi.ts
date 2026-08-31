@@ -51,14 +51,35 @@ export default router.post(
       })),
     );
 
-    // 为每个父资产添加子资产
+    // 为每个父资产添加子资产与引用的真人人脸资产
     const result = await Promise.all(
-      parentAssets.map(async (parent) => ({
-        ...parent,
-        sonAssets: childAssetsWithSrc.filter((child) => child.assetsId === parent.id),
-        src: parent.filePath && (await filterTypeGetFileUrl(parent.filePath!, parent.type)),
-        ...(parent.type == "audio" ? { sex: parent.describe?.split("|")[0], describe: parent.describe?.split("|")[1] } : {}),
-      })),
+      parentAssets.map(async (parent) => {
+        let faceAssets: any[] = [];
+        if (parent.faceAssetIds) {
+          try {
+            const fIds = JSON.parse(parent.faceAssetIds);
+            if (Array.isArray(fIds) && fIds.length > 0) {
+              const faces = await u.db("o_faceAsset").whereIn("id", fIds).select("*");
+              faceAssets = await Promise.all(
+                faces.map(async (f: any) => ({
+                  ...f,
+                  fileUrl: f.filePath ? await u.oss.getSmallImageUrl(f.filePath) : "",
+                })),
+              );
+            }
+          } catch {
+            faceAssets = [];
+          }
+        }
+
+        return {
+          ...parent,
+          sonAssets: childAssetsWithSrc.filter((child) => child.assetsId === parent.id),
+          src: parent.filePath && (await filterTypeGetFileUrl(parent.filePath!, parent.type)),
+          faceAssets,
+          ...(parent.type == "audio" ? { sex: parent.describe?.split("|")[0], describe: parent.describe?.split("|")[1] } : {}),
+        };
+      }),
     );
 
     // 统计总数

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import { error, success } from "@/lib/responseFormat";
 import { validateFields } from "@/middleware/middleware";
+import { sampleDualFaceAssets } from "@/utils/faceSampling";
 
 const router = express.Router();
 
@@ -22,8 +23,8 @@ const assetTypeConfig: Record<AssetType, AssetTypeConfig> = {
     label: "角色",
     taskClass: "角色图生成",
     dir: "role",
-    promptTitle: "角色标准四视图",
-    promptEnd: "人物角色四视图",
+    promptTitle: "角色标准四视图（双真人底图融合与无头素体防干扰版）",
+    promptEnd: "人物角色四视图设定图",
   },
   scene: {
     label: "场景",
@@ -43,7 +44,7 @@ const assetTypeConfig: Record<AssetType, AssetTypeConfig> = {
 
 // ─── 构建生成提示词 ──────────────────────────────────────────
 
-function buildPrompt(cfg: AssetTypeConfig, artStyle: string, name: string, prompt: string): string {
+function buildPrompt(cfg: AssetTypeConfig, artStyle: string, name: string, prompt: string, faceSummary: string = ""): string {
   return `
     请根据以下参数生成${cfg.promptTitle}：
 
@@ -53,6 +54,7 @@ function buildPrompt(cfg: AssetTypeConfig, artStyle: string, name: string, promp
     **${cfg.label}设定：**
     - 名称:${name},
     - 提示词:${prompt},
+    ${faceSummary ? `- 人脸参考融合机制: ${faceSummary}` : ""}
 
     请严格按照系统规范生成${cfg.promptEnd}。
   `;
@@ -91,9 +93,26 @@ export default router.post("/", validateFields(requestSchema), async (req, res) 
   });
   await u.db("o_assets").where("id", id).update({ imageId });
 
-  // 3. 准备生成参数
+  // 3. 准备生成参数与双人脸垫图挂载
+  let referenceList: { type: "image"; base64: string }[] = [];
+  let faceSummary = "";
+
+  if (base64) {
+    referenceList.push({ type: "image", base64 });
+  } else if (type === "role") {
+    // 若为角色资产生成且未提供垫图，自动从人脸库抽取 2 张真人人脸
+    const faceSample = await sampleDualFaceAssets(prompt, name);
+    if (faceSample.referenceList.length > 0) {
+      referenceList = faceSample.referenceList;
+      faceSummary = faceSample.faceSummaryPrompt;
+      await u.db("o_assets").where("id", id).update({
+        faceAssetIds: JSON.stringify(faceSample.faceAssetIds),
+      });
+    }
+  }
+
   const imagePath = `/${projectId}/${cfg.dir}/${uuidv4()}.jpg`;
-  const userPrompt = buildPrompt(cfg, project.artStyle!, name, prompt);
+  const userPrompt = buildPrompt(cfg, project.artStyle!, name, prompt, faceSummary);
   const describe = `生成${cfg.label}图，名称：${name}，提示词：${prompt}`;
   const relatedObjects = { id, projectId, type: cfg.label };
 
@@ -102,7 +121,7 @@ export default router.post("/", validateFields(requestSchema), async (req, res) 
     await aiImage.run(
       {
         prompt: userPrompt,
-        referenceList: base64 ? [{ type: "image", base64 }] : [],
+        referenceList: referenceList,
         size: resolution,
         aspectRatio: "16:9",
       },

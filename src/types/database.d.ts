@@ -1,4 +1,4 @@
-// @db-hash f5d050145d03a52b5b502043bc559ec0
+// @db-hash 15befbf1e6825356679c80af947e72fe
 //该文件由脚本自动生成，请勿手动修改
 
 export interface memories {
@@ -46,6 +46,7 @@ export interface o_assets {
   'assetsId'?: number | null;
   'audioBindState'?: number | null;
   'describe'?: string | null;
+  'faceAssetIds'?: string | null;
   'flowId'?: number | null;
   'id'?: number;
   'imageId'?: number | null;
@@ -78,6 +79,17 @@ export interface o_eventChapter {
   'id'?: number;
   'novelId'?: number | null;
 }
+export interface o_faceAsset {
+  'ageGroup'?: string | null;
+  'createTime'?: number | null;
+  'description'?: string | null;
+  'ethnicity'?: string | null;
+  'filePath'?: string | null;
+  'gender'?: string | null;
+  'id'?: number;
+  'name'?: string | null;
+  'tags'?: string | null;
+}
 export interface o_image {
   'assetsId'?: number | null;
   'errorReason'?: string | null;
@@ -97,7 +109,6 @@ export interface o_modelPrompt {
   'id'?: number;
   'model'?: string | null;
   'path'?: string | null;
-  'prompt'?: string | null;
   'vendorId'?: string | null;
 }
 export interface o_novel {
@@ -239,6 +250,7 @@ export interface DB {
   "o_assetsRole2Audio": o_assetsRole2Audio;
   "o_event": o_event;
   "o_eventChapter": o_eventChapter;
+  "o_faceAsset": o_faceAsset;
   "o_image": o_image;
   "o_imageFlow": o_imageFlow;
   "o_modelPrompt": o_modelPrompt;

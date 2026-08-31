@@ -1033,6 +1033,21 @@ export default async (knex: Knex, forceInit: boolean = false): Promise<void> => 
         table.unique(["assetsAudioId", "assetsRoleId"]);
       },
     },
+    // 人脸参考资产库表
+    {
+      name: "o_faceAsset",
+      builder: (table) => {
+        table.increments("id").primary();
+        table.string("name");
+        table.text("filePath");
+        table.string("gender"); // "男" | "女"
+        table.string("ageGroup"); // "少年" | "青年" | "中年" | "老年"
+        table.string("ethnicity"); // "东亚" | "欧美" | "混血" | "非裔" | "其他"
+        table.text("tags"); // JSON 字符串数组，如 ["内双", "高鼻梁", "下颌清晰"]
+        table.text("description"); // 详细面容骨相神态描述
+        table.integer("createTime");
+      },
+    },
   ];
 
   for (const t of tables) {
