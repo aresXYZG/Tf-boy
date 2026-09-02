@@ -24,15 +24,14 @@ class CleanNovel {
     this.concurrency = concurrency;
   }
 
-  private async processChapter(novel: o_novel): Promise<EventType | null> {
+  private async processChapter(novel: o_novel, contentFormat?: string): Promise<EventType | null> {
     try {
-      const prompt = await u.getPrompts("event");
-      const promptData = await u.db("o_prompt").where("type", "eventExtraction").first();
-      let eventExtraction = "" as string | undefined;
-      if (promptData && promptData.useData) {
-        eventExtraction = promptData.useData;
-      } else {
-        eventExtraction = promptData?.data ?? undefined;
+      const prompt = await u.getPrompts("event", contentFormat);
+      // 科普解说等非叙事形态：不使用 o_prompt 的全局短剧事件模板覆盖，强制走形态专属代码模板
+      let eventExtraction: string | undefined;
+      if (contentFormat !== "explainer_video") {
+        const promptData = await u.db("o_prompt").where("type", "eventExtraction").first();
+        eventExtraction = (promptData?.useData || promptData?.data) ?? undefined;
       }
       const resData = await u.Ai.Text("universalAi").invoke({
         system: eventExtraction ? JSON.stringify(eventExtraction) : (prompt as string),
@@ -63,6 +62,15 @@ class CleanNovel {
   async start(allChapters: o_novel[], projectId: number): Promise<EventType[]> {
     const totalEvent: EventType[] = [];
 
+    // 查询项目内容形态：事件提取提示词按形态分流（科普解说等非叙事形态不套短剧模板）
+    let contentFormat: string | undefined;
+    try {
+      const project = await u.db("o_project").where("id", projectId).select("contentFormat").first();
+      contentFormat = project?.contentFormat ?? undefined;
+    } catch (e) {
+      contentFormat = undefined;
+    }
+
     // 并发控制：通过信号量限制同时执行的任务数
     let running = 0;
     let index = 0;
@@ -73,7 +81,7 @@ class CleanNovel {
       const novel = allChapters[index++];
       running++;
 
-      return this.processChapter(novel).then((result) => {
+      return this.processChapter(novel, contentFormat).then((result) => {
         if (result) totalEvent.push(result);
         running--;
         return runNext();
