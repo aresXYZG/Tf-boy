@@ -24,8 +24,14 @@ export async function sampleDualFaceAssets(roleDesc: string, roleName: string = 
   let ethnicity = "东亚";
   if (/欧美|白人|西方|金发|碧眼|caucasian|western|white/i.test(fullText)) {
     ethnicity = "欧美";
+  } else if (/东南亚|泰国|越南|印尼|菲律宾|马来|thai|vietnam|indonesia/i.test(fullText)) {
+    ethnicity = "东南亚";
+  } else if (/南亚|印度|巴基斯坦|孟加拉|斯里兰卡|indian|pakistan/i.test(fullText)) {
+    ethnicity = "南亚";
+  } else if (/拉丁|拉美|巴西|墨西哥|阿根廷|西班牙裔|latino|latin|hispanic|mexican|brazil/i.test(fullText)) {
+    ethnicity = "拉丁";
   } else if (/混血|中西|half|mixed/i.test(fullText)) {
-    ethnicity = "混血";
+    ethnicity = "其他";
   } else if (/非裔|黑人|black|african/i.test(fullText)) {
     ethnicity = "非裔";
   }
@@ -42,6 +48,14 @@ export async function sampleDualFaceAssets(roleDesc: string, roleName: string = 
     ageGroup = "老年";
   }
 
+  // 3.5 颜值偏好推断：描述中强调颜值（主角/帅哥/美女/惊艳等）→ 优先高颜值；强调普通/路人 → 优先中档
+  let beautyPrefer: string | undefined;
+  if (/颜值|美女|帅哥|惊艳|绝美|俊朗|俊美|英俊|倾国|盛世美颜|好看|漂亮|帅气|beautiful|handsome|gorgeous/i.test(fullText)) {
+    beautyPrefer = "高";
+  } else if (/普通|路人|平平|其貌不扬|一般|大众脸|ordinary|plain|average/i.test(fullText)) {
+    beautyPrefer = "中";
+  }
+
   // 4. 从数据库中查询匹配的人脸资产
   let candidates = await u.db("o_faceAsset").where({ gender, ethnicity }).select("*");
   if (candidates.length < 2) {
@@ -51,6 +65,12 @@ export async function sampleDualFaceAssets(roleDesc: string, roleName: string = 
   if (candidates.length < 2) {
     // 再次降级：全量候选
     candidates = await u.db("o_faceAsset").select("*");
+  }
+
+  // 4.5 按颜值偏好排序：高颜值优先置顶（主角脸），中档排后（路人/群演）
+  if (beautyPrefer) {
+    const rank = (b: string | undefined) => (b === beautyPrefer ? 0 : b === "高" ? 1 : b === "中" ? 2 : 3);
+    candidates = [...candidates].sort((a: any, b: any) => rank(a.beautyLevel) - rank(b.beautyLevel));
   }
 
   // 如果数据库中没有足够的人脸资产，返回空引用
@@ -70,7 +90,9 @@ export async function sampleDualFaceAssets(roleDesc: string, roleName: string = 
   const faceAssetIds: number[] = [];
 
   for (const item of selected) {
-    faceAssetIds.push(item.id);
+    if (item.id !== undefined) {
+      faceAssetIds.push(item.id);
+    }
     if (item.filePath) {
       try {
         const base64 = await u.oss.getImageBase64(item.filePath);

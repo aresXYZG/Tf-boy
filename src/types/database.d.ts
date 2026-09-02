@@ -1,4 +1,4 @@
-// @db-hash 15befbf1e6825356679c80af947e72fe
+// @db-hash 8d763322a9cda1d2cb7640e2f34348ed
 //该文件由脚本自动生成，请勿手动修改
 
 export interface memories {
@@ -81,6 +81,7 @@ export interface o_eventChapter {
 }
 export interface o_faceAsset {
   'ageGroup'?: string | null;
+  'beautyLevel'?: string | null;
   'createTime'?: number | null;
   'description'?: string | null;
   'ethnicity'?: string | null;
@@ -125,8 +126,10 @@ export interface o_novel {
 }
 export interface o_project {
   'artStyle'?: string | null;
+  'contentFormat'?: string | null;
   'createTime'?: number | null;
   'directorManual'?: string | null;
+  'episodeDuration'?: number | null;
   'id'?: number | null;
   'imageModel'?: string | null;
   'imageQuality'?: string | null;
@@ -134,6 +137,7 @@ export interface o_project {
   'mode'?: string | null;
   'name'?: string | null;
   'projectType'?: string | null;
+  'totalEpisodes'?: number | null;
   'type'?: string | null;
   'userId'?: number | null;
   'videoModel'?: string | null;

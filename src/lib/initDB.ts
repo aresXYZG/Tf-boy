@@ -40,6 +40,9 @@ export default async (knex: Knex, forceInit: boolean = false): Promise<void> => 
         table.text("directorManual");
         table.text("mode");
         table.text("videoRatio");
+        table.string("contentFormat"); // 'vertical_episode' | 'series_drama' | 'single_film'
+        table.integer("episodeDuration"); // 单集/整片目标时长(秒)
+        table.integer("totalEpisodes"); // 总集数(整片默认为1)
         table.integer("createTime");
         table.integer("userId");
         table.primary(["id"]);
@@ -1043,6 +1046,7 @@ export default async (knex: Knex, forceInit: boolean = false): Promise<void> => 
         table.string("gender"); // "男" | "女"
         table.string("ageGroup"); // "少年" | "青年" | "中年" | "老年"
         table.string("ethnicity"); // "东亚" | "欧美" | "混血" | "非裔" | "其他"
+        table.string("beautyLevel"); // 颜值等级: "高" | "中" | "普通"
         table.text("tags"); // JSON 字符串数组，如 ["内双", "高鼻梁", "下颌清晰"]
         table.text("description"); // 详细面容骨相神态描述
         table.integer("createTime");

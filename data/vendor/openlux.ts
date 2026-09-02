@@ -155,6 +155,10 @@ const vendor: VendorConfig = {
     { name: "DeepSeek V4 Flash", modelName: "deepseek-v4-flash", type: "text", think: false },
     { name: "DeepSeek V4 Pro", modelName: "deepseek-v4-pro", type: "text", think: false },
     { name: "Gemini 3.7 Flash", modelName: "gemini-3.7-flash", type: "text", think: false },
+    // ---- 高性价比多模态（支持图片分析/视觉打标）----
+    { name: "Gemini 3.5 Flash-Lite（便宜·视觉）", modelName: "gemini-3.5-flash-lite", type: "text", think: false },
+    { name: "Gemini 3.1 Flash-Lite（更省·视觉）", modelName: "gemini-3.1-flash-lite", type: "text", think: false },
+    { name: "Gemini 2.5 Flash-Lite（极致省钱·视觉）", modelName: "gemini-2.5-flash-lite", type: "text", think: false },
     // ---- 图片生成（文生图 + 图生图）----
     { name: "GPT Image 2", modelName: "gpt-image-2", type: "image", mode: ["text", "singleImage", "multiReference"] },
     { name: "Nano Banana 2", modelName: "gemini-3.1-flash-image", type: "image", mode: ["text", "singleImage", "multiReference"] },

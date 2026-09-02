@@ -24,6 +24,53 @@ export interface AgentContext {
   };
 }
 
+export type ContentFormat = "vertical_episode" | "series_drama" | "single_film" | "explainer_video";
+type ProductionFormatPhase = "directorPlan" | "storyboardTable";
+
+interface ProductionFormatSkillMap {
+  directorPlan: string;
+  storyboardTable: string;
+}
+
+/**
+ * 制作阶段多形态技能映射表。
+ * 通用制作规则负责资产、XML 和工作区契约；形态技能只覆盖时长、节奏和表现方式。
+ */
+export const PRODUCTION_FORMAT_SKILLS_MAP: Record<ContentFormat, ProductionFormatSkillMap> = {
+  vertical_episode: {
+    directorPlan: "content_formats/vertical_episode/production_execution_director_plan.md",
+    storyboardTable: "content_formats/vertical_episode/production_execution_storyboard_table.md",
+  },
+  series_drama: {
+    directorPlan: "content_formats/series_drama/production_execution_director_plan.md",
+    storyboardTable: "content_formats/series_drama/production_execution_storyboard_table.md",
+  },
+  single_film: {
+    directorPlan: "content_formats/single_film/production_execution_director_plan.md",
+    storyboardTable: "content_formats/single_film/production_execution_storyboard_table.md",
+  },
+  explainer_video: {
+    directorPlan: "content_formats/explainer_video/production_execution_director_plan.md",
+    storyboardTable: "content_formats/explainer_video/production_execution_storyboard_table.md",
+  },
+};
+
+function normalizeContentFormat(value: unknown): ContentFormat {
+  return typeof value === "string" && value in PRODUCTION_FORMAT_SKILLS_MAP ? (value as ContentFormat) : "vertical_episode";
+}
+
+async function loadProductionFormatSkill(contentFormat: unknown, phase: ProductionFormatPhase): Promise<string> {
+  const format = normalizeContentFormat(contentFormat);
+  const relativePath = PRODUCTION_FORMAT_SKILLS_MAP[format][phase];
+  const skillPath = path.join(u.getPath("skills"), relativePath);
+  if (!fs.existsSync(skillPath)) {
+    console.warn(`[productionAgent] 形态技能缺失，使用通用规则: format=${format}, phase=${phase}, path=${skillPath}`);
+    return "";
+  }
+  console.log(`[productionAgent] 加载形态技能: format=${format}, phase=${phase}, path=${relativePath}`);
+  return fs.promises.readFile(skillPath, "utf-8");
+}
+
 function buildMemPrompt(mem: Awaited<ReturnType<Memory["get"]>>): string {
   let memoryContext = "";
   if (mem.rag.length) {
@@ -50,21 +97,25 @@ export async function runDecisionAI(ctx: AgentContext) {
 
   const projectInfo = await u.db("o_project").where("id", ctx.resTool.data.projectId).first();
   if (!projectInfo) throw new Error(`项目不存在，ID: ${ctx.resTool.data.projectId}`);
-  const [_, imageModelName] = projectInfo.imageModel!.split(/:(.+)/);
-  const [id, videoModelName] = projectInfo.videoModel!.split(/:(.+)/);
-  const models = await u.vendor.getModelList(id);
-  if (!models.length) throw new Error(`项目使用的模型不存在，ID: ${projectInfo.videoModel}`);
-  let videoMode = "";
-  try {
-    videoMode = JSON.parse(projectInfo.mode ?? "");
-  } catch (e) {
-    videoMode = projectInfo.mode ?? "";
+  const [_, imageModelName] = (projectInfo.imageModel || "openlux:gpt-image-2").split(/:(.+)/);
+  let videoModelName = "未配置";
+  let isRef = true;
+  if (projectInfo.videoModel && projectInfo.videoModel.includes(":")) {
+    const [id, vName] = projectInfo.videoModel.split(/:(.+)/);
+    videoModelName = vName;
+    let videoMode = "";
+    try {
+      videoMode = JSON.parse(projectInfo.mode ?? "");
+    } catch (e) {
+      videoMode = projectInfo.mode ?? "";
+    }
+    isRef = Array.isArray(videoMode) ? true : false;
   }
-  const isRef = Array.isArray(videoMode) ? true : false;
   // const findData = models.find((i: any) => i.modelName == videoModelName);
   // const isRef = findData.mode.every((i: any) => Array.isArray(i));
 
-  const modelInfo = `项目使用的模型如下：\n图像模型：${imageModelName}\n视频模型：${videoModelName}\n多参：${isRef ? "是" : "否"}`;
+  const contentFormat = normalizeContentFormat(projectInfo.contentFormat);
+  const modelInfo = `项目使用的模型如下：\n内容形态：${contentFormat}\n导演手册：${projectInfo.directorManual || "未配置"}\n图像模型：${imageModelName}\n视频模型：${videoModelName}\n多参：${isRef ? "是" : "否"}`;
 
   const mem = buildMemPrompt(await memory.get(text));
 
@@ -147,21 +198,23 @@ async function createSubAgent(parentCtx: AgentContext) {
   if (!projectInfo) throw new Error(`项目不存在，ID: ${resTool.data.projectId}`);
   const artSkills = await createArtSkills(projectInfo?.artStyle!, projectInfo?.directorManual!);
 
-  const [_, imageModelName] = projectInfo.imageModel!.split(/:(.+)/);
-  const [id, videoModelName] = projectInfo.videoModel!.split(/:(.+)/);
-  const models = await u.vendor.getModelList(id);
-  if (!models.length) throw new Error(`项目使用的模型不存在，ID: ${projectInfo.videoModel}`);
-  // const findData = models.find((i: any) => i.modelName == videoModelName);
-  //
-  let videoMode = "";
-  try {
-    videoMode = JSON.parse(projectInfo.mode ?? "");
-  } catch (e) {
-    videoMode = projectInfo.mode ?? "";
+  const [_, imageModelName] = (projectInfo.imageModel || "openlux:gpt-image-2").split(/:(.+)/);
+  let videoModelName = "未配置";
+  let isRef = true;
+  if (projectInfo.videoModel && projectInfo.videoModel.includes(":")) {
+    const [id, vName] = projectInfo.videoModel.split(/:(.+)/);
+    videoModelName = vName;
+    let videoMode = "";
+    try {
+      videoMode = JSON.parse(projectInfo.mode ?? "");
+    } catch (e) {
+      videoMode = projectInfo.mode ?? "";
+    }
+    isRef = Array.isArray(videoMode) ? true : false;
   }
-  const isRef = Array.isArray(videoMode) ? true : false;
 
-  const modelInfo = `项目使用的模型如下：\n图像模型：${imageModelName}\n视频模型：${videoModelName}\n多参：${isRef ? "是" : "否"}`;
+  const contentFormat = normalizeContentFormat(projectInfo.contentFormat);
+  const modelInfo = `项目使用的模型如下：\n内容形态：${contentFormat}\n导演手册：${projectInfo.directorManual || "未配置"}\n图像模型：${imageModelName}\n视频模型：${videoModelName}\n多参：${isRef ? "是" : "否"}`;
 
   // const run_sub_agent_execution = tool({
   //   description: "执行层子Agent，负责衍生资产、",
@@ -242,8 +295,13 @@ async function createSubAgent(parentCtx: AgentContext) {
     description: "运行执行subAgent来完成导演规划相关任务",
     inputSchema: jsonSchema<{ prompt: string }>(promptInput),
     execute: async ({ prompt }) => {
-      const skill = path.join(u.getPath("skills"), "production_execution_director_plan.md");
-      const systemPrompt = await fs.promises.readFile(skill, "utf-8");
+      const commonSkillPath = path.join(u.getPath("skills"), "production_execution_director_plan.md");
+      const commonSkill = await fs.promises.readFile(commonSkillPath, "utf-8");
+      const formatSkill = await loadProductionFormatSkill(contentFormat, "directorPlan");
+      const systemPrompt = [
+        commonSkill,
+        formatSkill ? `\n\n## 当前内容形态覆盖规则（优先遵守）\n${formatSkill}` : "",
+      ].join("");
 
       const addPrompt = "\n你必须使用如下XML格式写入工作区：\n```\n<scriptPlan>内容</scriptPlan>\n```";
 
@@ -327,8 +385,13 @@ async function createSubAgent(parentCtx: AgentContext) {
     description: "运行执行subAgent来完成分镜表构建相关任务",
     inputSchema: jsonSchema<{ prompt: string }>(promptInput),
     execute: async ({ prompt }) => {
-      const skill = path.join(u.getPath("skills"), "production_execution_storyboard_table.md");
-      const systemPrompt = await fs.promises.readFile(skill, "utf-8");
+      const commonSkillPath = path.join(u.getPath("skills"), "production_execution_storyboard_table.md");
+      const commonSkill = await fs.promises.readFile(commonSkillPath, "utf-8");
+      const formatSkill = await loadProductionFormatSkill(contentFormat, "storyboardTable");
+      const systemPrompt = [
+        commonSkill,
+        formatSkill ? `\n\n## 当前内容形态覆盖规则（优先遵守）\n${formatSkill}` : "",
+      ].join("");
 
       const addPrompt = "\n你必须使用如下XML格式写入工作区：\n```\n<storyboardTable>内容</storyboardTable>\n```";
 
@@ -466,11 +529,9 @@ ${skillEntries}
 async function useProductionSkills(artName: string, storyName: string) {
   const artWorkerPath = u.getPath(["skills", "art_skills", artName, "driector_skills"]);
   const storyWorkerPath = u.getPath(["skills", "story_skills", storyName, "driector_skills"]);
-  const productionPath = u.getPath(["skills", "production_skills"]);
   const skillList = [
     ...(await scanSkills(artWorkerPath + "/*.md")),
     ...(await scanSkills(storyWorkerPath + "/*.md")),
-    ...(await scanSkills(productionPath + "/*.md")),
   ];
   const mainSkills: { path: string; name: string; description: string }[] = [];
   for (const skillPath of skillList) {

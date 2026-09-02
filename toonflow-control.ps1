@@ -57,11 +57,13 @@ function Ensure-LocalNodeOnPath {
     if (Test-Path $corepack) {
       try { & $corepack enable | Out-Null } catch { }
     }
-    return
+    # 注意：这里必须返回 $true！PowerShell 里裸 return 返回 $null（假值），
+    # 调用方 if (!(Ensure-LocalNodeOnPath)) 会误判为失败而中止启动。
+    return $true
   }
 
   # 2) 备选：WorkBuddy 托管 Node 22（本机开发环境，避免 nvm 里只有旧版 Node）
-  $wbNode = Join-Path $env:USERPROFILE ".workbuddy\binaries\node\versions\22.22.2"
+  $wbNode = Join-Path $env:USERPROFILE ".workbuddy\binaries\node\versions\22.22.2-2"
   if (Test-Path (Join-Path $wbNode "node.exe")) {
     $env:PATH = "$wbNode;$env:PATH"
     Write-Info "使用 WorkBuddy 托管 Node：$wbNode"
@@ -168,7 +170,7 @@ function Start-ServiceProcess([string]$Name, [string]$WorkDir, [string]$Command,
   return $p.Id
 }
 
-function Start-Toonflow {
+function Start-Toonflow([switch]$BackendOnly, [switch]$WithHotReload) {
   # Node 版本保障：过旧则中止并提示（better-sqlite3/electron 需要 Node 20+）
   if (!(Ensure-LocalNodeOnPath)) { return }
 
@@ -215,12 +217,12 @@ function Start-Toonflow {
     }
   }
 
-  # 端口占用时，为避免“启动看似成功但其实起不来”，先提示用户改走重启
+  # 端口占用检查
   $checkPorts = @(10588)
-  if ($HasWeb) { $checkPorts += 50190 }
-  if (Test-PortListening -Port 10588 -or ($HasWeb -and (Test-PortListening -Port 50190))) {
-    Write-Warn "检测到 10588$(if ($HasWeb) { ' 或 50190' }) 端口已被占用。"
-    Write-Warn "建议：选择 3) 重启（会先关闭占用端口的进程）。"
+  if ($WithHotReload -and $HasWeb) { $checkPorts += 50188; $checkPorts += 50190 }
+  if (Test-PortListening -Port 10588) {
+    Write-Warn "检测到 10588 端口已被占用。"
+    Write-Warn "建议：选择 4) 重启（会先关闭占用端口的进程）。"
     return
   }
 
@@ -249,20 +251,21 @@ function Start-Toonflow {
 
   # 前端不需要代理，清掉避免影响其他进程
   Remove-Item Env:NODE_USE_ENV_PROXY, Env:HTTPS_PROXY, Env:NO_PROXY -ErrorAction SilentlyContinue
-  if ($HasWeb) {
-    $frontendPid = Start-ServiceProcess -Name "前端(Toonflow-web)" -WorkDir $WebDir -Command "$NpmCmd run dev" -LogFile $frontendLog
+  if ($WithHotReload -and $HasWeb) {
+    $frontendPid = Start-ServiceProcess -Name "前端热重载(Toonflow-web)" -WorkDir $WebDir -Command "$NpmCmd run dev" -LogFile $frontendLog
     $pidsHash.frontend = @{ pid = $frontendPid; cwd = "Toonflow-web"; cmd = "$NpmCmd run dev"; log = (Split-Path $frontendLog -Leaf) }
-  } else {
-    Write-Warn "未找到 Toonflow-web 目录，本次仅启动后端。"
   }
 
   Write-Pids $pidsHash
 
   Write-Info "已写入 PID 文件：$PidFile"
-  if ($HasWeb) {
-    Write-Info "默认端口：前端 http://localhost:50190/  后端 http://localhost:10588"
+  if ($WithHotReload -and $HasWeb) {
+    Write-Info "【热重载开发模式已启动】"
+    Write-Info "  前端源码热重载地址：http://localhost:50188/ (或 http://localhost:50190/)"
+    Write-Info "  后端服务接口地址  ：http://localhost:10588/"
   } else {
-    Write-Info "默认端口：后端 http://localhost:10588"
+    Write-Info "【标准一体化模式已启动】"
+    Write-Info "  系统主访问地址    ：http://localhost:10588/ （已内置完整前端）"
   }
 
   # 健康检查：等待端口真正起来，否则提示看日志
@@ -345,19 +348,21 @@ function Show-Menu {
   while ($true) {
     Write-Host ""
     Write-Host "========== Toonflow 控制台 =========="
-    Write-Host "1) 启动（前端+后端）"
-    Write-Host "2) 关闭（前端+后端）"
-    Write-Host "3) 重启（关闭后再启动）"
-    Write-Host "4) 状态"
+    Write-Host "1) 启动后端（内置生产前端，http://localhost:10588）"
+    Write-Host "2) 启动前端热重载开发模式（前端 http://localhost:50188 + 后端）"
+    Write-Host "3) 关闭所有服务"
+    Write-Host "4) 重启所有服务"
+    Write-Host "5) 查看运行状态"
     Write-Host "0) 退出"
     Write-Host "====================================="
     $choice = Read-Host "请选择"
     if ([string]::IsNullOrWhiteSpace($choice)) { break }
     switch ($choice) {
-      "1" { Start-Toonflow }
-      "2" { Stop-Toonflow }
-      "3" { Restart-Toonflow }
-      "4" { Show-Status }
+      "1" { Start-Toonflow -BackendOnly }
+      "2" { Start-Toonflow -WithHotReload }
+      "3" { Stop-Toonflow }
+      "4" { Restart-Toonflow }
+      "5" { Show-Status }
       "0" { break }
       default { Write-Warn "无效选项：$choice" }
     }

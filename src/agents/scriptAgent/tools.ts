@@ -115,6 +115,35 @@ export default (toolCpnfig: ToolConfig) => {
         return text ?? "无数据";
       },
     }),
+    update_project_metadata: tool({
+      description: "在剧本分析/故事骨架推断后，将推断出的项目总集数、单集时长、故事简介等元数据反写更新到项目数据库",
+      inputSchema: jsonSchema<{ totalEpisodes?: number; episodeDuration?: number; intro?: string }>(
+        z
+          .object({
+            totalEpisodes: z.number().optional().describe("推断出的总集数"),
+            episodeDuration: z.number().optional().describe("推断出的单集目标时长(秒)"),
+            intro: z.string().optional().describe("推断或提炼的故事核心简介"),
+          })
+          .toJSONSchema(),
+      ),
+      execute: async ({ totalEpisodes, episodeDuration, intro }) => {
+        console.log("[tools] update_project_metadata", { totalEpisodes, episodeDuration, intro });
+        const thinking = msg.thinking(`正在同步更新项目配置...`);
+        const updateData: Record<string, any> = {};
+        if (totalEpisodes !== undefined) updateData.totalEpisodes = totalEpisodes;
+        if (episodeDuration !== undefined) updateData.episodeDuration = episodeDuration;
+        if (intro !== undefined) updateData.intro = intro;
+
+        if (Object.keys(updateData).length > 0) {
+          await u.db("o_project").where("id", resTool.data.projectId).update(updateData);
+          thinking.appendText(`已成功将推断配置同步至项目数据库:
+` + JSON.stringify(updateData, null, 2));
+        }
+        thinking.updateTitle(`项目配置同步完成`);
+        thinking.complete();
+        return "项目元数据更新成功";
+      },
+    }),
   };
   return toolsNames ? Object.fromEntries(Object.entries(tools).filter(([n]) => toolsNames.includes(n))) : tools;
 };

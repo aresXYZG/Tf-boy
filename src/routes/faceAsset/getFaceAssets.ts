@@ -12,11 +12,12 @@ export default router.post(
     gender: z.string().optional(),
     ethnicity: z.string().optional(),
     ageGroup: z.string().optional(),
+    beautyLevel: z.string().optional(),
     page: z.number().optional(),
     pageSize: z.number().optional(),
   }),
   async (req, res) => {
-    const { gender, ethnicity, ageGroup, page = 1, pageSize = 50 } = req.body;
+    const { gender, ethnicity, ageGroup, beautyLevel, page = 1, pageSize = 50 } = req.body;
 
     let query = u.db("o_faceAsset");
 
@@ -29,6 +30,9 @@ export default router.post(
     if (ageGroup) {
       query = query.where("ageGroup", ageGroup);
     }
+    if (beautyLevel) {
+      query = query.where("beautyLevel", beautyLevel);
+    }
 
     const list = await query
       .select("*")
@@ -36,12 +40,13 @@ export default router.post(
       .limit(pageSize)
       .offset((page - 1) * pageSize);
 
-    const totalRes = await u.db("o_faceAsset").count("* as count").first();
+    const totalRes = (await u.db("o_faceAsset").count("* as count").first()) as { count?: number | string } | undefined;
     const total = Number(totalRes?.count || 0);
 
     const data = await Promise.all(
       list.map(async (item: any) => {
         const fileUrl = item.filePath ? await u.oss.getSmallImageUrl(item.filePath) : "";
+        const fileUrlRaw = item.filePath ? await u.oss.getFileUrl(item.filePath) : "";
         let tags: string[] = [];
         try {
           tags = item.tags ? JSON.parse(item.tags) : [];
@@ -51,6 +56,7 @@ export default router.post(
         return {
           ...item,
           fileUrl,
+          fileUrlRaw,
           tags,
         };
       }),

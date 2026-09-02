@@ -58,3 +58,15 @@ version.txt
 .workbuddy/
 .run/
 *.py
+
+# local dev/build caches
+_vite_cache/
+_esbuild_tmp/
+data/serve/*.bak-*
+
+# local dev/build caches
+_vite_cache/
+_esbuild_tmp/
+data/serve/*.bak-*
+data/web_old_bak*/
+data/web_old_backup/

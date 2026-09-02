@@ -19,7 +19,11 @@ export default async (version?: string) => {
   if (!fs.existsSync(versionFile)) {
     fs.mkdirSync(path.dirname(versionFile), { recursive: true });
   }
-  await fs.promises.writeFile(versionFile, version ?? APP_VERSION, "utf8");
+  try {
+    await fs.promises.writeFile(versionFile, version ?? APP_VERSION, "utf8");
+  } catch (e) {
+    console.warn("写入 version.txt 失败（已忽略，不影响启动）:", (e as Error).message);
+  }
 };
 
 export const getVersion = async () => {
@@ -30,6 +34,10 @@ export const getVersion = async () => {
   if (!fs.existsSync(versionFile)) {
     fs.mkdirSync(path.dirname(versionFile), { recursive: true });
   }
-  await fs.promises.writeFile(versionFile, APP_VERSION, "utf8");
+  try {
+    await fs.promises.writeFile(versionFile, APP_VERSION, "utf8");
+  } catch (e) {
+    console.warn("写入 version.txt 失败（已忽略，不影响启动）:", (e as Error).message);
+  }
   return APP_VERSION;
 };

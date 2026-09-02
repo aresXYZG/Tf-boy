@@ -16,6 +16,7 @@ export default router.post(
         modelName: z.string(),
         type: z.literal("text"),
         think: z.boolean(),
+        apiKey: z.string().optional(),
       }),
       z.object({
         name: z.string(),
@@ -49,11 +50,13 @@ export default router.post(
     const models = await u.db("o_vendorConfig").where("id", id).first("models");
     if (models?.models) {
       const existingModels = JSON.parse(models.models);
-      const modelIndex = existingModels.findIndex((m: any) => m.modelName !== modelName);
+      // 修复：必须按 modelName 精确匹配（===），否则会把第一个「不是」目标模型的元素误覆盖，导致模型信息错乱
+      const modelIndex = existingModels.findIndex((m: any) => m.modelName === modelName);
       if (modelIndex === -1) {
         existingModels.push(model);
+      } else {
+        existingModels[modelIndex] = model;
       }
-      existingModels[modelIndex] = model;
       await u
         .db("o_vendorConfig")
         .where("id", id)

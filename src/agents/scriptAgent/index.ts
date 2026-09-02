@@ -22,6 +22,69 @@ export interface AgentContext {
   };
 }
 
+export type ContentFormat = "vertical_episode" | "series_drama" | "single_film" | "explainer_video";
+
+export interface SkillFileMap {
+  skeleton: string;
+  adaptation: string;
+  script: string;
+}
+
+/**
+ * 剧本阶段多形态技能映射管理表
+ * 统一管理各形态在不同改编阶段所对应的专属技能文件路径
+ */
+export const SCRIPT_SKILLS_MAP: Record<ContentFormat, SkillFileMap> = {
+  vertical_episode: {
+    skeleton: "content_formats/vertical_episode/script_execution_skeleton.md",
+    adaptation: "content_formats/vertical_episode/script_execution_adaptation.md",
+    script: "content_formats/vertical_episode/script_execution_script.md",
+  },
+  single_film: {
+    skeleton: "content_formats/single_film/script_execution_skeleton.md",
+    adaptation: "content_formats/single_film/script_execution_adaptation.md",
+    script: "content_formats/single_film/script_execution_script.md",
+  },
+  series_drama: {
+    skeleton: "content_formats/series_drama/script_execution_skeleton.md",
+    adaptation: "content_formats/series_drama/script_execution_adaptation.md",
+    script: "content_formats/series_drama/script_execution_script.md",
+  },
+  explainer_video: {
+    skeleton: "content_formats/explainer_video/script_execution_skeleton.md",
+    adaptation: "content_formats/explainer_video/script_execution_adaptation.md",
+    script: "content_formats/explainer_video/script_execution_script.md",
+  },
+};
+
+/**
+ * 根据项目 contentFormat 获取对应形态与阶段的技能内容
+ * 若子目录专属技能因意外缺失，具备自动回退根目录原始技能的容错机制
+ */
+export async function getScriptSkillContent(
+  projectId: string | number | undefined,
+  phase: keyof SkillFileMap,
+): Promise<string> {
+  const project = projectId ? await u.db("o_project").where("id", projectId).first() : null;
+  const formatKey =
+    project?.contentFormat && project.contentFormat in SCRIPT_SKILLS_MAP
+      ? (project.contentFormat as ContentFormat)
+      : "vertical_episode";
+
+  const relativePath = SCRIPT_SKILLS_MAP[formatKey][phase];
+  const targetPath = path.join(u.getPath("skills"), relativePath);
+
+  if (fs.existsSync(targetPath)) {
+    console.log(`[scriptAgent] 加载形态技能: format=${formatKey}, phase=${phase}, path=${relativePath}`);
+    return await fs.promises.readFile(targetPath, "utf-8");
+  }
+
+  // 兜底回退：如果子目录文件不存在，则回退读取根目录下原始技能
+  const fallbackPath = path.join(u.getPath("skills"), `script_execution_${phase}.md`);
+  console.warn(`[scriptAgent] 形态技能缺失，使用通用规则: format=${formatKey}, phase=${phase}, path=${fallbackPath}`);
+  return await fs.promises.readFile(fallbackPath, "utf-8");
+}
+
 function buildMemPrompt(mem: Awaited<ReturnType<Memory["get"]>>): string {
   let memoryContext = "";
   if (mem.rag.length) {
@@ -57,7 +120,9 @@ export async function runDecisionAI(ctx: AgentContext) {
     `小说名称：${projectData?.name ?? "未知"}`,
     `小说类型：${projectData?.type ?? "未知"}`,
     `小说简介：${projectData?.intro ?? "无"}`,
+    `内容形态：${projectData?.contentFormat ?? "vertical_episode"}`,
     `目标改编影视视觉手册|画风：${projectData?.artStyle ?? "无"}`,
+    `目标导演手册：${projectData?.directorManual ?? "无"}`,
     `目标改编视频画幅：${projectData?.videoRatio ?? "16:9"}`,
     `章节数量：${novelData.length}章`,
   ].join("\n");
@@ -91,6 +156,9 @@ export async function runDecisionAI(ctx: AgentContext) {
 function createSubAgent(parentCtx: AgentContext) {
   const { resTool, abortSignal } = parentCtx;
   const memory = new Memory("scriptAgent", parentCtx.isolationKey);
+
+  // 当前项目的内容形态（决定各阶段加载哪套形态专属技能）
+  const projectId = resTool.data.projectId;
 
   async function runAgent({
     key,
@@ -142,8 +210,7 @@ function createSubAgent(parentCtx: AgentContext) {
     description: "运行执行subAgent来完成故事骨架相关任务",
     inputSchema: jsonSchema<{ prompt: string }>(promptInput),
     execute: async ({ prompt }) => {
-      const skill = path.join(u.getPath("skills"), "script_execution_skeleton.md");
-      const systemPrompt = await fs.promises.readFile(skill, "utf-8");
+      const systemPrompt = await getScriptSkillContent(projectId, "skeleton");
 
       const formatPrompt = "\n你必须使用如下XML格式写入工作区：\n<storySkeleton>故事骨架内容</storySkeleton>";
 
@@ -162,8 +229,7 @@ function createSubAgent(parentCtx: AgentContext) {
     description: "运行执行subAgent来完成改编策略相关任务",
     inputSchema: jsonSchema<{ prompt: string }>(promptInput),
     execute: async ({ prompt }) => {
-      const skill = path.join(u.getPath("skills"), "script_execution_adaptation.md");
-      const systemPrompt = await fs.promises.readFile(skill, "utf-8");
+      const systemPrompt = await getScriptSkillContent(projectId, "adaptation");
 
       const formatPrompt = "\n你必须使用如下XML格式写入工作区：\n<adaptationStrategy>改编策略内容</adaptationStrategy>";
 
@@ -182,8 +248,7 @@ function createSubAgent(parentCtx: AgentContext) {
     description: "运行执行subAgent来完成剧本相关任务",
     inputSchema: jsonSchema<{ prompt: string }>(promptInput),
     execute: async ({ prompt }) => {
-      const skill = path.join(u.getPath("skills"), "script_execution_script.md");
-      const systemPrompt = await fs.promises.readFile(skill, "utf-8");
+      const systemPrompt = await getScriptSkillContent(projectId, "script");
 
       const scriptList = await u.db("o_script").where("projectId", resTool.data.projectId).select("id", "name");
       const scriptPrompt = ["## 可用剧本(ID:名称)", scriptList.map((s: any) => `${s.id}:${(s.name || "").replace(/[,:]/g, "")}`).join(","), ""].join(

@@ -15,6 +15,7 @@ export default router.post(
         modelName: z.string(),
         type: z.literal("text"),
         think: z.boolean(),
+        apiKey: z.string().optional(),
       }),
       z.object({
         name: z.string(),

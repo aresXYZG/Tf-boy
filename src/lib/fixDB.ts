@@ -69,6 +69,10 @@ export default async (knex: Knex): Promise<void> => {
   await addColumn("o_assets", "faceAssetIds", "text"); // 记录使用的两张人脸资产ID，如 "[1, 5]"
   await addColumn("o_modelPrompt", "fileName", "string");
   await addColumn("o_modelPrompt", "path", "string");
+  await addColumn("o_project", "contentFormat", "string");
+  await addColumn("o_project", "episodeDuration", "integer");
+  await addColumn("o_project", "totalEpisodes", "integer");
+  await addColumn("o_faceAsset", "beautyLevel", "string"); // 颜值等级: "高" | "中" | "普通"
 
   // 确保 o_faceAsset 表存在
   if (!(await knex.schema.hasTable("o_faceAsset"))) {
@@ -139,6 +143,7 @@ export default async (knex: Knex): Promise<void> => {
     { key: "productionAgent:storyboardGenAgent", name: "生产Agent:分镜生成", desc: "分镜生成" },
     { key: "productionAgent:storyboardPanelAgent", name: "生产Agent:分镜面板", desc: "分镜面板生成" },
     { key: "productionAgent:storyboardTableAgent", name: "生产Agent:分镜表格", desc: "分镜表格生成" },
+    { key: "faceAssetVisionAgent", name: "人脸资产:视觉分析", desc: "人脸骨相、五官神态与人种特征智能识别" },
   ];
   for (const agent of advancedAgentList) {
     const exists = await db("o_agentDeploy").where("key", agent.key).select("*").first();

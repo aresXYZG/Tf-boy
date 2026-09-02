@@ -14,11 +14,12 @@ export default router.post(
     gender: z.string().optional(),
     ageGroup: z.string().optional(),
     ethnicity: z.string().optional(),
+    beautyLevel: z.string().optional(),
     tags: z.array(z.string()).optional(),
     description: z.string().optional(),
   }),
   async (req, res) => {
-    const { id, name, gender, ageGroup, ethnicity, tags, description } = req.body;
+    const { id, name, gender, ageGroup, ethnicity, beautyLevel, tags, description } = req.body;
 
     const exist = await u.db("o_faceAsset").where("id", id).first();
     if (!exist) return res.status(404).send(error("人脸资产不存在"));
@@ -28,6 +29,7 @@ export default router.post(
     if (gender !== undefined) updateData.gender = gender;
     if (ageGroup !== undefined) updateData.ageGroup = ageGroup;
     if (ethnicity !== undefined) updateData.ethnicity = ethnicity;
+    if (beautyLevel !== undefined) updateData.beautyLevel = beautyLevel;
     if (tags !== undefined) updateData.tags = JSON.stringify(tags);
     if (description !== undefined) updateData.description = description;
 
