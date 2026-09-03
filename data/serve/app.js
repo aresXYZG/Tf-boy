@@ -275634,16 +275634,31 @@ var tools_default2 = (toolCpnfig) => {
       execute: async ({ key }) => {
         console.log("[tools] get_planData", key);
         const thinking = msg.thinking(`\u6B63\u5728\u83B7\u53D6${planDataKeyLabels[key]}\u5DE5\u4F5C\u533A\u6570\u636E...`);
-        const planData2 = await new Promise((resolve3) => socket.emit("getPlanData", { key }, (res) => resolve3(res)));
+        const projectId = resTool.data.projectId;
+        let value;
+        if (key === "script") {
+          value = await utils_default.db("o_script").where({ projectId }).select("id", "name", "content");
+        } else {
+          const existing = await utils_default.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).first();
+          let dataObj = {};
+          if (existing?.data) {
+            try {
+              dataObj = JSON.parse(existing.data) ?? {};
+            } catch {
+              dataObj = {};
+            }
+          }
+          value = dataObj[key];
+        }
         thinking.appendText(`\u83B7\u53D6\u5230${planDataKeyLabels[key]}:
-` + planData2[key]);
+` + (typeof value === "string" ? value : JSON.stringify(value ?? "\u65E0\u6570\u636E")));
         thinking.updateTitle(`\u83B7\u53D6${planDataKeyLabels[key]}\u5B8C\u6210`);
         thinking.complete();
-        return planData2[key] ?? "\u65E0\u6570\u636E";
+        return value ?? "\u65E0\u6570\u636E";
       }
     }),
     set_planData: tool({
-      description: "\u5C06\u6545\u4E8B\u9AA8\u67B6/\u6539\u7F16\u7B56\u7565\u5199\u5165\u5DE5\u4F5C\u533A\uFF08\u8986\u76D6 o_agentWorkData\uFF09\u3002\u5F53\u5B8C\u6210 storySkeleton \u6216 adaptationStrategy \u5E76\u9700\u4FDD\u5B58\u4F9B\u5BA1\u6838\u65F6\u8C03\u7528\uFF1B\u4F20\u5165\u5B8C\u6574\u5185\u5BB9\u5373\u53EF\u6301\u4E45\u5316\u3002",
+      description: "\u5C06\u6545\u4E8B\u9AA8\u67B6/\u6539\u7F16\u7B56\u7565\u5B8C\u6574\u6B63\u6587\u5199\u5165\u5DE5\u4F5C\u533A\uFF08\u8986\u76D6 o_agentWorkData\uFF09\u3002\u5F53\u5B8C\u6210 storySkeleton \u6216 adaptationStrategy \u5E76\u9700\u4FDD\u5B58\u4F9B\u5BA1\u6838\u65F6\u8C03\u7528\u3002\u5FC5\u987B\u4F20\u5165\u5B8C\u6574\u6B63\u6587\uFF08\u901A\u5E38\u6570\u5343\u5B57\uFF09\uFF1B\u4E25\u7981\u4F20\u5165\u786E\u8BA4\u8BED\u3001\u6458\u8981\u6216\u4FEE\u8BA2\u8BF4\u660E\u7B49\u5360\u4F4D\u6587\u672C\u2014\u2014\u90A3\u4F1A\u8986\u76D6\u5E76\u6467\u6BC1\u5DF2\u6709\u6B63\u6587\u3002",
       inputSchema: jsonSchema(
         external_exports.object({
           storySkeleton: external_exports.string().optional().describe("\u5B8C\u6574\u6545\u4E8B\u9AA8\u67B6\u5185\u5BB9"),
@@ -275656,7 +275671,7 @@ var tools_default2 = (toolCpnfig) => {
       }
     }),
     set_planData_storySkeleton: tool({
-      description: "\u5C06\u6545\u4E8B\u9AA8\u67B6\u5199\u5165\u5DE5\u4F5C\u533A\uFF08o_agentWorkData\uFF09\u5E76\u6301\u4E45\u5316\uFF0C\u4F9B\u5BA1\u6838/\u4E0B\u4E00\u9636\u6BB5\u4F7F\u7528\u3002\u4EC5\u5728\u5DF2\u5B8C\u6210\u5B8C\u6574\u6545\u4E8B\u9AA8\u67B6\u4E14\u9700\u4FDD\u5B58\u65F6\u8C03\u7528\uFF1B\u4F20\u5165 storySkeleton \u5B8C\u6574\u5185\u5BB9\u3002",
+      description: "\u5C06\u6545\u4E8B\u9AA8\u67B6\u5B8C\u6574\u6B63\u6587\u5199\u5165\u5DE5\u4F5C\u533A\uFF08o_agentWorkData\uFF09\u5E76\u6301\u4E45\u5316\uFF0C\u4F9B\u5BA1\u6838/\u4E0B\u4E00\u9636\u6BB5\u4F7F\u7528\u3002\u4EC5\u5728\u5DF2\u5B8C\u6210\u5B8C\u6574\u6545\u4E8B\u9AA8\u67B6\u4E14\u9700\u4FDD\u5B58\u65F6\u8C03\u7528\u3002\u5FC5\u987B\u4F20\u5165\u9AA8\u67B6\u5B8C\u6574\u6B63\u6587\uFF08\u901A\u5E38\u6570\u5343\u5B57\uFF09\uFF1B\u4E25\u7981\u4F20\u5165\u786E\u8BA4\u8BED\uFF08\u5982\u201C\u5DF2\u5199\u5165\u201D\u201C\u4FEE\u8BA2\u5B8C\u6210\u201D\uFF09\u3001\u6458\u8981\u3001\u4FEE\u8BA2\u8BF4\u660E\u7B49\u5360\u4F4D\u6587\u672C\u2014\u2014\u90A3\u4F1A\u8986\u76D6\u5E76\u6467\u6BC1\u5DF2\u6709\u6B63\u6587\u3002\u4FEE\u590D\u573A\u666F\u540C\u6837\u5FC5\u987B\u91CD\u65B0\u4F20\u5165\u4FEE\u8BA2\u540E\u7684\u5B8C\u6574\u6B63\u6587\u3002",
       inputSchema: jsonSchema(
         external_exports.object({ storySkeleton: external_exports.string().describe("\u5B8C\u6574\u6545\u4E8B\u9AA8\u67B6\u5185\u5BB9") }).toJSONSchema()
       ),
@@ -275666,7 +275681,7 @@ var tools_default2 = (toolCpnfig) => {
       }
     }),
     set_planData_adaptationStrategy: tool({
-      description: "\u5C06\u6539\u7F16\u7B56\u7565\u5199\u5165\u5DE5\u4F5C\u533A\uFF08o_agentWorkData\uFF09\u5E76\u6301\u4E45\u5316\uFF0C\u4F9B\u5BA1\u6838/\u4E0B\u4E00\u9636\u6BB5\u4F7F\u7528\u3002\u4EC5\u5728\u5DF2\u5B8C\u6210\u5B8C\u6574\u6539\u7F16\u7B56\u7565\u4E14\u9700\u4FDD\u5B58\u65F6\u8C03\u7528\uFF1B\u4F20\u5165 adaptationStrategy \u5B8C\u6574\u5185\u5BB9\u3002",
+      description: "\u5C06\u6539\u7F16\u7B56\u7565\u5B8C\u6574\u6B63\u6587\u5199\u5165\u5DE5\u4F5C\u533A\uFF08o_agentWorkData\uFF09\u5E76\u6301\u4E45\u5316\uFF0C\u4F9B\u5BA1\u6838/\u4E0B\u4E00\u9636\u6BB5\u4F7F\u7528\u3002\u4EC5\u5728\u5DF2\u5B8C\u6210\u5B8C\u6574\u6539\u7F16\u7B56\u7565\u4E14\u9700\u4FDD\u5B58\u65F6\u8C03\u7528\u3002\u5FC5\u987B\u4F20\u5165\u7B56\u7565\u5B8C\u6574\u6B63\u6587\uFF08\u901A\u5E38\u6570\u5343\u5B57\uFF09\uFF1B\u4E25\u7981\u4F20\u5165\u786E\u8BA4\u8BED\uFF08\u5982\u201C\u5DF2\u5199\u5165\u201D\u201C\u4FEE\u8BA2\u5B8C\u6210\u201D\uFF09\u3001\u6458\u8981\u3001\u4FEE\u8BA2\u8BF4\u660E\u7B49\u5360\u4F4D\u6587\u672C\u2014\u2014\u90A3\u4F1A\u8986\u76D6\u5E76\u6467\u6BC1\u5DF2\u6709\u6B63\u6587\u3002\u4FEE\u590D\u573A\u666F\u540C\u6837\u5FC5\u987B\u91CD\u65B0\u4F20\u5165\u4FEE\u8BA2\u540E\u7684\u5B8C\u6574\u6B63\u6587\u3002",
       inputSchema: jsonSchema(
         external_exports.object({ adaptationStrategy: external_exports.string().describe("\u5B8C\u6574\u6539\u7F16\u7B56\u7565\u5185\u5BB9") }).toJSONSchema()
       ),
@@ -275860,12 +275875,20 @@ function createSubAgent2(parentCtx) {
   }) {
     parentCtx.msg.complete();
     const subMsg = resTool.newMessage("assistant", name28);
-    const { fullStream } = await utils_default.Ai.Text(key, parentCtx.thinkConfig.think, parentCtx.thinkConfig.thinlLevel).stream({
-      system,
-      messages: messages ?? [{ role: "user", content: prompt }],
-      abortSignal,
-      tools: { ...extraTools, ...tools_default2({ resTool, msg: subMsg }) }
-    });
+    let fullStream;
+    try {
+      const streamResult = await utils_default.Ai.Text(key, parentCtx.thinkConfig.think, parentCtx.thinkConfig.thinlLevel).stream({
+        system,
+        messages: messages ?? [{ role: "user", content: prompt }],
+        abortSignal,
+        tools: { ...extraTools, ...tools_default2({ resTool, msg: subMsg }) }
+      });
+      fullStream = streamResult.fullStream ?? streamResult;
+    } catch (err) {
+      console.error(`[scriptAgent] subAgent \u5F02\u5E38 key=${key} name=${name28}:`, utils_default.error(err).message);
+      subMsg.error(`\u5B50\u4EFB\u52A1\u6267\u884C\u5F02\u5E38\uFF1A${utils_default.error(err).message}`);
+      throw err;
+    }
     const fullResponse = await consumeFullStream2(fullStream, subMsg);
     if (fullResponse.trim()) {
       await memory.add(memoryKey, removeAllXmlTags2(fullResponse), {

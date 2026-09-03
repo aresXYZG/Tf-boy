@@ -180,12 +180,21 @@ function createSubAgent(parentCtx: AgentContext) {
     parentCtx.msg.complete();
     const subMsg = resTool.newMessage("assistant", name);
 
-    const { fullStream } = await u.Ai.Text(key, parentCtx.thinkConfig.think, parentCtx.thinkConfig.thinlLevel).stream({
-      system,
-      messages: messages ?? [{ role: "user", content: prompt }],
-      abortSignal,
-      tools: { ...extraTools, ...useTools({ resTool, msg: subMsg }) },
-    });
+    let fullStream: any;
+    try {
+      const streamResult: any = await u.Ai.Text(key, parentCtx.thinkConfig.think, parentCtx.thinkConfig.thinlLevel).stream({
+        system,
+        messages: messages ?? [{ role: "user", content: prompt }],
+        abortSignal,
+        tools: { ...extraTools, ...useTools({ resTool, msg: subMsg }) },
+      });
+      fullStream = streamResult.fullStream ?? streamResult;
+    } catch (err: any) {
+      // 子Agent 异常必须落日志：之前异常只作为 tool error 传给决策层，后端看不到真实原因
+      console.error(`[scriptAgent] subAgent 异常 key=${key} name=${name}:`, u.error(err).message);
+      subMsg.error(`子任务执行异常：${u.error(err).message}`);
+      throw err;
+    }
 
     const fullResponse = await consumeFullStream(fullStream, subMsg);
 

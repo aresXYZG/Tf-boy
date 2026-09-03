@@ -93,16 +93,29 @@ export default (toolCpnfig: ToolConfig) => {
       execute: async ({ key }) => {
         console.log("[tools] get_planData", key);
         const thinking = msg.thinking(`正在获取${planDataKeyLabels[key]}工作区数据...`);
-        const planData: planData = await new Promise((resolve) => socket.emit("getPlanData", { key }, (res: any) => resolve(res)));
-        thinking.appendText(`获取到${planDataKeyLabels[key]}:\n` + planData[key]);
+        // 与 writePlanData 同源直读数据库,按本会话握手绑定的 projectId 隔离,不经过前端内存
+        const projectId = resTool.data.projectId;
+        let value: any;
+        if (key === "script") {
+          // 剧本内容来自 o_script 表,与 HTTP 路由 /api/scriptAgent/getPlanData 保持一致
+          value = await u.db("o_script").where({ projectId }).select("id", "name", "content");
+        } else {
+          const existing = await u.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).first();
+          let dataObj: Record<string, any> = {};
+          if (existing?.data) {
+            try { dataObj = JSON.parse(existing.data) ?? {}; } catch { dataObj = {}; }
+          }
+          value = dataObj[key];
+        }
+        thinking.appendText(`获取到${planDataKeyLabels[key]}:\n` + (typeof value === "string" ? value : JSON.stringify(value ?? "无数据")));
         thinking.updateTitle(`获取${planDataKeyLabels[key]}完成`);
         thinking.complete();
-        return planData[key] ?? "无数据";
+        return value ?? "无数据";
       },
     }),
     set_planData: tool({
       description:
-        "将故事骨架/改编策略写入工作区（覆盖 o_agentWorkData）。当完成 storySkeleton 或 adaptationStrategy 并需保存供审核时调用；传入完整内容即可持久化。",
+        "将故事骨架/改编策略完整正文写入工作区（覆盖 o_agentWorkData）。当完成 storySkeleton 或 adaptationStrategy 并需保存供审核时调用。必须传入完整正文（通常数千字）；严禁传入确认语、摘要或修订说明等占位文本——那会覆盖并摧毁已有正文。",
       inputSchema: jsonSchema<{ storySkeleton?: string; adaptationStrategy?: string }>(
         z
           .object({
@@ -118,7 +131,7 @@ export default (toolCpnfig: ToolConfig) => {
     }),
     set_planData_storySkeleton: tool({
       description:
-        "将故事骨架写入工作区（o_agentWorkData）并持久化，供审核/下一阶段使用。仅在已完成完整故事骨架且需保存时调用；传入 storySkeleton 完整内容。",
+        "将故事骨架完整正文写入工作区（o_agentWorkData）并持久化，供审核/下一阶段使用。仅在已完成完整故事骨架且需保存时调用。必须传入骨架完整正文（通常数千字）；严禁传入确认语（如“已写入”“修订完成”）、摘要、修订说明等占位文本——那会覆盖并摧毁已有正文。修复场景同样必须重新传入修订后的完整正文。",
       inputSchema: jsonSchema<{ storySkeleton: string }>(
         z.object({ storySkeleton: z.string().describe("完整故事骨架内容") }).toJSONSchema(),
       ),
@@ -129,7 +142,7 @@ export default (toolCpnfig: ToolConfig) => {
     }),
     set_planData_adaptationStrategy: tool({
       description:
-        "将改编策略写入工作区（o_agentWorkData）并持久化，供审核/下一阶段使用。仅在已完成完整改编策略且需保存时调用；传入 adaptationStrategy 完整内容。",
+        "将改编策略完整正文写入工作区（o_agentWorkData）并持久化，供审核/下一阶段使用。仅在已完成完整改编策略且需保存时调用。必须传入策略完整正文（通常数千字）；严禁传入确认语（如“已写入”“修订完成”）、摘要、修订说明等占位文本——那会覆盖并摧毁已有正文。修复场景同样必须重新传入修订后的完整正文。",
       inputSchema: jsonSchema<{ adaptationStrategy: string }>(
         z.object({ adaptationStrategy: z.string().describe("完整改编策略内容") }).toJSONSchema(),
       ),
