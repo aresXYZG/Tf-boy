@@ -27,9 +27,10 @@ class CleanNovel {
   private async processChapter(novel: o_novel, contentFormat?: string): Promise<EventType | null> {
     try {
       const prompt = await u.getPrompts("event", contentFormat);
-      // 科普解说等非叙事形态：不使用 o_prompt 的全局短剧事件模板覆盖，强制走形态专属代码模板
+      // 形态化事件提取：各形态走 content_formats/<形态>/event_extraction.md 专属模板；
+      // 仅当项目未指定形态（contentFormat 为空，即竖屏短剧默认）时，沿用 o_prompt 表的全局自定义覆盖。
       let eventExtraction: string | undefined;
-      if (contentFormat !== "explainer_video") {
+      if (!contentFormat) {
         const promptData = await u.db("o_prompt").where("type", "eventExtraction").first();
         eventExtraction = (promptData?.useData || promptData?.data) ?? undefined;
       }

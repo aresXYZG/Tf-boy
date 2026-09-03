@@ -1,61 +1,30 @@
+import fs from "fs";
+import path from "path";
+import u from "@/utils";
+
+// 各内容形态的事件提取模板路径（与骨架/剧本技能同构，存于 content_formats/<形态>/）
+const EVENT_FORMAT_MAP: Record<string, string> = {
+  vertical_episode: "content_formats/vertical_episode/event_extraction.md",
+  series_drama: "content_formats/series_drama/event_extraction.md",
+  single_film: "content_formats/single_film/event_extraction.md",
+  explainer_video: "content_formats/explainer_video/event_extraction.md",
+};
+
 export async function getPrompts(type: string, contentFormat?: string) {
   if (type == "event") {
-    // 趣味科普解说（explainer_video）：知识点单元化解析，禁止套用短剧秒数模板
-    if (contentFormat === "explainer_video") {
-      return `
-# 事件提取指令（趣味科普解说专用）
-
-你是科普知识文本分析助手。用户每次提供一个章节/知识单元的原文，你提取该单元的结构化知识点信息。
-
-## ⚠️ 输出约束（最高优先级，违反任何一条即为失败）
-
-1. 你的**完整回复**只有一行，以 \`|\` 开头、以 \`|\` 结尾，恰好 6 个字段
-2. 回复的**第一个字符**必须是 \`|\`，**最后一个字符**必须是 \`|\`
-3. \`|\` 之前不许有任何字符——没有引导语、没有解释、没有"根据……"、没有"以下是……"
-4. \`|\` 之后不许有任何字符——没有总结、没有提取说明、没有改编建议
-5. 不输出表头行、分隔线、Markdown 标题、emoji、代码块标记
-6. **不做时长/集数/秒数预估**：本阶段只提取知识点结构，视频时长与篇幅由后续"故事骨架"阶段按内容体量与语速推导
-
-## 输出格式
-
-\`\`\`
-| 第X节 {标题} | {涉及核心概念} | {知识机制} | {认知递进} | {信息密度} | {观看情绪} |
-\`\`\`
-
-### 字段规范
-
-| 字段 | 格式要求 | 示例 |
-|------|----------|------|
-| 章节 | \`第X节 {标题}\` | \`第1节 为什么天空是蓝色的\` |
-| 涉及核心概念 | 顿号分隔，最多3个 | \`瑞利散射、波长、大气分子\` |
-| 知识机制 | 40-80字，讲清因果链/运作原理：现象→原因→结论 | \`太阳光中蓝光波长最短，被大气分子散射最强，人眼接收到的散射光以蓝光为主，所以晴空呈蓝色\` |
-| 认知递进 | 讲清该节打破了什么直觉、建立什么新认知 | \`粉碎"天空自带颜色"直觉→建立"散射决定颜色"认知\` |
-| 信息密度 | \`高\` / \`中\` / \`低\` | \`中\` |
-| 观看情绪 | 文字标签，\`+\` 连接，禁止星级/数字 | \`好奇+顿悟\` |
-
-**可用情绪标签**：\`好奇\`、\`惊叹\`、\`顿悟\`、\`荒诞\`、\`会心一笑\`、\`细思极恐\`、\`平铺\`。
-
-## 输出示例
-
-以下两个示例展示的是**完整回复**——除这一行外没有任何其他内容：
-
-\`\`\`
-| 第1节 红眼睛与蓝眼睛 | 公共知识、逻辑推理、村民约定 | 村民事先约定"看到红眼睛就必须自杀"，公共知识使"无人自杀"本身成为信息：若只有一人红眼，他看不到红眼会立刻自杀；一直无人自杀说明红眼不止一人，由此逐层递推，N个红眼者会在第N晚同时自杀 | 粉碎"沉默=安全"直觉→建立"沉默本身是信息"的递归认知 | 高 | 好奇+细思极恐 |
-\`\`\`
-\`\`\`
-| 第2节 乌鸦为什么是黑的 | 黑色素、显性基因、环境适应 | 乌鸦的黑色羽毛由高浓度黑色素决定，黑色素除了显色还让羽毛更坚韧耐磨，在腐食环境中是生存优势，因此深色基因被自然选择固定下来 | 粉碎"黑色=不吉利"文化直觉→建立"黑色=生存适应"生物学认知 | 中 | 惊叹+顿悟 |
-\`\`\`
-
-## 提取规则
-
-- 忠于原文，只提取原文确实讲到的知识机制，不脑补、不扩展未出现的概念
-- 涉及实验/案例/故事引入时，知识机制字段要包含"例子→原理"的对应
-- 若该节包含多个知识点，选主线知识机制为主，其余简要带过
-- 概念名称使用文中主要称呼，保持一致
-`;
+    // 按内容形态读取专属事件提取模板；缺文件时回退竖屏短剧模板（兼容历史项目与默认形态）
+    const format = contentFormat && contentFormat in EVENT_FORMAT_MAP ? contentFormat : "vertical_episode";
+    const rel = EVENT_FORMAT_MAP[format];
+    const full = path.join(u.getPath("skills"), rel);
+    if (fs.existsSync(full)) {
+      console.log(`[getPrompts] 加载形态事件模板: format=${format}, path=${rel}`);
+      return await fs.promises.readFile(full, "utf-8");
     }
-    // 其余内容形态沿用通用事件提取（竖屏短剧等叙事形态按事件/情节单元解析）
-    return `
+    console.warn(`[getPrompts] 形态事件模板缺失: ${rel}，回退 vertical_episode 模板`);
+  }
+
+  // 兜底：内联短剧模板（防止 skills 目录被误删时的最后防线）
+  return `
 # 事件提取指令
 
 你是小说文本分析助手。用户每次提供一个章节的原文，你提取该章的结构化事件信息。
@@ -110,5 +79,4 @@ export async function getPrompts(type: string, contentFormat?: string) {
 - 多条平行事件线时，选对主角影响最大的一条，其余简要带过
 - 对话密集章节，关注对话推动了什么结果，而非复述对话内容
 `;
-  }
 }
