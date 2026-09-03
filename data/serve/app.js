@@ -275578,6 +275578,32 @@ var planDataKeyLabels = Object.fromEntries(
 var tools_default2 = (toolCpnfig) => {
   const { resTool, toolsNames, msg } = toolCpnfig;
   const { socket } = resTool;
+  const writePlanData = async ({ storySkeleton, adaptationStrategy }) => {
+    console.log("[tools] writePlanData", { hasSkeleton: !!storySkeleton, hasAdaptation: !!adaptationStrategy });
+    const thinking = msg.thinking(`\u6B63\u5728\u5199\u5165\u6545\u4E8B\u9AA8\u67B6/\u6539\u7F16\u7B56\u7565\u5230\u5DE5\u4F5C\u533A...`);
+    const projectId = resTool.data.projectId;
+    const existing = await utils_default.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).first();
+    let dataObj = {};
+    if (existing?.data) {
+      try {
+        dataObj = JSON.parse(existing.data) ?? {};
+      } catch {
+        dataObj = {};
+      }
+    }
+    if (storySkeleton !== void 0) dataObj.storySkeleton = storySkeleton;
+    if (adaptationStrategy !== void 0) dataObj.adaptationStrategy = adaptationStrategy;
+    const jsonStr = JSON.stringify(dataObj);
+    if (existing) {
+      await utils_default.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).update({ data: jsonStr });
+    } else {
+      await utils_default.db("o_agentWorkData").insert({ projectId, key: "scriptAgent", data: jsonStr, createTime: Date.now(), updateTime: Date.now() });
+    }
+    thinking.appendText("\u5DF2\u5199\u5165\u6545\u4E8B\u9AA8\u67B6/\u6539\u7F16\u7B56\u7565\u5230\u5DE5\u4F5C\u533A\uFF0C\u53EF\u8FDB\u5165\u5BA1\u6838\u3002");
+    thinking.updateTitle("\u4FDD\u5B58\u5DE5\u4F5C\u533A\u5B8C\u6210");
+    thinking.complete();
+    return "\u6210\u529F\u5199\u5165\u6545\u4E8B\u9AA8\u67B6/\u6539\u7F16\u7B56\u7565\u5230\u5DE5\u4F5C\u533A";
+  };
   const tools = {
     get_novel_events: tool({
       description: "\u83B7\u53D6\u7AE0\u8282\u4E8B\u4EF6",
@@ -275614,6 +275640,39 @@ var tools_default2 = (toolCpnfig) => {
         thinking.updateTitle(`\u83B7\u53D6${planDataKeyLabels[key]}\u5B8C\u6210`);
         thinking.complete();
         return planData2[key] ?? "\u65E0\u6570\u636E";
+      }
+    }),
+    set_planData: tool({
+      description: "\u5C06\u6545\u4E8B\u9AA8\u67B6/\u6539\u7F16\u7B56\u7565\u5199\u5165\u5DE5\u4F5C\u533A\uFF08\u8986\u76D6 o_agentWorkData\uFF09\u3002\u5F53\u5B8C\u6210 storySkeleton \u6216 adaptationStrategy \u5E76\u9700\u4FDD\u5B58\u4F9B\u5BA1\u6838\u65F6\u8C03\u7528\uFF1B\u4F20\u5165\u5B8C\u6574\u5185\u5BB9\u5373\u53EF\u6301\u4E45\u5316\u3002",
+      inputSchema: jsonSchema(
+        external_exports.object({
+          storySkeleton: external_exports.string().optional().describe("\u5B8C\u6574\u6545\u4E8B\u9AA8\u67B6\u5185\u5BB9"),
+          adaptationStrategy: external_exports.string().optional().describe("\u5B8C\u6574\u6539\u7F16\u7B56\u7565\u5185\u5BB9")
+        }).toJSONSchema()
+      ),
+      execute: async ({ storySkeleton, adaptationStrategy }) => {
+        console.log("[tools] set_planData", { hasSkeleton: !!storySkeleton, hasAdaptation: !!adaptationStrategy });
+        return await writePlanData({ storySkeleton, adaptationStrategy });
+      }
+    }),
+    set_planData_storySkeleton: tool({
+      description: "\u5C06\u6545\u4E8B\u9AA8\u67B6\u5199\u5165\u5DE5\u4F5C\u533A\uFF08o_agentWorkData\uFF09\u5E76\u6301\u4E45\u5316\uFF0C\u4F9B\u5BA1\u6838/\u4E0B\u4E00\u9636\u6BB5\u4F7F\u7528\u3002\u4EC5\u5728\u5DF2\u5B8C\u6210\u5B8C\u6574\u6545\u4E8B\u9AA8\u67B6\u4E14\u9700\u4FDD\u5B58\u65F6\u8C03\u7528\uFF1B\u4F20\u5165 storySkeleton \u5B8C\u6574\u5185\u5BB9\u3002",
+      inputSchema: jsonSchema(
+        external_exports.object({ storySkeleton: external_exports.string().describe("\u5B8C\u6574\u6545\u4E8B\u9AA8\u67B6\u5185\u5BB9") }).toJSONSchema()
+      ),
+      execute: async ({ storySkeleton }) => {
+        console.log("[tools] set_planData_storySkeleton");
+        return await writePlanData({ storySkeleton });
+      }
+    }),
+    set_planData_adaptationStrategy: tool({
+      description: "\u5C06\u6539\u7F16\u7B56\u7565\u5199\u5165\u5DE5\u4F5C\u533A\uFF08o_agentWorkData\uFF09\u5E76\u6301\u4E45\u5316\uFF0C\u4F9B\u5BA1\u6838/\u4E0B\u4E00\u9636\u6BB5\u4F7F\u7528\u3002\u4EC5\u5728\u5DF2\u5B8C\u6210\u5B8C\u6574\u6539\u7F16\u7B56\u7565\u4E14\u9700\u4FDD\u5B58\u65F6\u8C03\u7528\uFF1B\u4F20\u5165 adaptationStrategy \u5B8C\u6574\u5185\u5BB9\u3002",
+      inputSchema: jsonSchema(
+        external_exports.object({ adaptationStrategy: external_exports.string().describe("\u5B8C\u6574\u6539\u7F16\u7B56\u7565\u5185\u5BB9") }).toJSONSchema()
+      ),
+      execute: async ({ adaptationStrategy }) => {
+        console.log("[tools] set_planData_adaptationStrategy");
+        return await writePlanData({ adaptationStrategy });
       }
     }),
     get_novel_text: tool({

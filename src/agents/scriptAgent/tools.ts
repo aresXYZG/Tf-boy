@@ -30,6 +30,31 @@ interface ToolConfig {
 export default (toolCpnfig: ToolConfig) => {
   const { resTool, toolsNames, msg } = toolCpnfig;
   const { socket } = resTool;
+
+  // 写入工作区（o_agentWorkData）的公共逻辑：upsert，仅覆盖传入字段，避免清空 script 等其它数据
+  const writePlanData = async ({ storySkeleton, adaptationStrategy }: { storySkeleton?: string; adaptationStrategy?: string }) => {
+    console.log("[tools] writePlanData", { hasSkeleton: !!storySkeleton, hasAdaptation: !!adaptationStrategy });
+    const thinking = msg.thinking(`正在写入故事骨架/改编策略到工作区...`);
+    const projectId = resTool.data.projectId;
+    const existing = await u.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).first();
+    let dataObj: Record<string, any> = {};
+    if (existing?.data) {
+      try { dataObj = JSON.parse(existing.data) ?? {}; } catch { dataObj = {}; }
+    }
+    if (storySkeleton !== undefined) dataObj.storySkeleton = storySkeleton;
+    if (adaptationStrategy !== undefined) dataObj.adaptationStrategy = adaptationStrategy;
+    const jsonStr = JSON.stringify(dataObj);
+    if (existing) {
+      await u.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).update({ data: jsonStr });
+    } else {
+      await u.db("o_agentWorkData").insert({ projectId, key: "scriptAgent", data: jsonStr, createTime: Date.now(), updateTime: Date.now() });
+    }
+    thinking.appendText("已写入故事骨架/改编策略到工作区，可进入审核。");
+    thinking.updateTitle("保存工作区完成");
+    thinking.complete();
+    return "成功写入故事骨架/改编策略到工作区";
+  };
+
   const tools: Record<string, Tool> = {
     get_novel_events: tool({
       description: "获取章节事件",
@@ -73,6 +98,44 @@ export default (toolCpnfig: ToolConfig) => {
         thinking.updateTitle(`获取${planDataKeyLabels[key]}完成`);
         thinking.complete();
         return planData[key] ?? "无数据";
+      },
+    }),
+    set_planData: tool({
+      description:
+        "将故事骨架/改编策略写入工作区（覆盖 o_agentWorkData）。当完成 storySkeleton 或 adaptationStrategy 并需保存供审核时调用；传入完整内容即可持久化。",
+      inputSchema: jsonSchema<{ storySkeleton?: string; adaptationStrategy?: string }>(
+        z
+          .object({
+            storySkeleton: z.string().optional().describe("完整故事骨架内容"),
+            adaptationStrategy: z.string().optional().describe("完整改编策略内容"),
+          })
+          .toJSONSchema(),
+      ),
+      execute: async ({ storySkeleton, adaptationStrategy }) => {
+        console.log("[tools] set_planData", { hasSkeleton: !!storySkeleton, hasAdaptation: !!adaptationStrategy });
+        return await writePlanData({ storySkeleton, adaptationStrategy });
+      },
+    }),
+    set_planData_storySkeleton: tool({
+      description:
+        "将故事骨架写入工作区（o_agentWorkData）并持久化，供审核/下一阶段使用。仅在已完成完整故事骨架且需保存时调用；传入 storySkeleton 完整内容。",
+      inputSchema: jsonSchema<{ storySkeleton: string }>(
+        z.object({ storySkeleton: z.string().describe("完整故事骨架内容") }).toJSONSchema(),
+      ),
+      execute: async ({ storySkeleton }) => {
+        console.log("[tools] set_planData_storySkeleton");
+        return await writePlanData({ storySkeleton });
+      },
+    }),
+    set_planData_adaptationStrategy: tool({
+      description:
+        "将改编策略写入工作区（o_agentWorkData）并持久化，供审核/下一阶段使用。仅在已完成完整改编策略且需保存时调用；传入 adaptationStrategy 完整内容。",
+      inputSchema: jsonSchema<{ adaptationStrategy: string }>(
+        z.object({ adaptationStrategy: z.string().describe("完整改编策略内容") }).toJSONSchema(),
+      ),
+      execute: async ({ adaptationStrategy }) => {
+        console.log("[tools] set_planData_adaptationStrategy");
+        return await writePlanData({ adaptationStrategy });
       },
     }),
     get_novel_text: tool({
