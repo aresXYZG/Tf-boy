@@ -15,7 +15,9 @@ export default router.post(
     messages: z.array(
       z.object({
         role: z.enum(["user", "assistant"]),
-        content: z.string(),
+        content: z.union([z.string(), z.array(z.any())]).optional(),
+        images: z.array(z.string()).optional(),
+        image: z.string().optional(),
       }),
     ),
   }),
@@ -47,8 +49,65 @@ export default router.post(
         },
       });
 
+      // 处理消息格式：如果包含图片，则构造成 AI SDK 支持的 CoreUserMessage (ImagePart + TextPart)
+      const formattedMessages = messages.map((msg: any) => {
+        if (msg.role === "assistant") {
+          return {
+            role: "assistant" as const,
+            content: typeof msg.content === "string" ? msg.content : JSON.stringify(msg.content ?? ""),
+          };
+        }
+
+        const imgs: string[] = [];
+        if (Array.isArray(msg.images)) {
+          imgs.push(...msg.images.filter(Boolean));
+        }
+        if (msg.image && typeof msg.image === "string") {
+          imgs.push(msg.image);
+        }
+
+        // 如果用户消息已有复杂 content 结构且无外置 images，直接保留
+        if (Array.isArray(msg.content)) {
+          return {
+            role: "user" as const,
+            content: msg.content,
+          };
+        }
+
+        const textContent = typeof msg.content === "string" ? msg.content : "";
+
+        if (imgs.length > 0) {
+          const contentParts: any[] = [];
+          for (const img of imgs) {
+            const mimeMatch = img.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+            const mimeType = mimeMatch ? mimeMatch[1].toLowerCase() : "jpeg";
+            const realBase64 = mimeMatch ? mimeMatch[2] : img;
+            contentParts.push({
+              type: "image" as const,
+              image: realBase64,
+              mediaType: `image/${mimeType}`,
+            });
+          }
+          if (textContent) {
+            contentParts.push({
+              type: "text" as const,
+              text: textContent,
+            });
+          }
+          return {
+            role: "user" as const,
+            content: contentParts,
+          };
+        }
+
+        return {
+          role: "user" as const,
+          content: textContent,
+        };
+      });
+
       const data = await u.Ai.Text(`${id}:${modelName}`).invoke({
-        messages,
+        messages: formattedMessages,
         tools: { getWeatherTool },
       });
       console.log("%c Line:46 🍐 data", "background:#6ec1c2", data);

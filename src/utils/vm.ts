@@ -35,6 +35,12 @@ export default function runCode(code: string, vendor?: Record<string, any>) {
     pollTask,
     fetch: fetch,
     exports,
+    // Web 流式 API：供应商适配器做 SSE 流清洗（修正非标准 tool_calls 分片）时使用
+    TextDecoder,
+    TextEncoder,
+    TransformStream,
+    ReadableStream,
+    Response,
     axios,
     FormData,
     Buffer,
