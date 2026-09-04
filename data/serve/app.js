@@ -24656,16 +24656,16 @@ var require_router = __commonJS({
         return new Router(options);
       }
       const opts = options || {};
-      function router176(req, res, next) {
-        router176.handle(req, res, next);
+      function router177(req, res, next) {
+        router177.handle(req, res, next);
       }
-      Object.setPrototypeOf(router176, this);
-      router176.caseSensitive = opts.caseSensitive;
-      router176.mergeParams = opts.mergeParams;
-      router176.params = {};
-      router176.strict = opts.strict;
-      router176.stack = [];
-      return router176;
+      Object.setPrototypeOf(router177, this);
+      router177.caseSensitive = opts.caseSensitive;
+      router177.mergeParams = opts.mergeParams;
+      router177.params = {};
+      router177.strict = opts.strict;
+      router177.stack = [];
+      return router177;
     }
     Router.prototype = function() {
     };
@@ -25053,7 +25053,7 @@ var require_application = __commonJS({
     var app2 = exports2 = module2.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router176 = null;
+      var router177 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -25062,13 +25062,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router176 === null) {
-            router176 = new Router({
+          if (router177 === null) {
+            router177 = new Router({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router176;
+          return router177;
         }
       });
     };
@@ -25139,15 +25139,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router176 = this.router;
+      var router177 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router176.use(path35, fn2);
+          return router177.use(path35, fn2);
         }
         debug(".use app under %s", path35);
         fn2.mountpath = path35;
         fn2.parent = this;
-        router176.use(path35, function mounted_app(req, res, next) {
+        router177.use(path35, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -65378,8 +65378,8 @@ var require_lib5 = __commonJS({
         getWss: function getWss() {
           return wsServer;
         },
-        applyTo: function applyTo(router176) {
-          (0, _addWsMethod2.default)(router176);
+        applyTo: function applyTo(router177) {
+          (0, _addWsMethod2.default)(router177);
         }
       };
     }
@@ -98691,12 +98691,11 @@ A medium tracking shot follows the woman from behind as she ascends and approach
             table.increments("id").primary();
             table.string("name");
             table.text("filePath");
+            table.integer("species").defaultTo(1);
             table.string("gender");
             table.string("ageGroup");
             table.string("ethnicity");
-            table.text("tags");
-            table.text("description");
-            table.integer("createTime");
+            table.float("beautyScore");
           }
         }
       ];
@@ -122423,8 +122422,11 @@ var init_fixDB = __esm({
       await addColumn("o_project", "totalEpisodes", "integer");
       await addColumn("o_faceAsset", "species", "integer");
       await addColumn("o_faceAsset", "beautyScore", "float");
-      await addColumn("o_faceAsset", "useCount", "integer");
       await dropColumn("o_faceAsset", "beautyLevel");
+      await dropColumn("o_faceAsset", "tags");
+      await dropColumn("o_faceAsset", "description");
+      await dropColumn("o_faceAsset", "useCount");
+      await dropColumn("o_faceAsset", "createTime");
       if (!await knex3.schema.hasTable("o_faceAsset")) {
         await knex3.schema.createTable("o_faceAsset", (table) => {
           table.increments("id").primary();
@@ -122435,10 +122437,6 @@ var init_fixDB = __esm({
           table.string("ageGroup");
           table.string("ethnicity");
           table.float("beautyScore").defaultTo(7);
-          table.text("tags");
-          table.text("description");
-          table.integer("createTime");
-          table.integer("useCount").defaultTo(0);
         });
       }
       if (!await knex3.schema.hasTable("o_agentStateSnapshot")) {
@@ -260739,25 +260737,24 @@ async function sampleAssetReferences(roleMeta, roleName = "") {
   const genderLabel = GENDER_MAP[genderCode] || "\u5973";
   const ethnicityLabel = ETHNICITY_MAP[ethnicityCode] || "\u4E1C\u4E9A";
   const ageGroupLabel = AGE_GROUP_MAP[ageGroupCode] || "\u9752\u5E74";
-  let candidates = await utils_default.db("o_faceAsset").where({ species: 1, gender: String(genderCode), ethnicity: String(ethnicityCode) }).select("*");
+  let candidates = await utils_default.db("o_faceAsset").where({ species: 1, gender: String(genderCode), ethnicity: String(ethnicityCode), ageGroup: String(ageGroupCode) }).select("*");
+  let ethnicityRelaxed = false;
   if (candidates.length < 2) {
-    candidates = await utils_default.db("o_faceAsset").where({ species: 1, gender: String(genderCode) }).select("*");
-  }
-  if (candidates.length < 2) {
-    candidates = await utils_default.db("o_faceAsset").where("species", 1).select("*");
+    candidates = await utils_default.db("o_faceAsset").where({ species: 1, gender: String(genderCode), ageGroup: String(ageGroupCode) }).select("*");
+    ethnicityRelaxed = true;
   }
   if (candidates.length === 0) {
     return {
       referenceList: [],
       faceAssetIds: [],
-      faceSummaryPrompt: `\u3010\u89D2\u8272\u7279\u5F81\u5EFA\u8BAE\u3011\uFF1A\u5168\u65B0\u539F\u521B${ageGroupLabel}${genderLabel}\u89D2\u8272\uFF0C\u9AA8\u76F8\u7ACB\u4F53\u81EA\u7136\uFF0C\u675C\u7EDD\u6A21\u677F\u5316\u5047\u8138\u3002`
+      faceSummaryPrompt: `\u3010\u89D2\u8272\u7279\u5F81\u5EFA\u8BAE\u3011\uFF1A\u5168\u65B0\u539F\u521B${ethnicityLabel}${ageGroupLabel}${genderLabel}\u89D2\u8272\uFF0C\u9AA8\u76F8\u7ACB\u4F53\u81EA\u7136\uFF0C\u675C\u7EDD\u6A21\u677F\u5316\u5047\u8138\u3002\uFF08\u4EBA\u8138\u5E93\u7F3A${ageGroupLabel}${genderLabel}\u5E95\u56FE\uFF0C\u8865\u5145\u540E\u53EF\u542F\u7528\u53C2\u8003\u878D\u5408\uFF09`
     };
   }
   let windowCandidates = candidates.filter((item) => {
     const score = typeof item.beautyScore === "number" && !isNaN(item.beautyScore) ? item.beautyScore : DEFAULT_BEAUTY_SCORE;
     return Math.abs(score - targetScore) <= 1.5;
   });
-  if (windowCandidates.length < 3) windowCandidates = candidates;
+  if (windowCandidates.length < 2) windowCandidates = candidates;
   const primaryFace = weightedPickOne(windowCandidates, targetScore, 0.8);
   const remainingCandidates = candidates.filter((c) => c.id !== primaryFace.id);
   const secondaryFace = remainingCandidates.length > 0 ? weightedPickOne(remainingCandidates, targetScore, 1) : primaryFace;
@@ -260776,15 +260773,17 @@ async function sampleAssetReferences(roleMeta, roleName = "") {
     }
   }
   let faceSummaryPrompt = "";
+  const ethnicAnchor = `\u5168\u65B0\u539F\u521B${ethnicityLabel}${ageGroupLabel}${genderLabel}\u89D2\u8272`;
   if (selected.length >= 2) {
     faceSummaryPrompt = `\u3010\u53CC\u771F\u4EBA\u53C2\u8003\u5E95\u56FE\u878D\u5408\uFF08\u6838\u5FC3\u5FC5\u5B88\uFF09\u3011\uFF1A
-\u57FA\u4E8E\u4E24\u5F20\u53C2\u8003\u5E95\u56FE\u751F\u6210\u5168\u65B0\u539F\u521B${ageGroupLabel}${genderLabel}\u89D2\u8272\uFF08\u4E25\u7981\u76F4\u63A5\u590D\u5236\u4EFB\u4E00\u5F20\uFF09\uFF1A
+\u57FA\u4E8E\u4E24\u5F20\u53C2\u8003\u5E95\u56FE\u751F\u6210${ethnicAnchor}\uFF08\u4E25\u7981\u76F4\u63A5\u590D\u5236\u4EFB\u4E00\u5F20\uFF09\uFF1A
 - \u56FE2\uFF08\u4E3B\u8981\u53C2\u800370%\uFF09\uFF1A\u4EBA\u7269\u8138\u90E8\u7ED3\u6784\u3001\u4E94\u5B98\u6BD4\u4F8B\u3001\u773C\u578B\u795E\u97F5\u3001\u5507\u5F62\u4E0E\u6838\u5FC3\u6C14\u8D28\u4EE5\u56FE2\u4E3A\u4E3B\uFF1B
 - \u56FE1\uFF08\u8F85\u52A9\u53C2\u800330%\uFF09\uFF1A\u53EA\u501F\u5C11\u91CF\u4E0B\u988C\u7EBF\u4E0E\u9F3B\u9AA8\u7ACB\u4F53\u8F6E\u5ED3\u3001\u76AE\u80A4\u8D28\u611F\u3001\u9762\u90E8\u72B6\u6001\u4E0E\u8096\u50CF\u6C1B\u56F4\uFF1B
+${ethnicityRelaxed ? "- \u4E24\u56FE\u82E5\u65CF\u88D4\u4E0D\u540C\uFF1A\u4E94\u5B98\u65CF\u88D4\u7279\u5F81\u4EE5\u56FE2\u4E3A\u4E3B\u81EA\u7136\u878D\u5408\uFF0C\u5141\u8BB8\u9002\u5EA6\u6DF7\u8840\u611F\uFF0C\u6700\u7EC8\u65CF\u88D4\u5411\u8BBE\u5B9A\uFF08" + ethnicityLabel + "\uFF09\u9760\u62E2\uFF1B\n" : ""}- \u4F53\u578B\u4E0E\u8EAB\u5F62\u4EE5\u89D2\u8272\u8BBE\u5B9A\u7684\u8EAB\u6750\u63CF\u8FF0\u4E3A\u51C6\uFF0C\u53C2\u8003\u5E95\u56FE\u4E0D\u7EA6\u675F\u4F53\u578B\uFF1B
 \u4E24\u56FE\u89E3\u8026\u91CD\u6784\u4E3A\u72EC\u7ACB\u539F\u521B\u89D2\u8272\u3002`;
   } else if (selected.length === 1) {
     faceSummaryPrompt = `\u3010\u5355\u771F\u4EBA\u53C2\u8003\u5E95\u56FE\u878D\u5408\uFF08\u6838\u5FC3\u5FC5\u5B88\uFF09\u3011\uFF1A
-\u57FA\u4E8E\u53C2\u8003\u5E95\u56FE\u751F\u6210\u5168\u65B0\u539F\u521B${ageGroupLabel}${genderLabel}\u89D2\u8272\uFF08\u4E25\u7981\u76F4\u63A5\u590D\u5236\uFF09\uFF0C\u53C2\u8003\u5E95\u56FE\u63D0\u4F9B\u9762\u90E8\u9AA8\u76F8\u3001\u4E94\u5B98\u6C14\u8D28\u4E0E\u8096\u50CF\u8D28\u611F\u3002`;
+\u57FA\u4E8E\u53C2\u8003\u5E95\u56FE\u751F\u6210${ethnicAnchor}\uFF08\u4E25\u7981\u76F4\u63A5\u590D\u5236\uFF09\uFF0C\u53C2\u8003\u5E95\u56FE\u4EC5\u63D0\u4F9B\u9762\u90E8\u9AA8\u76F8\u3001\u4E94\u5B98\u6C14\u8D28\u4E0E\u8096\u50CF\u8D28\u611F\uFF0C\u4F53\u578B\u4EE5\u89D2\u8272\u8BBE\u5B9A\u4E3A\u51C6\u3002`;
   }
   return { referenceList, faceAssetIds, faceSummaryPrompt };
 }
@@ -261804,20 +261803,6 @@ function toBeautyScore(raw) {
   if (typeof n !== "number" || !Number.isFinite(n)) return void 0;
   return Math.round(Math.max(2, Math.min(10, n)) * 10) / 10;
 }
-function toTags(raw) {
-  if (!Array.isArray(raw)) return [];
-  const seen = /* @__PURE__ */ new Set();
-  const list2 = [];
-  for (const item of raw) {
-    const s = typeof item === "string" ? item.trim() : "";
-    if (s && !seen.has(s)) {
-      seen.add(s);
-      list2.push(s);
-      if (list2.length >= 8) break;
-    }
-  }
-  return list2;
-}
 var import_express32, router32, GENDER_LABEL, ETHNICITY_LABEL, AGE_GROUP_LABEL, addFaceAsset_default;
 var init_addFaceAsset = __esm({
   "src/routes/faceAsset/addFaceAsset.ts"() {
@@ -261848,13 +261833,11 @@ var init_addFaceAsset = __esm({
         // 1: 少年 ... 4: 老年
         beautyScore: external_exports.number().min(2).max(10).optional(),
         // 2.0 ~ 10.0 连续客观打分
-        tags: external_exports.array(external_exports.string()).optional(),
-        description: external_exports.string().optional(),
         model: external_exports.string().optional()
         // 允许用户自行指定用于智能打标的 Vision 模型，如 "openai:gpt-4o" 或 "universalAi"
       }),
       async (req, res) => {
-        const { name: name28, fileUrl, species, gender, ethnicity, ageGroup, beautyScore, tags, description, model = "faceAssetVisionAgent" } = req.body;
+        const { name: name28, fileUrl, species, gender, ethnicity, ageGroup, beautyScore, model = "faceAssetVisionAgent" } = req.body;
         try {
           const mimeMatch = fileUrl.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
           const mimeType = mimeMatch ? mimeMatch[1].toLowerCase() : "jpeg";
@@ -261868,9 +261851,7 @@ var init_addFaceAsset = __esm({
           let autoEthnicity = ethnicity;
           let autoAgeGroup = ageGroup;
           let autoBeautyScore = beautyScore;
-          let autoTags = tags || [];
-          let autoDesc = description;
-          if (model !== "none" && (!autoSpecies || !autoGender || !autoEthnicity || !autoAgeGroup || autoBeautyScore === void 0 || autoTags.length === 0 || !autoDesc)) {
+          if (model !== "none" && (!autoSpecies || !autoGender || !autoEthnicity || !autoAgeGroup || autoBeautyScore === void 0)) {
             const modelCandidates = [.../* @__PURE__ */ new Set([model || "faceAssetVisionAgent", "universalAi"])].filter(Boolean);
             for (const tryModel of modelCandidates) {
               try {
@@ -261889,11 +261870,8 @@ beautyScore\uFF08\u5BA2\u89C2\u989C\u503C\u8FDE\u7EED\u6253\u5206 2.0~10.0\uFF09
 - 4.0~5.4 \u5E73\u5E73\u65E0\u5947/\u5927\u4F17\u8138\uFF1A\u4E94\u5B98\u65E0\u4EAE\u70B9\uFF0C\u53EF\u80FD\u6709\u8F7B\u5FAE\u51F8\u5634\u3001\u4E0D\u5BF9\u79F0\u3001\u584C\u9F3B\u6881\u7B49\u5C0F\u7455\u75B5
 - 2.0~3.9 \u6CA7\u6851\u7279\u578B/\u4E11\u89D2\uFF1A\u660E\u663E\u4E0D\u5BF9\u79F0\u3001\u5927\u75A4\u75D5\u3001\u4E25\u91CD\u8870\u8001\u6216\u7279\u5B9A\u53CD\u5411\u7279\u5F81
 
-tags\uFF1A3~6 \u4E2A\u7ED3\u6784\u5316\u7279\u5F81\u8BCD\uFF0C\u805A\u7126\u9AA8\u76F8\u3001\u4E94\u5B98\u786C\u7279\u5F81\u4E0E\u795E\u6001\uFF08\u5982 "\u9AD8\u9F3B\u6881"\u3001"\u5185\u53CC"\u3001"\u4E0B\u988C\u7EBF\u6E05\u6670"\u3001"\u773C\u795E\u51B7\u5CFB"\uFF09\uFF0C\u907F\u514D\u7A7A\u6CDB\u5F62\u5BB9\u8BCD
-description\uFF1A50 \u5B57\u4EE5\u5185\uFF0C\u91CD\u70B9\u63D0\u70BC\u9AA8\u76F8\u7ED3\u6784\uFF08\u7709\u5F13/\u9F3B\u9AA8/\u98A7\u9AA8/\u4E0B\u988C\u6298\u89D2\uFF09\u3001\u773C\u578B\u795E\u97F5\u4E0E\u76AE\u80A4\u8D28\u611F\uFF0C\u4F9B\u53CC\u5E95\u56FE\u878D\u5408 Prompt \u4F7F\u7528
-
 \u53EA\u8F93\u51FA\u5982\u4E0B\u7EAF JSON\uFF0C\u7981\u6B62 markdown \u4EE3\u7801\u5757\u3001\u6CE8\u91CA\u6216\u4EFB\u4F55\u591A\u4F59\u6587\u5B57\uFF1A
-{"species":1,"gender":1,"ethnicity":1,"ageGroup":2,"beautyScore":6.8,"tags":["\u5355\u773C\u76AE","\u9F3B\u6881\u9AD8\u633A","\u4E0B\u988C\u7EBF\u6E05\u6670","\u773C\u795E\u5185\u655B"],"description":"\u9AA8\u76F8\u7ACB\u4F53\u81EA\u7136\u7684\u4E1C\u4E9A\u9752\u5E74\u7537\u6027\uFF0C\u7709\u773C\u6DF1\u9083\uFF0C\u4E0B\u988C\u6298\u89D2\u6E05\u6670\uFF0C\u773C\u795E\u575A\u6BC5\u51B7\u5CFB"}`,
+{"species":1,"gender":1,"ethnicity":1,"ageGroup":2,"beautyScore":6.8}`,
                   messages: [
                     {
                       role: "user",
@@ -261916,18 +261894,14 @@ description\uFF1A50 \u5B57\u4EE5\u5185\uFF0C\u91CD\u70B9\u63D0\u70BC\u9AA8\u76F8
                   if (autoEthnicity === void 0) autoEthnicity = toCode(parsed.ethnicity, 1, 7);
                   if (autoAgeGroup === void 0) autoAgeGroup = toCode(parsed.ageGroup, 1, 4);
                   if (autoBeautyScore === void 0) autoBeautyScore = toBeautyScore(parsed.beautyScore);
-                  if (autoTags.length === 0) autoTags = toTags(parsed.tags);
-                  if (!autoDesc && typeof parsed.description === "string") autoDesc = parsed.description.trim();
                 }
-                if (autoGender || autoEthnicity || autoAgeGroup || autoBeautyScore !== void 0 || autoTags.length || autoDesc) break;
+                if (autoGender || autoEthnicity || autoAgeGroup || autoBeautyScore !== void 0) break;
               } catch (visionErr) {
                 console.warn(`[addFaceAsset] Vision \u6A21\u578B ${tryModel} \u6253\u6807\u5931\u8D25\uFF0C\u5C1D\u8BD5\u4E0B\u4E00\u4E2A:`, utils_default.error(visionErr).message);
               }
             }
           }
           autoSpecies = autoSpecies ?? 1;
-          autoTags = autoTags && autoTags.length ? autoTags : [];
-          autoDesc = autoDesc || "";
           const fallbackName = `${ETHNICITY_LABEL[autoEthnicity ?? 7] || "\u672A\u77E5"}${AGE_GROUP_LABEL[autoAgeGroup ?? 2] || ""}${GENDER_LABEL[autoGender ?? 3] || ""}_${Date.now().toString().slice(-4)}`;
           const insertData = {
             name: name28 || fallbackName,
@@ -261936,10 +261910,7 @@ description\uFF1A50 \u5B57\u4EE5\u5185\uFF0C\u91CD\u70B9\u63D0\u70BC\u9AA8\u76F8
             gender: autoGender != null ? String(autoGender) : null,
             ethnicity: autoEthnicity != null ? String(autoEthnicity) : null,
             ageGroup: autoAgeGroup != null ? String(autoAgeGroup) : null,
-            beautyScore: autoBeautyScore ?? null,
-            tags: JSON.stringify(autoTags),
-            description: autoDesc,
-            createTime: Date.now()
+            beautyScore: autoBeautyScore ?? null
           };
           const [id] = await utils_default.db("o_faceAsset").insert(insertData);
           let smallUrl = "";
@@ -261953,8 +261924,7 @@ description\uFF1A50 \u5B57\u4EE5\u5185\uFF0C\u91CD\u70B9\u63D0\u70BC\u9AA8\u76F8
               id,
               ...insertData,
               name: insertData.name,
-              fileUrl: smallUrl,
-              tags: autoTags
+              fileUrl: smallUrl
             })
           );
         } catch (e) {
@@ -262019,7 +261989,7 @@ var init_autoImportSamples = __esm({
         // 每组张数，默认 5
       }),
       async (req, res) => {
-        const perGroup = Math.min(Math.max(req.body?.perGroup ?? 5, 1), 10);
+        const perGroup = Math.min(Math.max(req.body?.perGroup ?? 8, 1), 20);
         try {
           const groups = [];
           for (const [ethnicityCode, nats] of Object.entries(ETHNICITY_NATS)) {
@@ -262055,10 +262025,7 @@ var init_autoImportSamples = __esm({
                 gender: String(genderCode),
                 ethnicity: String(ethnicityCode),
                 ageGroup: String(ageGroupCode),
-                beautyScore,
-                tags: JSON.stringify(["\u771F\u4EBA\u6837\u4F8B", genderLabel, ethnicityLabel]),
-                description: `\u81EA\u52A8\u5BFC\u5165\u7684${ethnicityLabel}${genderLabel}\u6027\u771F\u4EBA\u6837\u4F8B\uFF08${ageGroupLabel}\uFF0C\u89C6\u89C9\u4F30\u503C ${beautyScore} \u5206\uFF09\uFF0C\u6765\u6E90 randomuser.me\uFF0C\u53EF\u7528\u4E8E\u89D2\u8272\u751F\u56FE\u53C2\u8003\u5E95\u56FE\u3002`,
-                createTime: Date.now()
+                beautyScore
               });
               if (id) {
                 successCount++;
@@ -262160,13 +262127,11 @@ var init_editFaceAsset = __esm({
         // 1: 东亚 ... 7: 混血/其他
         ageGroup: external_exports.number().int().min(1).max(4).optional(),
         // 1: 少年 ... 4: 老年
-        beautyScore: external_exports.number().min(2).max(10).optional(),
+        beautyScore: external_exports.number().min(2).max(10).optional()
         // 2.0 ~ 10.0 连续客观打分
-        tags: external_exports.array(external_exports.string()).optional(),
-        description: external_exports.string().optional()
       }),
       async (req, res) => {
-        const { id, name: name28, species, gender, ethnicity, ageGroup, beautyScore, tags, description } = req.body;
+        const { id, name: name28, species, gender, ethnicity, ageGroup, beautyScore } = req.body;
         try {
           const exist = await utils_default.db("o_faceAsset").where("id", id).first();
           if (!exist) return res.status(404).send(error50("\u4EBA\u8138\u8D44\u4EA7\u4E0D\u5B58\u5728"));
@@ -262177,8 +262142,6 @@ var init_editFaceAsset = __esm({
           if (ethnicity !== void 0) updateData.ethnicity = String(ethnicity);
           if (ageGroup !== void 0) updateData.ageGroup = String(ageGroup);
           if (beautyScore !== void 0) updateData.beautyScore = Math.round(Math.max(2, Math.min(10, beautyScore)) * 10) / 10;
-          if (tags !== void 0) updateData.tags = JSON.stringify(tags);
-          if (description !== void 0) updateData.description = description;
           await utils_default.db("o_faceAsset").where("id", id).update(updateData);
           res.status(200).send(success3("\u66F4\u65B0\u6210\u529F"));
         } catch (e) {
@@ -262190,18 +262153,73 @@ var init_editFaceAsset = __esm({
   }
 });
 
+// src/routes/faceAsset/faceAssetStats.ts
+var import_express36, router36, faceAssetStats_default;
+var init_faceAssetStats = __esm({
+  "src/routes/faceAsset/faceAssetStats.ts"() {
+    "use strict";
+    import_express36 = __toESM(require_express2());
+    init_utils3();
+    init_responseFormat();
+    router36 = import_express36.default.Router();
+    faceAssetStats_default = router36.post("/", async (req, res) => {
+      try {
+        const rows = await utils_default.db("o_faceAsset").where("species", 1).select("gender", "ethnicity", "ageGroup");
+        const GENDERS = ["1", "2", "3"];
+        const ETHNICITIES = ["1", "2", "3", "4", "5", "6", "7"];
+        const AGE_GROUPS = ["1", "2", "3", "4"];
+        const matrix = {};
+        for (const g of GENDERS) {
+          matrix[g] = {};
+          for (const a of AGE_GROUPS) {
+            matrix[g][a] = {};
+            for (const e of ETHNICITIES) matrix[g][a][e] = 0;
+          }
+        }
+        for (const row of rows) {
+          const g = row.gender != null ? String(row.gender) : null;
+          const a = row.ageGroup != null ? String(row.ageGroup) : null;
+          const e = row.ethnicity != null ? String(row.ethnicity) : null;
+          if (g && a && e && matrix[g]?.[a]?.[e] !== void 0) matrix[g][a][e]++;
+        }
+        const missingBuckets = [];
+        const GENDER_LABEL3 = { "1": "\u7537", "2": "\u5973", "3": "\u4E2D\u6027" };
+        const ETHNICITY_LABEL3 = { "1": "\u4E1C\u4E9A", "2": "\u6B27\u7F8E", "3": "\u4E1C\u5357\u4E9A", "4": "\u5357\u4E9A", "5": "\u62C9\u4E01", "6": "\u975E\u88D4", "7": "\u6DF7\u8840" };
+        const AGE_LABEL = { "1": "\u5C11\u5E74", "2": "\u9752\u5E74", "3": "\u4E2D\u5E74", "4": "\u8001\u5E74" };
+        for (const g of GENDERS) {
+          for (const a of AGE_GROUPS) {
+            const total = ETHNICITIES.reduce((s, e) => s + matrix[g][a][e], 0);
+            if (total === 0) missingBuckets.push(`${AGE_LABEL[a]}${GENDER_LABEL3[g]}`);
+          }
+        }
+        res.status(200).send(
+          success3({
+            matrix,
+            labels: { gender: GENDER_LABEL3, ethnicity: ETHNICITY_LABEL3, ageGroup: AGE_LABEL },
+            missingBuckets,
+            total: rows.length
+          })
+        );
+      } catch (e) {
+        console.error("[faceAssetStats Error]:", e);
+        res.status(500).send(error50(utils_default.error(e).message));
+      }
+    });
+  }
+});
+
 // src/routes/faceAsset/getFaceAssets.ts
-var import_express36, router36, getFaceAssets_default;
+var import_express37, router37, getFaceAssets_default;
 var init_getFaceAssets = __esm({
   "src/routes/faceAsset/getFaceAssets.ts"() {
     "use strict";
-    import_express36 = __toESM(require_express2());
+    import_express37 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router36 = import_express36.default.Router();
-    getFaceAssets_default = router36.post(
+    router37 = import_express37.default.Router();
+    getFaceAssets_default = router37.post(
       "/",
       validateFields({
         species: external_exports.number().int().min(1).max(2).optional(),
@@ -262237,17 +262255,10 @@ var init_getFaceAssets = __esm({
             list2.map(async (item) => {
               const fileUrl = item.filePath ? await utils_default.oss.getSmallImageUrl(item.filePath) : "";
               const fileUrlRaw = item.filePath ? await utils_default.oss.getFileUrl(item.filePath) : "";
-              let tags = [];
-              try {
-                tags = item.tags ? JSON.parse(item.tags) : [];
-              } catch {
-                tags = [];
-              }
               return {
                 ...item,
                 fileUrl,
-                fileUrlRaw,
-                tags
+                fileUrlRaw
               };
             })
           );
@@ -262262,17 +262273,17 @@ var init_getFaceAssets = __esm({
 });
 
 // src/routes/general/generalStatistics.ts
-var import_express37, router37, generalStatistics_default;
+var import_express38, router38, generalStatistics_default;
 var init_generalStatistics = __esm({
   "src/routes/general/generalStatistics.ts"() {
     "use strict";
-    import_express37 = __toESM(require_express2());
+    import_express38 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router37 = import_express37.default.Router();
-    generalStatistics_default = router37.post(
+    router38 = import_express38.default.Router();
+    generalStatistics_default = router38.post(
       "/",
       validateFields({
         projectId: external_exports.number()
@@ -262298,17 +262309,17 @@ var init_generalStatistics = __esm({
 });
 
 // src/routes/general/getSingleProject.ts
-var import_express38, router38, getSingleProject_default;
+var import_express39, router39, getSingleProject_default;
 var init_getSingleProject = __esm({
   "src/routes/general/getSingleProject.ts"() {
     "use strict";
-    import_express38 = __toESM(require_express2());
+    import_express39 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router38 = import_express38.default.Router();
-    getSingleProject_default = router38.post(
+    router39 = import_express39.default.Router();
+    getSingleProject_default = router39.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -262323,17 +262334,17 @@ var init_getSingleProject = __esm({
 });
 
 // src/routes/general/updateProject.ts
-var import_express39, router39, updateProject_default;
+var import_express40, router40, updateProject_default;
 var init_updateProject = __esm({
   "src/routes/general/updateProject.ts"() {
     "use strict";
-    import_express39 = __toESM(require_express2());
+    import_express40 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router39 = import_express39.default.Router();
-    updateProject_default = router39.post(
+    router40 = import_express40.default.Router();
+    updateProject_default = router40.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -262365,18 +262376,18 @@ function setToken(payload, expiresIn, secret) {
   }
   return import_jsonwebtoken4.default.sign(payload, secret, { expiresIn });
 }
-var import_express40, import_jsonwebtoken4, router40, login_default;
+var import_express41, import_jsonwebtoken4, router41, login_default;
 var init_login = __esm({
   "src/routes/login/login.ts"() {
     "use strict";
-    import_express40 = __toESM(require_express2());
+    import_express41 = __toESM(require_express2());
     init_utils3();
     import_jsonwebtoken4 = __toESM(require_jsonwebtoken());
     init_responseFormat();
     init_middleware();
     init_zod();
-    router40 = import_express40.default.Router();
-    login_default = router40.post(
+    router41 = import_express41.default.Router();
+    login_default = router41.post(
       "/",
       validateFields({
         username: external_exports.string(),
@@ -262407,17 +262418,17 @@ var init_login = __esm({
 });
 
 // src/routes/modelSelect/getModelDetail.ts
-var import_express41, router41, getModelDetail_default;
+var import_express42, router42, getModelDetail_default;
 var init_getModelDetail = __esm({
   "src/routes/modelSelect/getModelDetail.ts"() {
     "use strict";
-    import_express41 = __toESM(require_express2());
+    import_express42 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router41 = import_express41.default.Router();
-    getModelDetail_default = router41.post(
+    router42 = import_express42.default.Router();
+    getModelDetail_default = router42.post(
       "/",
       validateFields({
         modelId: external_exports.string()
@@ -262434,17 +262445,17 @@ var init_getModelDetail = __esm({
 });
 
 // src/routes/modelSelect/getModelList.ts
-var import_express42, router42, getModelList_default;
+var import_express43, router43, getModelList_default;
 var init_getModelList = __esm({
   "src/routes/modelSelect/getModelList.ts"() {
     "use strict";
-    import_express42 = __toESM(require_express2());
+    import_express43 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router42 = import_express42.default.Router();
-    getModelList_default = router42.post(
+    router43 = import_express43.default.Router();
+    getModelList_default = router43.post(
       "/",
       validateFields({
         type: external_exports.enum(["text", "image", "video", "all"])
@@ -262477,17 +262488,17 @@ var init_getModelList = __esm({
 });
 
 // src/routes/novel/addNovel.ts
-var import_express43, router43, addNovel_default;
+var import_express44, router44, addNovel_default;
 var init_addNovel = __esm({
   "src/routes/novel/addNovel.ts"() {
     "use strict";
-    import_express43 = __toESM(require_express2());
+    import_express44 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router43 = import_express43.default.Router();
-    addNovel_default = router43.post(
+    router44 = import_express44.default.Router();
+    addNovel_default = router44.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -262533,17 +262544,17 @@ var init_addNovel = __esm({
 });
 
 // src/routes/novel/batchDeleteNovel.ts
-var import_express44, router44, batchDeleteNovel_default;
+var import_express45, router45, batchDeleteNovel_default;
 var init_batchDeleteNovel = __esm({
   "src/routes/novel/batchDeleteNovel.ts"() {
     "use strict";
-    import_express44 = __toESM(require_express2());
+    import_express45 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router44 = import_express44.default.Router();
-    batchDeleteNovel_default = router44.post(
+    router45 = import_express45.default.Router();
+    batchDeleteNovel_default = router45.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number())
@@ -262565,17 +262576,17 @@ var init_batchDeleteNovel = __esm({
 });
 
 // src/routes/novel/delNovel.ts
-var import_express45, router45, delNovel_default;
+var import_express46, router46, delNovel_default;
 var init_delNovel = __esm({
   "src/routes/novel/delNovel.ts"() {
     "use strict";
-    import_express45 = __toESM(require_express2());
+    import_express46 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router45 = import_express45.default.Router();
-    delNovel_default = router45.post(
+    router46 = import_express46.default.Router();
+    delNovel_default = router46.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -262594,17 +262605,17 @@ var init_delNovel = __esm({
 });
 
 // src/routes/novel/event/batchDeleteEvent.ts
-var import_express46, router46, batchDeleteEvent_default;
+var import_express47, router47, batchDeleteEvent_default;
 var init_batchDeleteEvent = __esm({
   "src/routes/novel/event/batchDeleteEvent.ts"() {
     "use strict";
-    import_express46 = __toESM(require_express2());
+    import_express47 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router46 = import_express46.default.Router();
-    batchDeleteEvent_default = router46.post(
+    router47 = import_express47.default.Router();
+    batchDeleteEvent_default = router47.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number())
@@ -262620,17 +262631,17 @@ var init_batchDeleteEvent = __esm({
 });
 
 // src/routes/novel/event/deletEvent.ts
-var import_express47, router47, deletEvent_default;
+var import_express48, router48, deletEvent_default;
 var init_deletEvent = __esm({
   "src/routes/novel/event/deletEvent.ts"() {
     "use strict";
-    import_express47 = __toESM(require_express2());
+    import_express48 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router47 = import_express47.default.Router();
-    deletEvent_default = router47.post(
+    router48 = import_express48.default.Router();
+    deletEvent_default = router48.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -262646,17 +262657,17 @@ var init_deletEvent = __esm({
 });
 
 // src/routes/novel/event/generateEvents.ts
-var import_express48, router48, generateEvents_default;
+var import_express49, router49, generateEvents_default;
 var init_generateEvents = __esm({
   "src/routes/novel/event/generateEvents.ts"() {
     "use strict";
-    import_express48 = __toESM(require_express2());
+    import_express49 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router48 = import_express48.default.Router();
-    generateEvents_default = router48.post(
+    router49 = import_express49.default.Router();
+    generateEvents_default = router49.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -262684,18 +262695,18 @@ var init_generateEvents = __esm({
 });
 
 // src/routes/novel/event/getEvent.ts
-var import_express49, router49, getEvent_default;
+var import_express50, router50, getEvent_default;
 var init_getEvent = __esm({
   "src/routes/novel/event/getEvent.ts"() {
     "use strict";
-    import_express49 = __toESM(require_express2());
+    import_express50 = __toESM(require_express2());
     init_utils3();
     init_db();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router49 = import_express49.default.Router();
-    getEvent_default = router49.post(
+    router50 = import_express50.default.Router();
+    getEvent_default = router50.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -262729,17 +262740,17 @@ var init_getEvent = __esm({
 });
 
 // src/routes/novel/getNovel.ts
-var import_express50, router50, getNovel_default;
+var import_express51, router51, getNovel_default;
 var init_getNovel = __esm({
   "src/routes/novel/getNovel.ts"() {
     "use strict";
-    import_express50 = __toESM(require_express2());
+    import_express51 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router50 = import_express50.default.Router();
-    getNovel_default = router50.post(
+    router51 = import_express51.default.Router();
+    getNovel_default = router51.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -262767,17 +262778,17 @@ var init_getNovel = __esm({
 });
 
 // src/routes/novel/getNovelData.ts
-var import_express51, router51, getNovelData_default;
+var import_express52, router52, getNovelData_default;
 var init_getNovelData = __esm({
   "src/routes/novel/getNovelData.ts"() {
     "use strict";
-    import_express51 = __toESM(require_express2());
+    import_express52 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router51 = import_express51.default.Router();
-    getNovelData_default = router51.post(
+    router52 = import_express52.default.Router();
+    getNovelData_default = router52.post(
       "/",
       validateFields({
         projectId: external_exports.number()
@@ -262792,17 +262803,17 @@ var init_getNovelData = __esm({
 });
 
 // src/routes/novel/getNovelEventState.ts
-var import_express52, router52, getNovelEventState_default;
+var import_express53, router53, getNovelEventState_default;
 var init_getNovelEventState = __esm({
   "src/routes/novel/getNovelEventState.ts"() {
     "use strict";
-    import_express52 = __toESM(require_express2());
+    import_express53 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router52 = import_express52.default.Router();
-    getNovelEventState_default = router52.post(
+    router53 = import_express53.default.Router();
+    getNovelEventState_default = router53.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number())
@@ -262817,17 +262828,17 @@ var init_getNovelEventState = __esm({
 });
 
 // src/routes/novel/getNovelIndex.ts
-var import_express53, router53, getNovelIndex_default;
+var import_express54, router54, getNovelIndex_default;
 var init_getNovelIndex = __esm({
   "src/routes/novel/getNovelIndex.ts"() {
     "use strict";
-    import_express53 = __toESM(require_express2());
+    import_express54 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router53 = import_express53.default.Router();
-    getNovelIndex_default = router53.post(
+    router54 = import_express54.default.Router();
+    getNovelIndex_default = router54.post(
       "/",
       validateFields({
         projectId: external_exports.number()
@@ -262842,17 +262853,17 @@ var init_getNovelIndex = __esm({
 });
 
 // src/routes/novel/updateNovel.ts
-var import_express54, router54, updateNovel_default;
+var import_express55, router55, updateNovel_default;
 var init_updateNovel = __esm({
   "src/routes/novel/updateNovel.ts"() {
     "use strict";
-    import_express54 = __toESM(require_express2());
+    import_express55 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router54 = import_express54.default.Router();
-    updateNovel_default = router54.post(
+    router55 = import_express55.default.Router();
+    updateNovel_default = router55.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -262878,16 +262889,16 @@ var init_updateNovel = __esm({
 });
 
 // src/routes/other/deleteAllData.ts
-var import_express55, router55, deleteAllData_default;
+var import_express56, router56, deleteAllData_default;
 var init_deleteAllData = __esm({
   "src/routes/other/deleteAllData.ts"() {
     "use strict";
-    import_express55 = __toESM(require_express2());
+    import_express56 = __toESM(require_express2());
     init_initDB();
     init_db();
     init_responseFormat();
-    router55 = import_express55.default.Router();
-    deleteAllData_default = router55.post(
+    router56 = import_express56.default.Router();
+    deleteAllData_default = router56.post(
       "/",
       async (req, res) => {
         await initDB_default(db, true);
@@ -262898,15 +262909,15 @@ var init_deleteAllData = __esm({
 });
 
 // src/routes/other/getVersion.ts
-var import_express56, router56, getVersion_default;
+var import_express57, router57, getVersion_default;
 var init_getVersion = __esm({
   "src/routes/other/getVersion.ts"() {
     "use strict";
-    import_express56 = __toESM(require_express2());
+    import_express57 = __toESM(require_express2());
     init_responseFormat();
     init_writeVersion();
-    router56 = import_express56.default.Router();
-    getVersion_default = router56.get("/", async (req, res) => {
+    router57 = import_express57.default.Router();
+    getVersion_default = router57.get("/", async (req, res) => {
       const version3 = await getVersion();
       res.status(200).send(success3(version3));
     });
@@ -262914,17 +262925,17 @@ var init_getVersion = __esm({
 });
 
 // src/routes/production/assets/batchGenerateAssetsImage.ts
-var import_express57, router57, batchGenerateAssetsImage_default;
+var import_express58, router58, batchGenerateAssetsImage_default;
 var init_batchGenerateAssetsImage = __esm({
   "src/routes/production/assets/batchGenerateAssetsImage.ts"() {
     "use strict";
-    import_express57 = __toESM(require_express2());
+    import_express58 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router57 = import_express57.default.Router();
-    batchGenerateAssetsImage_default = router57.post(
+    router58 = import_express58.default.Router();
+    batchGenerateAssetsImage_default = router58.post(
       "/",
       validateFields({
         assetIds: external_exports.array(external_exports.number()),
@@ -263038,17 +263049,17 @@ var init_batchGenerateAssetsImage = __esm({
 });
 
 // src/routes/production/assets/deleteAssetsDireve.ts
-var import_express58, router58, deleteAssetsDireve_default;
+var import_express59, router59, deleteAssetsDireve_default;
 var init_deleteAssetsDireve = __esm({
   "src/routes/production/assets/deleteAssetsDireve.ts"() {
     "use strict";
-    import_express58 = __toESM(require_express2());
+    import_express59 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router58 = import_express58.default.Router();
-    deleteAssetsDireve_default = router58.post(
+    router59 = import_express59.default.Router();
+    deleteAssetsDireve_default = router59.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -263070,17 +263081,17 @@ var init_deleteAssetsDireve = __esm({
 });
 
 // src/routes/production/assets/pollingImage.ts
-var import_express59, router59, pollingImage_default;
+var import_express60, router60, pollingImage_default;
 var init_pollingImage = __esm({
   "src/routes/production/assets/pollingImage.ts"() {
     "use strict";
-    import_express59 = __toESM(require_express2());
+    import_express60 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router59 = import_express59.default.Router();
-    pollingImage_default = router59.post(
+    router60 = import_express60.default.Router();
+    pollingImage_default = router60.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number())
@@ -263101,17 +263112,17 @@ var init_pollingImage = __esm({
 });
 
 // src/routes/production/assets/updateAssetsUrl.ts
-var import_express60, router60, updateAssetsUrl_default;
+var import_express61, router61, updateAssetsUrl_default;
 var init_updateAssetsUrl = __esm({
   "src/routes/production/assets/updateAssetsUrl.ts"() {
     "use strict";
-    import_express60 = __toESM(require_express2());
+    import_express61 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router60 = import_express60.default.Router();
-    updateAssetsUrl_default = router60.post(
+    router61 = import_express61.default.Router();
+    updateAssetsUrl_default = router61.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -263143,18 +263154,18 @@ async function urlToBase643(imageUrl) {
   const base644 = Buffer.from(response.data, "binary").toString("base64");
   return `data:${contentType};base64,${base644}`;
 }
-var import_express61, router61, generateFlowImage_default;
+var import_express62, router62, generateFlowImage_default;
 var init_generateFlowImage = __esm({
   "src/routes/production/editImage/generateFlowImage.ts"() {
     "use strict";
-    import_express61 = __toESM(require_express2());
+    import_express62 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
     init_axios2();
-    router61 = import_express61.default.Router();
-    generateFlowImage_default = router61.post(
+    router62 = import_express62.default.Router();
+    generateFlowImage_default = router62.post(
       "/",
       validateFields({
         model: external_exports.string(),
@@ -263200,17 +263211,17 @@ var init_generateFlowImage = __esm({
 });
 
 // src/routes/production/editImage/getImageDefaultModle.ts
-var import_express62, router62, getImageDefaultModle_default;
+var import_express63, router63, getImageDefaultModle_default;
 var init_getImageDefaultModle = __esm({
   "src/routes/production/editImage/getImageDefaultModle.ts"() {
     "use strict";
-    import_express62 = __toESM(require_express2());
+    import_express63 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router62 = import_express62.default.Router();
-    getImageDefaultModle_default = router62.post(
+    router63 = import_express63.default.Router();
+    getImageDefaultModle_default = router63.post(
       "/",
       validateFields({
         projectId: external_exports.number()
@@ -263225,17 +263236,17 @@ var init_getImageDefaultModle = __esm({
 });
 
 // src/routes/production/editImage/getImageFlow.ts
-var import_express63, router63, getImageFlow_default;
+var import_express64, router64, getImageFlow_default;
 var init_getImageFlow = __esm({
   "src/routes/production/editImage/getImageFlow.ts"() {
     "use strict";
-    import_express63 = __toESM(require_express2());
+    import_express64 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router63 = import_express63.default.Router();
-    getImageFlow_default = router63.post(
+    router64 = import_express64.default.Router();
+    getImageFlow_default = router64.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -263268,17 +263279,17 @@ var init_getImageFlow = __esm({
 });
 
 // src/routes/production/editImage/saveImageFlow.ts
-var import_express64, router64, saveImageFlow_default;
+var import_express65, router65, saveImageFlow_default;
 var init_saveImageFlow = __esm({
   "src/routes/production/editImage/saveImageFlow.ts"() {
     "use strict";
-    import_express64 = __toESM(require_express2());
+    import_express65 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router64 = import_express64.default.Router();
-    saveImageFlow_default = router64.post(
+    router65 = import_express65.default.Router();
+    saveImageFlow_default = router65.post(
       "/",
       validateFields({
         edges: external_exports.any(),
@@ -263307,17 +263318,17 @@ var init_saveImageFlow = __esm({
 });
 
 // src/routes/production/editImage/updateImageFlow.ts
-var import_express65, router65, updateImageFlow_default;
+var import_express66, router66, updateImageFlow_default;
 var init_updateImageFlow = __esm({
   "src/routes/production/editImage/updateImageFlow.ts"() {
     "use strict";
-    import_express65 = __toESM(require_express2());
+    import_express66 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router65 = import_express65.default.Router();
-    updateImageFlow_default = router65.post(
+    router66 = import_express66.default.Router();
+    updateImageFlow_default = router66.post(
       "/",
       validateFields({
         edges: external_exports.any(),
@@ -263347,18 +263358,18 @@ var init_updateImageFlow = __esm({
 });
 
 // src/routes/production/editImage/uploadImage.ts
-var import_express66, router66, uploadImage_default;
+var import_express67, router67, uploadImage_default;
 var init_uploadImage = __esm({
   "src/routes/production/editImage/uploadImage.ts"() {
     "use strict";
-    import_express66 = __toESM(require_express2());
+    import_express67 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     init_middleware();
     init_zod();
     init_dist_node();
-    router66 = import_express66.default.Router();
-    uploadImage_default = router66.post(
+    router67 = import_express67.default.Router();
+    uploadImage_default = router67.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -263398,17 +263409,17 @@ var init_uploadImage = __esm({
 });
 
 // src/routes/production/getFlowData.ts
-var import_express67, router67, getFlowData_default;
+var import_express68, router68, getFlowData_default;
 var init_getFlowData = __esm({
   "src/routes/production/getFlowData.ts"() {
     "use strict";
-    import_express67 = __toESM(require_express2());
+    import_express68 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router67 = import_express67.default.Router();
-    getFlowData_default = router67.post(
+    router68 = import_express68.default.Router();
+    getFlowData_default = router68.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -263538,17 +263549,17 @@ var init_getFlowData = __esm({
 });
 
 // src/routes/production/getStoryboardData.ts
-var import_express68, router68, getStoryboardData_default;
+var import_express69, router69, getStoryboardData_default;
 var init_getStoryboardData = __esm({
   "src/routes/production/getStoryboardData.ts"() {
     "use strict";
-    import_express68 = __toESM(require_express2());
+    import_express69 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router68 = import_express68.default.Router();
-    getStoryboardData_default = router68.post(
+    router69 = import_express69.default.Router();
+    getStoryboardData_default = router69.post(
       "/",
       validateFields({
         scriptId: external_exports.number(),
@@ -263612,17 +263623,17 @@ var init_getStoryboardData = __esm({
 });
 
 // src/routes/production/saveFlowData.ts
-var import_express69, router69, saveFlowData_default;
+var import_express70, router70, saveFlowData_default;
 var init_saveFlowData = __esm({
   "src/routes/production/saveFlowData.ts"() {
     "use strict";
-    import_express69 = __toESM(require_express2());
+    import_express70 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router69 = import_express69.default.Router();
-    saveFlowData_default = router69.post(
+    router70 = import_express70.default.Router();
+    saveFlowData_default = router70.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -263671,17 +263682,17 @@ var init_saveFlowData = __esm({
 });
 
 // src/routes/production/storyboard/addStoryboard.ts
-var import_express70, router70, addStoryboard_default;
+var import_express71, router71, addStoryboard_default;
 var init_addStoryboard = __esm({
   "src/routes/production/storyboard/addStoryboard.ts"() {
     "use strict";
-    import_express70 = __toESM(require_express2());
+    import_express71 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router70 = import_express70.default.Router();
-    addStoryboard_default = router70.post(
+    router71 = import_express71.default.Router();
+    addStoryboard_default = router71.post(
       "/",
       validateFields({
         prompt: external_exports.string(),
@@ -263719,17 +263730,17 @@ var init_addStoryboard = __esm({
 });
 
 // src/routes/production/storyboard/batchAddStoryboardInfo.ts
-var import_express71, router71, batchAddStoryboardInfo_default;
+var import_express72, router72, batchAddStoryboardInfo_default;
 var init_batchAddStoryboardInfo = __esm({
   "src/routes/production/storyboard/batchAddStoryboardInfo.ts"() {
     "use strict";
-    import_express71 = __toESM(require_express2());
+    import_express72 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router71 = import_express71.default.Router();
-    batchAddStoryboardInfo_default = router71.post(
+    router72 = import_express72.default.Router();
+    batchAddStoryboardInfo_default = router72.post(
       "/",
       validateFields({
         data: external_exports.array(
@@ -263824,17 +263835,17 @@ var init_batchAddStoryboardInfo = __esm({
 });
 
 // src/routes/production/storyboard/batchDelete.ts
-var import_express72, router72, batchDelete_default2;
+var import_express73, router73, batchDelete_default2;
 var init_batchDelete2 = __esm({
   "src/routes/production/storyboard/batchDelete.ts"() {
     "use strict";
-    import_express72 = __toESM(require_express2());
+    import_express73 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router72 = import_express72.default.Router();
-    batchDelete_default2 = router72.post(
+    router73 = import_express73.default.Router();
+    batchDelete_default2 = router73.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number()),
@@ -263880,17 +263891,17 @@ async function getAssetsImageBase64(imageIds) {
   );
   return imageUrls.filter(Boolean).map((url4) => ({ type: "image", base64: url4 }));
 }
-var import_express73, router73, batchGenerateImage_default;
+var import_express74, router74, batchGenerateImage_default;
 var init_batchGenerateImage = __esm({
   "src/routes/production/storyboard/batchGenerateImage.ts"() {
     "use strict";
-    import_express73 = __toESM(require_express2());
+    import_express74 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router73 = import_express73.default.Router();
-    batchGenerateImage_default = router73.post(
+    router74 = import_express74.default.Router();
+    batchGenerateImage_default = router74.post(
       "/",
       validateFields({
         storyboardIds: external_exports.array(external_exports.number()),
@@ -264001,17 +264012,17 @@ var init_batchGenerateImage = __esm({
 });
 
 // src/routes/production/storyboard/downPreviewImage.ts
-var import_express74, import_sharp3, router74, downPreviewImage_default;
+var import_express75, import_sharp3, router75, downPreviewImage_default;
 var init_downPreviewImage = __esm({
   "src/routes/production/storyboard/downPreviewImage.ts"() {
     "use strict";
-    import_express74 = __toESM(require_express2());
+    import_express75 = __toESM(require_express2());
     init_utils3();
     init_zod();
     import_sharp3 = __toESM(require("sharp"));
     init_middleware();
-    router74 = import_express74.default.Router();
-    downPreviewImage_default = router74.post(
+    router75 = import_express75.default.Router();
+    downPreviewImage_default = router75.post(
       "/",
       validateFields({
         storyboardIds: external_exports.array(external_exports.number())
@@ -264097,17 +264108,17 @@ var init_downPreviewImage = __esm({
 });
 
 // src/routes/production/storyboard/editStoryboardInfo.ts
-var import_express75, router75, editStoryboardInfo_default;
+var import_express76, router76, editStoryboardInfo_default;
 var init_editStoryboardInfo = __esm({
   "src/routes/production/storyboard/editStoryboardInfo.ts"() {
     "use strict";
-    import_express75 = __toESM(require_express2());
+    import_express76 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router75 = import_express75.default.Router();
-    editStoryboardInfo_default = router75.post(
+    router76 = import_express76.default.Router();
+    editStoryboardInfo_default = router76.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -264127,17 +264138,17 @@ var init_editStoryboardInfo = __esm({
 });
 
 // src/routes/production/storyboard/getStoryboardData.ts
-var import_express76, router76, getStoryboardData_default2;
+var import_express77, router77, getStoryboardData_default2;
 var init_getStoryboardData2 = __esm({
   "src/routes/production/storyboard/getStoryboardData.ts"() {
     "use strict";
-    import_express76 = __toESM(require_express2());
+    import_express77 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router76 = import_express76.default.Router();
-    getStoryboardData_default2 = router76.post(
+    router77 = import_express77.default.Router();
+    getStoryboardData_default2 = router77.post(
       "/",
       validateFields({
         scriptId: external_exports.number(),
@@ -264175,17 +264186,17 @@ var init_getStoryboardData2 = __esm({
 });
 
 // src/routes/production/storyboard/pollingImage.ts
-var import_express77, router77, pollingImage_default2;
+var import_express78, router78, pollingImage_default2;
 var init_pollingImage2 = __esm({
   "src/routes/production/storyboard/pollingImage.ts"() {
     "use strict";
-    import_express77 = __toESM(require_express2());
+    import_express78 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router77 = import_express77.default.Router();
-    pollingImage_default2 = router77.post(
+    router78 = import_express78.default.Router();
+    pollingImage_default2 = router78.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number())
@@ -264206,18 +264217,18 @@ var init_pollingImage2 = __esm({
 });
 
 // src/routes/production/storyboard/previewImage.ts
-var import_express78, import_sharp4, router78, previewImage_default;
+var import_express79, import_sharp4, router79, previewImage_default;
 var init_previewImage = __esm({
   "src/routes/production/storyboard/previewImage.ts"() {
     "use strict";
-    import_express78 = __toESM(require_express2());
+    import_express79 = __toESM(require_express2());
     init_utils3();
     init_zod();
     import_sharp4 = __toESM(require("sharp"));
     init_responseFormat();
     init_middleware();
-    router78 = import_express78.default.Router();
-    previewImage_default = router78.post(
+    router79 = import_express79.default.Router();
+    previewImage_default = router79.post(
       "/",
       validateFields({
         storyboardIds: external_exports.array(external_exports.number())
@@ -264314,17 +264325,17 @@ var init_previewImage = __esm({
 });
 
 // src/routes/production/storyboard/removeFrame.ts
-var import_express79, router79, removeFrame_default;
+var import_express80, router80, removeFrame_default;
 var init_removeFrame = __esm({
   "src/routes/production/storyboard/removeFrame.ts"() {
     "use strict";
-    import_express79 = __toESM(require_express2());
+    import_express80 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router79 = import_express79.default.Router();
-    removeFrame_default = router79.post(
+    router80 = import_express80.default.Router();
+    removeFrame_default = router80.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -264345,17 +264356,17 @@ var init_removeFrame = __esm({
 });
 
 // src/routes/production/storyboard/updateStoryboardUrl.ts
-var import_express80, router80, updateStoryboardUrl_default;
+var import_express81, router81, updateStoryboardUrl_default;
 var init_updateStoryboardUrl = __esm({
   "src/routes/production/storyboard/updateStoryboardUrl.ts"() {
     "use strict";
-    import_express80 = __toESM(require_express2());
+    import_express81 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router80 = import_express80.default.Router();
-    updateStoryboardUrl_default = router80.post(
+    router81 = import_express81.default.Router();
+    updateStoryboardUrl_default = router81.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -264377,17 +264388,17 @@ var init_updateStoryboardUrl = __esm({
 });
 
 // src/routes/production/workbench/addTrack.ts
-var import_express81, router81, addTrack_default;
+var import_express82, router82, addTrack_default;
 var init_addTrack = __esm({
   "src/routes/production/workbench/addTrack.ts"() {
     "use strict";
-    import_express81 = __toESM(require_express2());
+    import_express82 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router81 = import_express81.default.Router();
-    addTrack_default = router81.post(
+    router82 = import_express82.default.Router();
+    addTrack_default = router82.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -264410,11 +264421,11 @@ var init_addTrack = __esm({
 });
 
 // src/routes/production/workbench/batchGeneratePrompt.ts
-var import_express82, import_promises5, import_path13, router82, batchGeneratePrompt_default;
+var import_express83, import_promises5, import_path13, router83, batchGeneratePrompt_default;
 var init_batchGeneratePrompt = __esm({
   "src/routes/production/workbench/batchGeneratePrompt.ts"() {
     "use strict";
-    import_express82 = __toESM(require_express2());
+    import_express83 = __toESM(require_express2());
     init_utils3();
     init_p_limit();
     init_zod();
@@ -264422,8 +264433,8 @@ var init_batchGeneratePrompt = __esm({
     init_middleware();
     import_promises5 = __toESM(require("fs/promises"));
     import_path13 = __toESM(require("path"));
-    router82 = import_express82.default.Router();
-    batchGeneratePrompt_default = router82.post(
+    router83 = import_express83.default.Router();
+    batchGeneratePrompt_default = router83.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -264585,18 +264596,18 @@ var init_batchGeneratePrompt = __esm({
 });
 
 // src/routes/production/workbench/batchGenerateVideo.ts
-var import_express83, router83, batchGenerateVideo_default;
+var import_express84, router84, batchGenerateVideo_default;
 var init_batchGenerateVideo = __esm({
   "src/routes/production/workbench/batchGenerateVideo.ts"() {
     "use strict";
-    import_express83 = __toESM(require_express2());
+    import_express84 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_dist_node();
     init_responseFormat();
     init_middleware();
-    router83 = import_express83.default.Router();
-    batchGenerateVideo_default = router83.post(
+    router84 = import_express84.default.Router();
+    batchGenerateVideo_default = router84.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -264696,17 +264707,17 @@ var init_batchGenerateVideo = __esm({
 });
 
 // src/routes/production/workbench/checkVideoPrompt.ts
-var import_express84, router84, checkVideoPrompt_default;
+var import_express85, router85, checkVideoPrompt_default;
 var init_checkVideoPrompt = __esm({
   "src/routes/production/workbench/checkVideoPrompt.ts"() {
     "use strict";
-    import_express84 = __toESM(require_express2());
+    import_express85 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router84 = import_express84.default.Router();
-    checkVideoPrompt_default = router84.post(
+    router85 = import_express85.default.Router();
+    checkVideoPrompt_default = router85.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -264723,17 +264734,17 @@ var init_checkVideoPrompt = __esm({
 });
 
 // src/routes/production/workbench/checkVideoStateList.ts
-var import_express85, router85, checkVideoStateList_default;
+var import_express86, router86, checkVideoStateList_default;
 var init_checkVideoStateList = __esm({
   "src/routes/production/workbench/checkVideoStateList.ts"() {
     "use strict";
-    import_express85 = __toESM(require_express2());
+    import_express86 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router85 = import_express85.default.Router();
-    checkVideoStateList_default = router85.post(
+    router86 = import_express86.default.Router();
+    checkVideoStateList_default = router86.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -264759,17 +264770,17 @@ var init_checkVideoStateList = __esm({
 });
 
 // src/routes/production/workbench/deleteTrack.ts
-var import_express86, router86, deleteTrack_default;
+var import_express87, router87, deleteTrack_default;
 var init_deleteTrack = __esm({
   "src/routes/production/workbench/deleteTrack.ts"() {
     "use strict";
-    import_express86 = __toESM(require_express2());
+    import_express87 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router86 = import_express86.default.Router();
-    deleteTrack_default = router86.post(
+    router87 = import_express87.default.Router();
+    deleteTrack_default = router87.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -264787,17 +264798,17 @@ var init_deleteTrack = __esm({
 });
 
 // src/routes/production/workbench/delVideo.ts
-var import_express87, router87, delVideo_default;
+var import_express88, router88, delVideo_default;
 var init_delVideo = __esm({
   "src/routes/production/workbench/delVideo.ts"() {
     "use strict";
-    import_express87 = __toESM(require_express2());
+    import_express88 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router87 = import_express87.default.Router();
-    delVideo_default = router87.post(
+    router88 = import_express88.default.Router();
+    delVideo_default = router88.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -264815,18 +264826,18 @@ var init_delVideo = __esm({
 });
 
 // src/routes/production/workbench/generateVideo.ts
-var import_express88, router88, generateVideo_default;
+var import_express89, router89, generateVideo_default;
 var init_generateVideo = __esm({
   "src/routes/production/workbench/generateVideo.ts"() {
     "use strict";
-    import_express88 = __toESM(require_express2());
+    import_express89 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_dist_node();
     init_responseFormat();
     init_middleware();
-    router88 = import_express88.default.Router();
-    generateVideo_default = router88.post(
+    router89 = import_express89.default.Router();
+    generateVideo_default = router89.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -264919,19 +264930,19 @@ var init_generateVideo = __esm({
 });
 
 // src/routes/production/workbench/generateVideoPrompt.ts
-var import_express89, import_promises6, import_path14, router89, generateVideoPrompt_default;
+var import_express90, import_promises6, import_path14, router90, generateVideoPrompt_default;
 var init_generateVideoPrompt = __esm({
   "src/routes/production/workbench/generateVideoPrompt.ts"() {
     "use strict";
-    import_express89 = __toESM(require_express2());
+    import_express90 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
     import_promises6 = __toESM(require("fs/promises"));
     import_path14 = __toESM(require("path"));
-    router89 = import_express89.default.Router();
-    generateVideoPrompt_default = router89.post(
+    router90 = import_express90.default.Router();
+    generateVideoPrompt_default = router90.post(
       "/",
       validateFields({
         trackId: external_exports.number(),
@@ -265088,17 +265099,17 @@ var init_generateVideoPrompt = __esm({
 });
 
 // src/routes/production/workbench/getAudioBindAssetsList.ts
-var import_express90, router90, getAudioBindAssetsList_default;
+var import_express91, router91, getAudioBindAssetsList_default;
 var init_getAudioBindAssetsList = __esm({
   "src/routes/production/workbench/getAudioBindAssetsList.ts"() {
     "use strict";
-    import_express90 = __toESM(require_express2());
+    import_express91 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router90 = import_express90.default.Router();
-    getAudioBindAssetsList_default = router90.post(
+    router91 = import_express91.default.Router();
+    getAudioBindAssetsList_default = router91.post(
       "/",
       validateFields({
         assetsIds: external_exports.array(external_exports.number())
@@ -265132,17 +265143,17 @@ var init_getAudioBindAssetsList = __esm({
 });
 
 // src/routes/production/workbench/getFileUrl.ts
-var import_express91, router91, getFileUrl_default;
+var import_express92, router92, getFileUrl_default;
 var init_getFileUrl = __esm({
   "src/routes/production/workbench/getFileUrl.ts"() {
     "use strict";
-    import_express91 = __toESM(require_express2());
+    import_express92 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router91 = import_express91.default.Router();
-    getFileUrl_default = router91.post(
+    router92 = import_express92.default.Router();
+    getFileUrl_default = router92.post(
       "/",
       validateFields({
         items: external_exports.array(external_exports.object({
@@ -265176,17 +265187,17 @@ var init_getFileUrl = __esm({
 });
 
 // src/routes/production/workbench/getGenerateData.ts
-var import_express92, router92, getGenerateData_default;
+var import_express93, router93, getGenerateData_default;
 var init_getGenerateData = __esm({
   "src/routes/production/workbench/getGenerateData.ts"() {
     "use strict";
-    import_express92 = __toESM(require_express2());
+    import_express93 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router92 = import_express92.default.Router();
-    getGenerateData_default = router92.post(
+    router93 = import_express93.default.Router();
+    getGenerateData_default = router93.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -265355,17 +265366,17 @@ var init_getGenerateData = __esm({
 });
 
 // src/routes/production/workbench/getVideoList.ts
-var import_express93, router93, getVideoList_default;
+var import_express94, router94, getVideoList_default;
 var init_getVideoList = __esm({
   "src/routes/production/workbench/getVideoList.ts"() {
     "use strict";
-    import_express93 = __toESM(require_express2());
+    import_express94 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router93 = import_express93.default.Router();
-    getVideoList_default = router93.post(
+    router94 = import_express94.default.Router();
+    getVideoList_default = router94.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -265394,17 +265405,17 @@ var init_getVideoList = __esm({
 });
 
 // src/routes/production/workbench/selectVideo.ts
-var import_express94, router94, selectVideo_default;
+var import_express95, router95, selectVideo_default;
 var init_selectVideo = __esm({
   "src/routes/production/workbench/selectVideo.ts"() {
     "use strict";
-    import_express94 = __toESM(require_express2());
+    import_express95 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router94 = import_express94.default.Router();
-    selectVideo_default = router94.post(
+    router95 = import_express95.default.Router();
+    selectVideo_default = router95.post(
       "/",
       validateFields({
         trackId: external_exports.number(),
@@ -265422,17 +265433,17 @@ var init_selectVideo = __esm({
 });
 
 // src/routes/production/workbench/updateVideoDuration.ts
-var import_express95, router95, updateVideoDuration_default;
+var import_express96, router96, updateVideoDuration_default;
 var init_updateVideoDuration = __esm({
   "src/routes/production/workbench/updateVideoDuration.ts"() {
     "use strict";
-    import_express95 = __toESM(require_express2());
+    import_express96 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router95 = import_express95.default.Router();
-    updateVideoDuration_default = router95.post(
+    router96 = import_express96.default.Router();
+    updateVideoDuration_default = router96.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -265450,17 +265461,17 @@ var init_updateVideoDuration = __esm({
 });
 
 // src/routes/production/workbench/updateVideoPrompt.ts
-var import_express96, router96, updateVideoPrompt_default;
+var import_express97, router97, updateVideoPrompt_default;
 var init_updateVideoPrompt = __esm({
   "src/routes/production/workbench/updateVideoPrompt.ts"() {
     "use strict";
-    import_express96 = __toESM(require_express2());
+    import_express97 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router96 = import_express96.default.Router();
-    updateVideoPrompt_default = router96.post(
+    router97 = import_express97.default.Router();
+    updateVideoPrompt_default = router97.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -265478,19 +265489,19 @@ var init_updateVideoPrompt = __esm({
 });
 
 // src/routes/project/addDirectorManual.ts
-var import_express97, import_fs9, import_path15, router97, addDirectorManual_default;
+var import_express98, import_fs9, import_path15, router98, addDirectorManual_default;
 var init_addDirectorManual = __esm({
   "src/routes/project/addDirectorManual.ts"() {
     "use strict";
-    import_express97 = __toESM(require_express2());
+    import_express98 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     import_fs9 = __toESM(require("fs"));
     import_path15 = __toESM(require("path"));
     init_middleware();
     init_zod();
-    router97 = import_express97.default.Router();
-    addDirectorManual_default = router97.post(
+    router98 = import_express98.default.Router();
+    addDirectorManual_default = router98.post(
       "/",
       validateFields({
         name: external_exports.string(),
@@ -265568,17 +265579,17 @@ var init_addDirectorManual = __esm({
 });
 
 // src/routes/project/addProject.ts
-var import_express98, router98, addProject_default;
+var import_express99, router99, addProject_default;
 var init_addProject = __esm({
   "src/routes/project/addProject.ts"() {
     "use strict";
-    import_express98 = __toESM(require_express2());
+    import_express99 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router98 = import_express98.default.Router();
-    addProject_default = router98.post(
+    router99 = import_express99.default.Router();
+    addProject_default = router99.post(
       "/",
       validateFields({
         projectType: external_exports.string().optional().default("novel"),
@@ -265643,19 +265654,19 @@ var init_addProject = __esm({
 });
 
 // src/routes/project/addVisualManual.ts
-var import_express99, import_fs10, import_path16, router99, addVisualManual_default;
+var import_express100, import_fs10, import_path16, router100, addVisualManual_default;
 var init_addVisualManual = __esm({
   "src/routes/project/addVisualManual.ts"() {
     "use strict";
-    import_express99 = __toESM(require_express2());
+    import_express100 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     import_fs10 = __toESM(require("fs"));
     import_path16 = __toESM(require("path"));
     init_middleware();
     init_zod();
-    router99 = import_express99.default.Router();
-    addVisualManual_default = router99.post(
+    router100 = import_express100.default.Router();
+    addVisualManual_default = router100.post(
       "/",
       validateFields({
         name: external_exports.string(),
@@ -265742,18 +265753,18 @@ var init_addVisualManual = __esm({
 });
 
 // src/routes/project/deleteDirectorManual.ts
-var import_express100, import_promises7, router100, deleteDirectorManual_default;
+var import_express101, import_promises7, router101, deleteDirectorManual_default;
 var init_deleteDirectorManual = __esm({
   "src/routes/project/deleteDirectorManual.ts"() {
     "use strict";
-    import_express100 = __toESM(require_express2());
+    import_express101 = __toESM(require_express2());
     init_utils3();
     import_promises7 = __toESM(require("node:fs/promises"));
     init_zod();
     init_responseFormat();
     init_middleware();
-    router100 = import_express100.default.Router();
-    deleteDirectorManual_default = router100.post(
+    router101 = import_express101.default.Router();
+    deleteDirectorManual_default = router101.post(
       "/",
       validateFields({
         name: external_exports.string()
@@ -265785,18 +265796,18 @@ var init_deleteDirectorManual = __esm({
 });
 
 // src/routes/project/deleteVisualManual.ts
-var import_express101, import_promises8, router101, deleteVisualManual_default;
+var import_express102, import_promises8, router102, deleteVisualManual_default;
 var init_deleteVisualManual = __esm({
   "src/routes/project/deleteVisualManual.ts"() {
     "use strict";
-    import_express101 = __toESM(require_express2());
+    import_express102 = __toESM(require_express2());
     init_utils3();
     import_promises8 = __toESM(require("node:fs/promises"));
     init_zod();
     init_responseFormat();
     init_middleware();
-    router101 = import_express101.default.Router();
-    deleteVisualManual_default = router101.post(
+    router102 = import_express102.default.Router();
+    deleteVisualManual_default = router102.post(
       "/",
       validateFields({
         name: external_exports.string()
@@ -265828,17 +265839,17 @@ var init_deleteVisualManual = __esm({
 });
 
 // src/routes/project/delProject.ts
-var import_express102, router102, delProject_default;
+var import_express103, router103, delProject_default;
 var init_delProject = __esm({
   "src/routes/project/delProject.ts"() {
     "use strict";
-    import_express102 = __toESM(require_express2());
+    import_express103 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router102 = import_express102.default.Router();
-    delProject_default = router102.post(
+    router103 = import_express103.default.Router();
+    delProject_default = router103.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -265884,19 +265895,19 @@ var init_delProject = __esm({
 });
 
 // src/routes/project/editDirectorlManual.ts
-var import_express103, import_fs11, import_path17, router103, editDirectorlManual_default;
+var import_express104, import_fs11, import_path17, router104, editDirectorlManual_default;
 var init_editDirectorlManual = __esm({
   "src/routes/project/editDirectorlManual.ts"() {
     "use strict";
-    import_express103 = __toESM(require_express2());
+    import_express104 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     import_fs11 = __toESM(require("fs"));
     import_path17 = __toESM(require("path"));
     init_middleware();
     init_zod();
-    router103 = import_express103.default.Router();
-    editDirectorlManual_default = router103.post(
+    router104 = import_express104.default.Router();
+    editDirectorlManual_default = router104.post(
       "/",
       validateFields({
         name: external_exports.string(),
@@ -265976,17 +265987,17 @@ ${item.data}` : item.data;
 });
 
 // src/routes/project/editProject.ts
-var import_express104, router104, editProject_default;
+var import_express105, router105, editProject_default;
 var init_editProject = __esm({
   "src/routes/project/editProject.ts"() {
     "use strict";
-    import_express104 = __toESM(require_express2());
+    import_express105 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router104 = import_express104.default.Router();
-    editProject_default = router104.post(
+    router105 = import_express105.default.Router();
+    editProject_default = router105.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -266046,19 +266057,19 @@ var init_editProject = __esm({
 });
 
 // src/routes/project/editVisualManual.ts
-var import_express105, import_fs12, import_path18, router105, editVisualManual_default;
+var import_express106, import_fs12, import_path18, router106, editVisualManual_default;
 var init_editVisualManual = __esm({
   "src/routes/project/editVisualManual.ts"() {
     "use strict";
-    import_express105 = __toESM(require_express2());
+    import_express106 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     import_fs12 = __toESM(require("fs"));
     import_path18 = __toESM(require("path"));
     init_middleware();
     init_zod();
-    router105 = import_express105.default.Router();
-    editVisualManual_default = router105.post(
+    router106 = import_express106.default.Router();
+    editVisualManual_default = router106.post(
       "/",
       validateFields({
         name: external_exports.string(),
@@ -266147,17 +266158,17 @@ ${item.data}` : item.data;
 });
 
 // src/routes/project/getModelDetails.ts
-var import_express106, router106, getModelDetails_default;
+var import_express107, router107, getModelDetails_default;
 var init_getModelDetails = __esm({
   "src/routes/project/getModelDetails.ts"() {
     "use strict";
-    import_express106 = __toESM(require_express2());
+    import_express107 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router106 = import_express106.default.Router();
-    getModelDetails_default = router106.post(
+    router107 = import_express107.default.Router();
+    getModelDetails_default = router107.post(
       "/",
       validateFields({
         key: external_exports.enum(["scriptAgent", "productionAgent"])
@@ -266176,15 +266187,15 @@ var init_getModelDetails = __esm({
 });
 
 // src/routes/project/getProject.ts
-var import_express107, router107, getProject_default;
+var import_express108, router108, getProject_default;
 var init_getProject = __esm({
   "src/routes/project/getProject.ts"() {
     "use strict";
-    import_express107 = __toESM(require_express2());
+    import_express108 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
-    router107 = import_express107.default.Router();
-    getProject_default = router107.post("/", async (req, res) => {
+    router108 = import_express108.default.Router();
+    getProject_default = router108.post("/", async (req, res) => {
       const data = await utils_default.db("o_project").select("*");
       res.status(200).send(success3(data));
     });
@@ -266213,16 +266224,16 @@ async function readAllImages(imagesDir) {
     return [];
   }
 }
-var import_express108, import_fs13, import_path19, router108, DATA_MAP, getVisualManual_default;
+var import_express109, import_fs13, import_path19, router109, DATA_MAP, getVisualManual_default;
 var init_getVisualManual = __esm({
   "src/routes/project/getVisualManual.ts"() {
     "use strict";
-    import_express108 = __toESM(require_express2());
+    import_express109 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     import_fs13 = __toESM(require("fs"));
     import_path19 = __toESM(require("path"));
-    router108 = import_express108.default.Router();
+    router109 = import_express109.default.Router();
     DATA_MAP = [
       { label: "README", value: "README" },
       { label: "\u524D\u7F00", value: "prefix" },
@@ -266237,7 +266248,7 @@ var init_getVisualManual = __esm({
       { label: "\u6280\u6CD5-\u5BFC\u6F14\u89C4\u5212", value: "director_planning_style", subDir: "driector_skills" },
       { label: "\u6280\u6CD5-\u5206\u955C\u8868\u8BBE\u8BA1", value: "director_storyboard_table_style", subDir: "driector_skills" }
     ];
-    getVisualManual_default = router108.post("/", async (req, res) => {
+    getVisualManual_default = router109.post("/", async (req, res) => {
       try {
         const artPromptsDir = utils_default.getPath(["skills", "art_skills"]);
         const styleDirs = import_fs13.default.readdirSync(artPromptsDir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
@@ -266299,22 +266310,22 @@ async function readAllImages2(imagesDir) {
     return [];
   }
 }
-var import_express109, import_fs14, import_path20, router109, DATA_MAP2, queryDirectorManual_default;
+var import_express110, import_fs14, import_path20, router110, DATA_MAP2, queryDirectorManual_default;
 var init_queryDirectorManual = __esm({
   "src/routes/project/queryDirectorManual.ts"() {
     "use strict";
-    import_express109 = __toESM(require_express2());
+    import_express110 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     import_fs14 = __toESM(require("fs"));
     import_path20 = __toESM(require("path"));
-    router109 = import_express109.default.Router();
+    router110 = import_express110.default.Router();
     DATA_MAP2 = [
       { label: "README", value: "README" },
       { label: "\u5BFC\u6F14\u89C4\u5212", value: "director_planning_narrative", subDir: "driector_skills" },
       { label: "\u5206\u955C\u8868", value: "director_storyboard_table_narrative", subDir: "driector_skills" }
     ];
-    queryDirectorManual_default = router109.post("/", async (req, res) => {
+    queryDirectorManual_default = router110.post("/", async (req, res) => {
       try {
         const artPromptsDir = utils_default.getPath(["skills", "story_skills"]);
         const styleDirs = import_fs14.default.readdirSync(artPromptsDir, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
@@ -266355,19 +266366,19 @@ var init_queryDirectorManual = __esm({
 });
 
 // src/routes/project/visualManual.ts
-var import_express110, import_fs15, import_path21, router110, visualManual_default;
+var import_express111, import_fs15, import_path21, router111, visualManual_default;
 var init_visualManual = __esm({
   "src/routes/project/visualManual.ts"() {
     "use strict";
-    import_express110 = __toESM(require_express2());
+    import_express111 = __toESM(require_express2());
     init_zod();
     init_responseFormat();
     init_middleware();
     init_getPath();
     import_fs15 = __toESM(require("fs"));
     import_path21 = __toESM(require("path"));
-    router110 = import_express110.default.Router();
-    visualManual_default = router110.post(
+    router111 = import_express111.default.Router();
+    visualManual_default = router111.post(
       "/",
       validateFields({
         type: external_exports.string()
@@ -266401,17 +266412,17 @@ var init_visualManual = __esm({
 });
 
 // src/routes/script/addScript.ts
-var import_express111, router111, addScript_default;
+var import_express112, router112, addScript_default;
 var init_addScript = __esm({
   "src/routes/script/addScript.ts"() {
     "use strict";
-    import_express111 = __toESM(require_express2());
+    import_express112 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router111 = import_express111.default.Router();
-    addScript_default = router111.post(
+    router112 = import_express112.default.Router();
+    addScript_default = router112.post(
       "/",
       validateFields({
         name: external_exports.string(),
@@ -266447,17 +266458,17 @@ var init_addScript = __esm({
 });
 
 // src/routes/script/batchAddScript.ts
-var import_express112, router112, batchAddScript_default;
+var import_express113, router113, batchAddScript_default;
 var init_batchAddScript = __esm({
   "src/routes/script/batchAddScript.ts"() {
     "use strict";
-    import_express112 = __toESM(require_express2());
+    import_express113 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router112 = import_express112.default.Router();
-    batchAddScript_default = router112.post(
+    router113 = import_express113.default.Router();
+    batchAddScript_default = router113.post(
       "/",
       validateFields({
         data: external_exports.array(
@@ -266487,17 +266498,17 @@ var init_batchAddScript = __esm({
 });
 
 // src/routes/script/delScript.ts
-var import_express113, router113, delScript_default;
+var import_express114, router114, delScript_default;
 var init_delScript = __esm({
   "src/routes/script/delScript.ts"() {
     "use strict";
-    import_express113 = __toESM(require_express2());
+    import_express114 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router113 = import_express113.default.Router();
-    delScript_default = router113.post(
+    router114 = import_express114.default.Router();
+    delScript_default = router114.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number())
@@ -276646,17 +276657,17 @@ var require_compressing = __commonJS({
 });
 
 // src/routes/script/exportScript.ts
-var import_express114, import_compressing, router114, exportScript_default;
+var import_express115, import_compressing, router115, exportScript_default;
 var init_exportScript = __esm({
   "src/routes/script/exportScript.ts"() {
     "use strict";
-    import_express114 = __toESM(require_express2());
+    import_express115 = __toESM(require_express2());
     init_utils3();
     init_zod();
     import_compressing = __toESM(require_compressing());
     init_middleware();
-    router114 = import_express114.default.Router();
-    exportScript_default = router114.post(
+    router115 = import_express115.default.Router();
+    exportScript_default = router115.post(
       "/",
       validateFields({
         id: external_exports.array(external_exports.number())
@@ -276689,17 +276700,17 @@ function chunkArray(arr, groupSize) {
   }
   return groupChunks;
 }
-var import_express115, router115, RoleMetaSchema, NewAssetSchema, ExistingAssetRefSchema, AssetSchema, extractAssets_default;
+var import_express116, router116, RoleMetaSchema, NewAssetSchema, ExistingAssetRefSchema, AssetSchema, extractAssets_default;
 var init_extractAssets = __esm({
   "src/routes/script/extractAssets.ts"() {
     "use strict";
-    import_express115 = __toESM(require_express2());
+    import_express116 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
     init_dist22();
-    router115 = import_express115.default.Router();
+    router116 = import_express116.default.Router();
     RoleMetaSchema = external_exports.object({
       species: external_exports.number().describe("\u7269\u79CD: 1(\u4EBA\u7C7B), 2(\u975E\u4EBA\u7C7B/\u602A\u517D/\u52A8\u7269/\u673A\u7532/\u5F02\u5F62/\u5176\u4ED6)"),
       gender: external_exports.number().optional().describe("\u6027\u522B: 1(\u7537), 2(\u5973), 3(\u4E2D\u6027/\u5176\u4ED6)"),
@@ -276729,7 +276740,7 @@ var init_extractAssets = __esm({
       type: external_exports.enum(["role", "tool", "scene"]).describe("\u8D44\u4EA7\u7C7B\u578B"),
       roleMeta: RoleMetaSchema.optional().describe("\u89D2\u8272\u7ED3\u6784\u5316\u5143\u6570\u636E")
     });
-    extractAssets_default = router115.post(
+    extractAssets_default = router116.post(
       "/",
       validateFields({
         scriptIds: external_exports.array(external_exports.number()),
@@ -276919,17 +276930,17 @@ ${scriptsContent}`
 });
 
 // src/routes/script/getAiRegex.ts
-var import_express116, router116, getAiRegex_default;
+var import_express117, router117, getAiRegex_default;
 var init_getAiRegex = __esm({
   "src/routes/script/getAiRegex.ts"() {
     "use strict";
-    import_express116 = __toESM(require_express2());
+    import_express117 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router116 = import_express116.default.Router();
-    getAiRegex_default = router116.post(
+    router117 = import_express117.default.Router();
+    getAiRegex_default = router117.post(
       "/",
       validateFields({
         content: external_exports.string()
@@ -276961,17 +276972,17 @@ var init_getAiRegex = __esm({
 });
 
 // src/routes/script/getScrptApi.ts
-var import_express117, router117, getScrptApi_default;
+var import_express118, router118, getScrptApi_default;
 var init_getScrptApi = __esm({
   "src/routes/script/getScrptApi.ts"() {
     "use strict";
-    import_express117 = __toESM(require_express2());
+    import_express118 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router117 = import_express117.default.Router();
-    getScrptApi_default = router117.post(
+    router118 = import_express118.default.Router();
+    getScrptApi_default = router118.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -277012,17 +277023,17 @@ var init_getScrptApi = __esm({
 });
 
 // src/routes/script/pollScriptAssets.ts
-var import_express118, router118, pollScriptAssets_default;
+var import_express119, router119, pollScriptAssets_default;
 var init_pollScriptAssets = __esm({
   "src/routes/script/pollScriptAssets.ts"() {
     "use strict";
-    import_express118 = __toESM(require_express2());
+    import_express119 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router118 = import_express118.default.Router();
-    pollScriptAssets_default = router118.post(
+    router119 = import_express119.default.Router();
+    pollScriptAssets_default = router119.post(
       "/",
       validateFields({
         ids: external_exports.array(external_exports.number())
@@ -277037,17 +277048,17 @@ var init_pollScriptAssets = __esm({
 });
 
 // src/routes/script/updateScript.ts
-var import_express119, router119, updateScript_default;
+var import_express120, router120, updateScript_default;
 var init_updateScript = __esm({
   "src/routes/script/updateScript.ts"() {
     "use strict";
-    import_express119 = __toESM(require_express2());
+    import_express120 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router119 = import_express119.default.Router();
-    updateScript_default = router119.post(
+    router120 = import_express120.default.Router();
+    updateScript_default = router120.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -277081,17 +277092,17 @@ var init_updateScript = __esm({
 });
 
 // src/routes/scriptAgent/getPlanData.ts
-var import_express120, router120, getPlanData_default;
+var import_express121, router121, getPlanData_default;
 var init_getPlanData = __esm({
   "src/routes/scriptAgent/getPlanData.ts"() {
     "use strict";
-    import_express120 = __toESM(require_express2());
+    import_express121 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router120 = import_express120.default.Router();
-    getPlanData_default = router120.post(
+    router121 = import_express121.default.Router();
+    getPlanData_default = router121.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -277128,17 +277139,17 @@ var init_getPlanData = __esm({
 });
 
 // src/routes/scriptAgent/resetConversation.ts
-var import_express121, router121, resetConversation_default;
+var import_express122, router122, resetConversation_default;
 var init_resetConversation = __esm({
   "src/routes/scriptAgent/resetConversation.ts"() {
     "use strict";
-    import_express121 = __toESM(require_express2());
+    import_express122 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router121 = import_express121.default.Router();
-    resetConversation_default = router121.post(
+    router122 = import_express122.default.Router();
+    resetConversation_default = router122.post(
       "/",
       validateFields({
         projectId: external_exports.number()
@@ -277172,17 +277183,17 @@ var init_resetConversation = __esm({
 });
 
 // src/routes/scriptAgent/setPlanData.ts
-var import_express122, router122, setPlanData_default;
+var import_express123, router123, setPlanData_default;
 var init_setPlanData = __esm({
   "src/routes/scriptAgent/setPlanData.ts"() {
     "use strict";
-    import_express122 = __toESM(require_express2());
+    import_express123 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router122 = import_express122.default.Router();
-    setPlanData_default = router122.post(
+    router123 = import_express123.default.Router();
+    setPlanData_default = router123.post(
       "/",
       validateFields({
         projectId: external_exports.number(),
@@ -277226,17 +277237,17 @@ var init_setPlanData = __esm({
 });
 
 // src/routes/scriptAgent/updateData.ts
-var import_express123, router123, updateData_default;
+var import_express124, router124, updateData_default;
 var init_updateData = __esm({
   "src/routes/scriptAgent/updateData.ts"() {
     "use strict";
-    import_express123 = __toESM(require_express2());
+    import_express124 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router123 = import_express123.default.Router();
-    updateData_default = router123.post(
+    router124 = import_express124.default.Router();
+    updateData_default = router124.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -277263,17 +277274,17 @@ var init_updateData = __esm({
 });
 
 // src/routes/setting/about/checkUpdate.ts
-var import_express124, import_fs16, import_path22, router124, APP_VERSION2, checkUpdate_default;
+var import_express125, import_fs16, import_path22, router125, APP_VERSION2, checkUpdate_default;
 var init_checkUpdate = __esm({
   "src/routes/setting/about/checkUpdate.ts"() {
     "use strict";
-    import_express124 = __toESM(require_express2());
+    import_express125 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_zod();
     import_fs16 = __toESM(require("fs"));
     import_path22 = __toESM(require("path"));
-    router124 = import_express124.default.Router();
+    router125 = import_express125.default.Router();
     APP_VERSION2 = (() => {
       if (true) {
         return "1.1.8";
@@ -277282,7 +277293,7 @@ var init_checkUpdate = __esm({
       const pkg = JSON.parse(import_fs16.default.readFileSync(pkgPath, "utf8"));
       return pkg.version;
     })();
-    checkUpdate_default = router124.post(
+    checkUpdate_default = router125.post(
       "/",
       validateFields({
         source: external_exports.enum(["toonflow", "github", "gitee", "atomgit"]),
@@ -277324,11 +277335,11 @@ var init_checkUpdate = __esm({
 });
 
 // src/routes/setting/about/downloadApp.ts
-var import_express125, import_fs17, import_compressing2, router125, downloadApp_default;
+var import_express126, import_fs17, import_compressing2, router126, downloadApp_default;
 var init_downloadApp = __esm({
   "src/routes/setting/about/downloadApp.ts"() {
     "use strict";
-    import_express125 = __toESM(require_express2());
+    import_express126 = __toESM(require_express2());
     init_zod();
     init_middleware();
     init_utils3();
@@ -277336,8 +277347,8 @@ var init_downloadApp = __esm({
     init_axios2();
     import_compressing2 = __toESM(require_compressing());
     init_responseFormat();
-    router125 = import_express125.default.Router();
-    downloadApp_default = router125.post(
+    router126 = import_express126.default.Router();
+    downloadApp_default = router126.post(
       "/",
       validateFields({
         url: zod_default.url(),
@@ -277365,17 +277376,17 @@ var init_downloadApp = __esm({
 });
 
 // src/routes/setting/agentDeploy/agentSetKey.ts
-var import_express126, router126, agentSetKey_default;
+var import_express127, router127, agentSetKey_default;
 var init_agentSetKey = __esm({
   "src/routes/setting/agentDeploy/agentSetKey.ts"() {
     "use strict";
-    import_express126 = __toESM(require_express2());
+    import_express127 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router126 = import_express126.default.Router();
-    agentSetKey_default = router126.post(
+    router127 = import_express127.default.Router();
+    agentSetKey_default = router127.post(
       "/",
       validateFields({
         key: external_exports.string().optional()
@@ -277424,17 +277435,17 @@ var init_agentSetKey = __esm({
 });
 
 // src/routes/setting/agentDeploy/deployAgentModel.ts
-var import_express127, router127, deployAgentModel_default;
+var import_express128, router128, deployAgentModel_default;
 var init_deployAgentModel = __esm({
   "src/routes/setting/agentDeploy/deployAgentModel.ts"() {
     "use strict";
-    import_express127 = __toESM(require_express2());
+    import_express128 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router127 = import_express127.default.Router();
-    deployAgentModel_default = router127.post(
+    router128 = import_express128.default.Router();
+    deployAgentModel_default = router128.post(
       "/",
       validateFields({
         items: external_exports.array(
@@ -277463,15 +277474,15 @@ var init_deployAgentModel = __esm({
 });
 
 // src/routes/setting/agentDeploy/getAgentDeploy.ts
-var import_express128, router128, getAgentDeploy_default;
+var import_express129, router129, getAgentDeploy_default;
 var init_getAgentDeploy = __esm({
   "src/routes/setting/agentDeploy/getAgentDeploy.ts"() {
     "use strict";
-    import_express128 = __toESM(require_express2());
+    import_express129 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
-    router128 = import_express128.default.Router();
-    getAgentDeploy_default = router128.post("/", async (req, res) => {
+    router129 = import_express129.default.Router();
+    getAgentDeploy_default = router129.post("/", async (req, res) => {
       const allData = await utils_default.db("o_agentDeploy").leftJoin("o_vendorConfig", "o_vendorConfig.id", "o_agentDeploy.vendorId").select("o_agentDeploy.*");
       const qrdinaryData = allData.filter((item) => !item.key?.includes(":"));
       const advancedData = allData.filter((item) => item.key?.includes(":") || item.key == "universalAi");
@@ -277481,15 +277492,15 @@ var init_getAgentDeploy = __esm({
 });
 
 // src/routes/setting/agentDeploy/getAgentUseMode.ts
-var import_express129, router129, getAgentUseMode_default;
+var import_express130, router130, getAgentUseMode_default;
 var init_getAgentUseMode = __esm({
   "src/routes/setting/agentDeploy/getAgentUseMode.ts"() {
     "use strict";
-    import_express129 = __toESM(require_express2());
+    import_express130 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
-    router129 = import_express129.default.Router();
-    getAgentUseMode_default = router129.get("/", async (req, res) => {
+    router130 = import_express130.default.Router();
+    getAgentUseMode_default = router130.get("/", async (req, res) => {
       const useMode = await utils_default.db("o_setting").where("key", "agentUseMode").first();
       console.log("%c Line:9 \u{1F353} useMode", "background:#33a5ff", useMode);
       res.status(200).send(success3(useMode?.value || "0"));
@@ -277498,17 +277509,17 @@ var init_getAgentUseMode = __esm({
 });
 
 // src/routes/setting/agentDeploy/updateAgentModel.ts
-var import_express130, router130, updateAgentModel_default;
+var import_express131, router131, updateAgentModel_default;
 var init_updateAgentModel = __esm({
   "src/routes/setting/agentDeploy/updateAgentModel.ts"() {
     "use strict";
-    import_express130 = __toESM(require_express2());
+    import_express131 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router130 = import_express130.default.Router();
-    updateAgentModel_default = router130.post(
+    router131 = import_express131.default.Router();
+    updateAgentModel_default = router131.post(
       "/",
       validateFields({
         id: external_exports.number(),
@@ -277530,17 +277541,17 @@ var init_updateAgentModel = __esm({
 });
 
 // src/routes/setting/agentDeploy/updateUseMode.ts
-var import_express131, router131, updateUseMode_default;
+var import_express132, router132, updateUseMode_default;
 var init_updateUseMode = __esm({
   "src/routes/setting/agentDeploy/updateUseMode.ts"() {
     "use strict";
-    import_express131 = __toESM(require_express2());
+    import_express132 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router131 = import_express131.default.Router();
-    updateUseMode_default = router131.post(
+    router132 = import_express132.default.Router();
+    updateUseMode_default = router132.post(
       "/",
       validateFields({
         agentUseMode: external_exports.string()
@@ -277557,16 +277568,16 @@ var init_updateUseMode = __esm({
 });
 
 // src/routes/setting/dbConfig/clearData.ts
-var import_express132, router132, clearData_default;
+var import_express133, router133, clearData_default;
 var init_clearData = __esm({
   "src/routes/setting/dbConfig/clearData.ts"() {
     "use strict";
-    import_express132 = __toESM(require_express2());
+    import_express133 = __toESM(require_express2());
     init_responseFormat();
     init_db();
     init_initDB();
-    router132 = import_express132.default.Router();
-    clearData_default = router132.get("/", async (req, res) => {
+    router133 = import_express133.default.Router();
+    clearData_default = router133.get("/", async (req, res) => {
       try {
         const tables = await db.raw(
           `SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'knex_%'`
@@ -277586,15 +277597,15 @@ var init_clearData = __esm({
 });
 
 // src/routes/setting/dbConfig/clearTable.ts
-var import_express133, router133, clearTable_default;
+var import_express134, router134, clearTable_default;
 var init_clearTable = __esm({
   "src/routes/setting/dbConfig/clearTable.ts"() {
     "use strict";
-    import_express133 = __toESM(require_express2());
+    import_express134 = __toESM(require_express2());
     init_responseFormat();
     init_db();
-    router133 = import_express133.default.Router();
-    clearTable_default = router133.post("/", async (req, res) => {
+    router134 = import_express134.default.Router();
+    clearTable_default = router134.post("/", async (req, res) => {
       try {
         const { tableName } = req.body;
         if (!tableName || typeof tableName !== "string") {
@@ -277617,15 +277628,15 @@ var init_clearTable = __esm({
 });
 
 // src/routes/setting/dbConfig/dbInfo.ts
-var import_express134, router134, dbInfo_default;
+var import_express135, router135, dbInfo_default;
 var init_dbInfo = __esm({
   "src/routes/setting/dbConfig/dbInfo.ts"() {
     "use strict";
-    import_express134 = __toESM(require_express2());
+    import_express135 = __toESM(require_express2());
     init_responseFormat();
     init_db();
-    router134 = import_express134.default.Router();
-    dbInfo_default = router134.get("/", async (req, res) => {
+    router135 = import_express135.default.Router();
+    dbInfo_default = router135.get("/", async (req, res) => {
       try {
         const tables = await db.raw(
           `SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'knex_%'`
@@ -277647,15 +277658,15 @@ var init_dbInfo = __esm({
 });
 
 // src/routes/setting/dbConfig/exportData.ts
-var import_express135, router135, exportData_default;
+var import_express136, router136, exportData_default;
 var init_exportData = __esm({
   "src/routes/setting/dbConfig/exportData.ts"() {
     "use strict";
-    import_express135 = __toESM(require_express2());
+    import_express136 = __toESM(require_express2());
     init_responseFormat();
     init_db();
-    router135 = import_express135.default.Router();
-    exportData_default = router135.get("/", async (req, res) => {
+    router136 = import_express136.default.Router();
+    exportData_default = router136.get("/", async (req, res) => {
       try {
         const tables = await db.raw(
           `SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'knex_%'`
@@ -277679,16 +277690,16 @@ var init_exportData = __esm({
 });
 
 // src/routes/setting/dbConfig/importData.ts
-var import_express136, router136, importData_default;
+var import_express137, router137, importData_default;
 var init_importData = __esm({
   "src/routes/setting/dbConfig/importData.ts"() {
     "use strict";
-    import_express136 = __toESM(require_express2());
+    import_express137 = __toESM(require_express2());
     init_responseFormat();
     init_db();
     init_initDB();
-    router136 = import_express136.default.Router();
-    importData_default = router136.post("/", async (req, res) => {
+    router137 = import_express137.default.Router();
+    importData_default = router137.post("/", async (req, res) => {
       try {
         const { tables: importTables } = req.body;
         if (!importTables || typeof importTables !== "object") {
@@ -277727,15 +277738,15 @@ var init_importData = __esm({
 });
 
 // src/routes/setting/dev/getSwitchAiDevTool.ts
-var import_express137, router137, getSwitchAiDevTool_default;
+var import_express138, router138, getSwitchAiDevTool_default;
 var init_getSwitchAiDevTool = __esm({
   "src/routes/setting/dev/getSwitchAiDevTool.ts"() {
     "use strict";
-    import_express137 = __toESM(require_express2());
+    import_express138 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
-    router137 = import_express137.default.Router();
-    getSwitchAiDevTool_default = router137.get("/", async (req, res) => {
+    router138 = import_express138.default.Router();
+    getSwitchAiDevTool_default = router138.get("/", async (req, res) => {
       const switchAiDevTool = await utils_default.db("o_setting").where("key", "switchAiDevTool").first();
       res.status(200).send(success3(switchAiDevTool?.value || "0"));
     });
@@ -277743,17 +277754,17 @@ var init_getSwitchAiDevTool = __esm({
 });
 
 // src/routes/setting/dev/updateSwitchAiDevTool.ts
-var import_express138, router138, updateSwitchAiDevTool_default;
+var import_express139, router139, updateSwitchAiDevTool_default;
 var init_updateSwitchAiDevTool = __esm({
   "src/routes/setting/dev/updateSwitchAiDevTool.ts"() {
     "use strict";
-    import_express138 = __toESM(require_express2());
+    import_express139 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router138 = import_express138.default.Router();
-    updateSwitchAiDevTool_default = router138.post(
+    router139 = import_express139.default.Router();
+    updateSwitchAiDevTool_default = router139.post(
       "/",
       validateFields({
         switchAiDevTool: external_exports.string()
@@ -277770,19 +277781,19 @@ var init_updateSwitchAiDevTool = __esm({
 });
 
 // src/routes/setting/fileManagement/openFolder.ts
-var import_express139, import_child_process, router139, openFolder_default;
+var import_express140, import_child_process, router140, openFolder_default;
 var init_openFolder = __esm({
   "src/routes/setting/fileManagement/openFolder.ts"() {
     "use strict";
-    import_express139 = __toESM(require_express2());
+    import_express140 = __toESM(require_express2());
     init_zod();
     import_child_process = require("child_process");
     init_responseFormat();
     init_middleware();
     init_getPath();
     init_utils3();
-    router139 = import_express139.default.Router();
-    openFolder_default = router139.post(
+    router140 = import_express140.default.Router();
+    openFolder_default = router140.post(
       "/",
       validateFields({
         path: external_exports.string()
@@ -277807,14 +277818,14 @@ var init_openFolder = __esm({
 });
 
 // src/routes/setting/getTextModel.ts
-var import_express140, router140, getTextModel_default;
+var import_express141, router141, getTextModel_default;
 var init_getTextModel = __esm({
   "src/routes/setting/getTextModel.ts"() {
     "use strict";
-    import_express140 = __toESM(require_express2());
+    import_express141 = __toESM(require_express2());
     init_responseFormat();
-    router140 = import_express140.default.Router();
-    getTextModel_default = router140.post(
+    router141 = import_express141.default.Router();
+    getTextModel_default = router141.post(
       "/",
       async (req, res) => {
         res.status(200).send(success3("123"));
@@ -277824,15 +277835,15 @@ var init_getTextModel = __esm({
 });
 
 // src/routes/setting/loginConfig/getUser.ts
-var import_express141, router141, getUser_default;
+var import_express142, router142, getUser_default;
 var init_getUser = __esm({
   "src/routes/setting/loginConfig/getUser.ts"() {
     "use strict";
-    import_express141 = __toESM(require_express2());
+    import_express142 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
-    router141 = import_express141.default.Router();
-    getUser_default = router141.get("/", async (req, res) => {
+    router142 = import_express142.default.Router();
+    getUser_default = router142.get("/", async (req, res) => {
       const data = await utils_default.db("o_user").select("*").first();
       res.status(200).send(success3(data));
     });
@@ -277840,17 +277851,17 @@ var init_getUser = __esm({
 });
 
 // src/routes/setting/loginConfig/updateUserPwd.ts
-var import_express142, router142, updateUserPwd_default;
+var import_express143, router143, updateUserPwd_default;
 var init_updateUserPwd = __esm({
   "src/routes/setting/loginConfig/updateUserPwd.ts"() {
     "use strict";
-    import_express142 = __toESM(require_express2());
+    import_express143 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router142 = import_express142.default.Router();
-    updateUserPwd_default = router142.post(
+    router143 = import_express143.default.Router();
+    updateUserPwd_default = router143.post(
       "/",
       validateFields({
         name: external_exports.string(),
@@ -277870,15 +277881,15 @@ var init_updateUserPwd = __esm({
 });
 
 // src/routes/setting/memoryConfig/delAllMemory.ts
-var import_express143, router143, delAllMemory_default;
+var import_express144, router144, delAllMemory_default;
 var init_delAllMemory = __esm({
   "src/routes/setting/memoryConfig/delAllMemory.ts"() {
     "use strict";
-    import_express143 = __toESM(require_express2());
+    import_express144 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
-    router143 = import_express143.default.Router();
-    delAllMemory_default = router143.post("/", async (req, res) => {
+    router144 = import_express144.default.Router();
+    delAllMemory_default = router144.post("/", async (req, res) => {
       await utils_default.db("memories").del();
       res.status(200).send(success3(true));
     });
@@ -277886,15 +277897,15 @@ var init_delAllMemory = __esm({
 });
 
 // src/routes/setting/memoryConfig/getMemory.ts
-var import_express144, router144, getMemory_default2;
+var import_express145, router145, getMemory_default2;
 var init_getMemory2 = __esm({
   "src/routes/setting/memoryConfig/getMemory.ts"() {
     "use strict";
-    import_express144 = __toESM(require_express2());
+    import_express145 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
-    router144 = import_express144.default.Router();
-    getMemory_default2 = router144.get("/", async (req, res) => {
+    router145 = import_express145.default.Router();
+    getMemory_default2 = router145.get("/", async (req, res) => {
       const settingData = await utils_default.db("o_setting").whereIn("key", [
         "messagesPerSummary",
         "shortTermLimit",
@@ -277924,17 +277935,17 @@ var init_getMemory2 = __esm({
 });
 
 // src/routes/setting/memoryConfig/sureMemory.ts
-var import_express145, router145, sureMemory_default;
+var import_express146, router146, sureMemory_default;
 var init_sureMemory = __esm({
   "src/routes/setting/memoryConfig/sureMemory.ts"() {
     "use strict";
-    import_express145 = __toESM(require_express2());
+    import_express146 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router145 = import_express145.default.Router();
-    sureMemory_default = router145.post(
+    router146 = import_express146.default.Router();
+    sureMemory_default = router146.post(
       "/",
       validateFields({
         messagesPerSummary: external_exports.number(),
@@ -277971,17 +277982,17 @@ var init_sureMemory = __esm({
 });
 
 // src/routes/setting/modelMap/bindingPrompt.ts
-var import_express146, router146, bindingPrompt_default;
+var import_express147, router147, bindingPrompt_default;
 var init_bindingPrompt = __esm({
   "src/routes/setting/modelMap/bindingPrompt.ts"() {
     "use strict";
-    import_express146 = __toESM(require_express2());
+    import_express147 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
-    router146 = import_express146.default.Router();
-    bindingPrompt_default = router146.post(
+    router147 = import_express147.default.Router();
+    bindingPrompt_default = router147.post(
       "/",
       validateFields({
         vendorId: external_exports.string(),
@@ -278005,19 +278016,19 @@ var init_bindingPrompt = __esm({
 });
 
 // src/routes/setting/modelMap/deletePrompt.ts
-var import_express147, import_promises9, import_path23, router147, deletePrompt_default;
+var import_express148, import_promises9, import_path23, router148, deletePrompt_default;
 var init_deletePrompt = __esm({
   "src/routes/setting/modelMap/deletePrompt.ts"() {
     "use strict";
-    import_express147 = __toESM(require_express2());
+    import_express148 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
     import_promises9 = __toESM(require("fs/promises"));
     import_path23 = __toESM(require("path"));
-    router147 = import_express147.default.Router();
-    deletePrompt_default = router147.post(
+    router148 = import_express148.default.Router();
+    deletePrompt_default = router148.post(
       "/",
       validateFields({
         path: external_exports.string()
@@ -278043,15 +278054,15 @@ var init_deletePrompt = __esm({
 });
 
 // src/routes/setting/modelMap/getImageAndVideoModel.ts
-var import_express148, router148, getImageAndVideoModel_default;
+var import_express149, router149, getImageAndVideoModel_default;
 var init_getImageAndVideoModel = __esm({
   "src/routes/setting/modelMap/getImageAndVideoModel.ts"() {
     "use strict";
-    import_express148 = __toESM(require_express2());
+    import_express149 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
-    router148 = import_express148.default.Router();
-    getImageAndVideoModel_default = router148.post("/", async (req, res) => {
+    router149 = import_express149.default.Router();
+    getImageAndVideoModel_default = router149.post("/", async (req, res) => {
       const dataList = await utils_default.db("o_vendorConfig").select("id").where("enable", 1);
       if (!dataList || dataList.length === 0) {
         return res.status(404).send({ error: "\u6A21\u578B\u672A\u627E\u5230" });
@@ -278081,18 +278092,18 @@ var init_getImageAndVideoModel = __esm({
 });
 
 // src/routes/setting/modelMap/getPromptList.ts
-var import_express149, import_fast_glob3, import_promises10, import_path24, router149, getPromptList_default;
+var import_express150, import_fast_glob3, import_promises10, import_path24, router150, getPromptList_default;
 var init_getPromptList = __esm({
   "src/routes/setting/modelMap/getPromptList.ts"() {
     "use strict";
-    import_express149 = __toESM(require_express2());
+    import_express150 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     import_fast_glob3 = __toESM(require_out4());
     import_promises10 = __toESM(require("fs/promises"));
     import_path24 = __toESM(require("path"));
-    router149 = import_express149.default.Router();
-    getPromptList_default = router149.get("/", async (req, res) => {
+    router150 = import_express150.default.Router();
+    getPromptList_default = router150.get("/", async (req, res) => {
       const modelPromptRoot = utils_default.getPath(["modelPrompt"]);
       const entries = await (0, import_fast_glob3.default)("**/*.md", {
         cwd: modelPromptRoot.replace(/\\/g, "/"),
@@ -278113,19 +278124,19 @@ var init_getPromptList = __esm({
 });
 
 // src/routes/setting/modelMap/savePrompt.ts
-var import_express150, import_promises11, import_path25, router150, savePrompt_default;
+var import_express151, import_promises11, import_path25, router151, savePrompt_default;
 var init_savePrompt = __esm({
   "src/routes/setting/modelMap/savePrompt.ts"() {
     "use strict";
-    import_express150 = __toESM(require_express2());
+    import_express151 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
     import_promises11 = __toESM(require("fs/promises"));
     import_path25 = __toESM(require("path"));
-    router150 = import_express150.default.Router();
-    savePrompt_default = router150.post(
+    router151 = import_express151.default.Router();
+    savePrompt_default = router151.post(
       "/",
       validateFields({
         name: external_exports.string().min(1),
@@ -278146,19 +278157,19 @@ var init_savePrompt = __esm({
 });
 
 // src/routes/setting/modelMap/updatePrompt.ts
-var import_express151, import_promises12, import_path26, router151, updatePrompt_default;
+var import_express152, import_promises12, import_path26, router152, updatePrompt_default;
 var init_updatePrompt = __esm({
   "src/routes/setting/modelMap/updatePrompt.ts"() {
     "use strict";
-    import_express151 = __toESM(require_express2());
+    import_express152 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
     init_zod();
     init_middleware();
     import_promises12 = __toESM(require("fs/promises"));
     import_path26 = __toESM(require("path"));
-    router151 = import_express151.default.Router();
-    updatePrompt_default = router151.post(
+    router152 = import_express152.default.Router();
+    updatePrompt_default = router152.post(
       "/",
       validateFields({
         name: external_exports.string().min(1),
@@ -278187,15 +278198,15 @@ var init_updatePrompt = __esm({
 });
 
 // src/routes/setting/promptManage/getPrompt.ts
-var import_express152, router152, getPrompt_default;
+var import_express153, router153, getPrompt_default;
 var init_getPrompt = __esm({
   "src/routes/setting/promptManage/getPrompt.ts"() {
     "use strict";
-    import_express152 = __toESM(require_express2());
+    import_express153 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
-    router152 = import_express152.default.Router();
-    getPrompt_default = router152.post("/", async (req, res) => {
+    router153 = import_express153.default.Router();
+    getPrompt_default = router153.post("/", async (req, res) => {
       const list2 = await utils_default.db("o_prompt").select("*");
       const data = await Promise.all(
         list2.map(async (item) => {
@@ -278211,17 +278222,17 @@ var init_getPrompt = __esm({
 });
 
 // src/routes/setting/promptManage/updatePrompt.ts
-var import_express153, router153, updatePrompt_default2;
+var import_express154, router154, updatePrompt_default2;
 var init_updatePrompt2 = __esm({
   "src/routes/setting/promptManage/updatePrompt.ts"() {
     "use strict";
-    import_express153 = __toESM(require_express2());
+    import_express154 = __toESM(require_express2());
     init_utils3();
     init_zod();
     init_responseFormat();
     init_middleware();
-    router153 = import_express153.default.Router();
-    updatePrompt_default2 = router153.post(
+    router154 = import_express154.default.Router();
+    updatePrompt_default2 = router154.post(
       "/",
       validateFields({
         id: external_exports.number()
@@ -278238,11 +278249,11 @@ var init_updatePrompt2 = __esm({
 });
 
 // src/routes/setting/skillManagement/getSkillContent.ts
-var import_express154, import_path27, fs32, router154, getSkillContent_default;
+var import_express155, import_path27, fs32, router155, getSkillContent_default;
 var init_getSkillContent = __esm({
   "src/routes/setting/skillManagement/getSkillContent.ts"() {
     "use strict";
-    import_express154 = __toESM(require_express2());
+    import_express155 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_zod();
@@ -278250,8 +278261,8 @@ var init_getSkillContent = __esm({
     init_utils3();
     import_path27 = __toESM(require("path"));
     fs32 = __toESM(require("fs"));
-    router154 = import_express154.default.Router();
-    getSkillContent_default = router154.post(
+    router155 = import_express155.default.Router();
+    getSkillContent_default = router155.post(
       "/",
       validateFields({
         path: external_exports.string()
@@ -278271,16 +278282,16 @@ var init_getSkillContent = __esm({
 });
 
 // src/routes/setting/skillManagement/getSkillList.ts
-var import_express155, import_fast_glob4, router155, getSkillList_default;
+var import_express156, import_fast_glob4, router156, getSkillList_default;
 var init_getSkillList = __esm({
   "src/routes/setting/skillManagement/getSkillList.ts"() {
     "use strict";
-    import_express155 = __toESM(require_express2());
+    import_express156 = __toESM(require_express2());
     init_responseFormat();
     import_fast_glob4 = __toESM(require_out4());
     init_utils3();
-    router155 = import_express155.default.Router();
-    getSkillList_default = router155.post("/", async (req, res) => {
+    router156 = import_express156.default.Router();
+    getSkillList_default = router156.post("/", async (req, res) => {
       const skillsRoot = utils_default.getPath(["skills"]);
       const entries = await (0, import_fast_glob4.default)("**/*.md", {
         cwd: skillsRoot.replace(/\\/g, "/"),
@@ -278292,11 +278303,11 @@ var init_getSkillList = __esm({
 });
 
 // src/routes/setting/skillManagement/saveSkillContent.ts
-var import_express156, import_path28, fs33, router156, saveSkillContent_default;
+var import_express157, import_path28, fs33, router157, saveSkillContent_default;
 var init_saveSkillContent = __esm({
   "src/routes/setting/skillManagement/saveSkillContent.ts"() {
     "use strict";
-    import_express156 = __toESM(require_express2());
+    import_express157 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_zod();
@@ -278304,8 +278315,8 @@ var init_saveSkillContent = __esm({
     init_utils3();
     import_path28 = __toESM(require("path"));
     fs33 = __toESM(require("fs"));
-    router156 = import_express156.default.Router();
-    saveSkillContent_default = router156.post(
+    router157 = import_express157.default.Router();
+    saveSkillContent_default = router157.post(
       "/",
       validateFields({
         path: external_exports.string(),
@@ -278329,17 +278340,17 @@ var init_saveSkillContent = __esm({
 });
 
 // src/routes/setting/vendorConfig/addVendor.ts
-var import_express157, import_sucrase4, router157, vendorConfigSchema, addVendor_default;
+var import_express158, import_sucrase4, router158, vendorConfigSchema, addVendor_default;
 var init_addVendor = __esm({
   "src/routes/setting/vendorConfig/addVendor.ts"() {
     "use strict";
-    import_express157 = __toESM(require_express2());
+    import_express158 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
     import_sucrase4 = __toESM(require_dist5());
-    router157 = import_express157.default.Router();
+    router158 = import_express158.default.Router();
     vendorConfigSchema = external_exports.object({
       id: external_exports.string(),
       author: external_exports.string(),
@@ -278391,7 +278402,7 @@ var init_addVendor = __esm({
         ])
       )
     });
-    addVendor_default = router157.post(
+    addVendor_default = router158.post(
       "/",
       validateFields({
         tsCode: external_exports.string()
@@ -278443,17 +278454,17 @@ ${issueLines.join("\n")}`));
 });
 
 // src/routes/setting/vendorConfig/addVendorModel.ts
-var import_express158, router158, addVendorModel_default;
+var import_express159, router159, addVendorModel_default;
 var init_addVendorModel = __esm({
   "src/routes/setting/vendorConfig/addVendorModel.ts"() {
     "use strict";
-    import_express158 = __toESM(require_express2());
+    import_express159 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
-    router158 = import_express158.default.Router();
-    addVendorModel_default = router158.post(
+    router159 = import_express159.default.Router();
+    addVendorModel_default = router159.post(
       "/",
       validateFields({
         id: external_exports.string(),
@@ -278508,19 +278519,19 @@ var init_addVendorModel = __esm({
 });
 
 // src/routes/setting/vendorConfig/deleteVendor.ts
-var import_express159, import_path29, import_fs18, router159, deleteVendor_default;
+var import_express160, import_path29, import_fs18, router160, deleteVendor_default;
 var init_deleteVendor = __esm({
   "src/routes/setting/vendorConfig/deleteVendor.ts"() {
     "use strict";
-    import_express159 = __toESM(require_express2());
+    import_express160 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     import_path29 = __toESM(require("path"));
     import_fs18 = __toESM(require("fs"));
     init_utils3();
     init_zod();
-    router159 = import_express159.default.Router();
-    deleteVendor_default = router159.post(
+    router160 = import_express160.default.Router();
+    deleteVendor_default = router160.post(
       "/",
       validateFields({
         id: external_exports.string()
@@ -278540,17 +278551,17 @@ var init_deleteVendor = __esm({
 });
 
 // src/routes/setting/vendorConfig/delVendorModel.ts
-var import_express160, router160, delVendorModel_default;
+var import_express161, router161, delVendorModel_default;
 var init_delVendorModel = __esm({
   "src/routes/setting/vendorConfig/delVendorModel.ts"() {
     "use strict";
-    import_express160 = __toESM(require_express2());
+    import_express161 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
-    router160 = import_express160.default.Router();
-    delVendorModel_default = router160.post(
+    router161 = import_express161.default.Router();
+    delVendorModel_default = router161.post(
       "/",
       validateFields({
         id: external_exports.string(),
@@ -278576,17 +278587,17 @@ var init_delVendorModel = __esm({
 });
 
 // src/routes/setting/vendorConfig/enableVendor.ts
-var import_express161, router161, enableVendor_default;
+var import_express162, router162, enableVendor_default;
 var init_enableVendor = __esm({
   "src/routes/setting/vendorConfig/enableVendor.ts"() {
     "use strict";
-    import_express161 = __toESM(require_express2());
+    import_express162 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
-    router161 = import_express161.default.Router();
-    enableVendor_default = router161.post(
+    router162 = import_express162.default.Router();
+    enableVendor_default = router162.post(
       "/",
       validateFields({
         id: external_exports.string(),
@@ -278602,16 +278613,16 @@ var init_enableVendor = __esm({
 });
 
 // src/routes/setting/vendorConfig/getCodeByLink.ts
-var import_express162, router162, getCodeByLink_default;
+var import_express163, router163, getCodeByLink_default;
 var init_getCodeByLink = __esm({
   "src/routes/setting/vendorConfig/getCodeByLink.ts"() {
     "use strict";
-    import_express162 = __toESM(require_express2());
+    import_express163 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_zod();
-    router162 = import_express162.default.Router();
-    getCodeByLink_default = router162.post(
+    router163 = import_express163.default.Router();
+    getCodeByLink_default = router163.post(
       "/",
       validateFields({
         link: external_exports.string()
@@ -278626,15 +278637,15 @@ var init_getCodeByLink = __esm({
 });
 
 // src/routes/setting/vendorConfig/getVendorList.ts
-var import_express163, router163, getVendorList_default;
+var import_express164, router164, getVendorList_default;
 var init_getVendorList = __esm({
   "src/routes/setting/vendorConfig/getVendorList.ts"() {
     "use strict";
-    import_express163 = __toESM(require_express2());
+    import_express164 = __toESM(require_express2());
     init_responseFormat();
     init_utils3();
-    router163 = import_express163.default.Router();
-    getVendorList_default = router163.post("/", async (req, res) => {
+    router164 = import_express164.default.Router();
+    getVendorList_default = router164.post("/", async (req, res) => {
       const data = await utils_default.db("o_vendorConfig").select("*");
       const list2 = (await Promise.all(
         data.map(async (item) => {
@@ -278664,18 +278675,18 @@ var init_getVendorList = __esm({
 });
 
 // src/routes/setting/vendorConfig/modelTest.ts
-var import_express164, router164, modelTest_default;
+var import_express165, router165, modelTest_default;
 var init_modelTest = __esm({
   "src/routes/setting/vendorConfig/modelTest.ts"() {
     "use strict";
-    import_express164 = __toESM(require_express2());
+    import_express165 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
     init_dist22();
-    router164 = import_express164.default.Router();
-    modelTest_default = router164.post(
+    router165 = import_express165.default.Router();
+    modelTest_default = router165.post(
       "/",
       validateFields({
         modelName: external_exports.string(),
@@ -278768,17 +278779,17 @@ var init_modelTest = __esm({
 });
 
 // src/routes/setting/vendorConfig/modelTest/imageTest.ts
-var import_express165, router165, imageTest_default;
+var import_express166, router166, imageTest_default;
 var init_imageTest = __esm({
   "src/routes/setting/vendorConfig/modelTest/imageTest.ts"() {
     "use strict";
-    import_express165 = __toESM(require_express2());
+    import_express166 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
-    router165 = import_express165.default.Router();
-    imageTest_default = router165.post(
+    router166 = import_express166.default.Router();
+    imageTest_default = router166.post(
       "/",
       validateFields({
         modelName: external_exports.string(),
@@ -278824,18 +278835,18 @@ var init_imageTest = __esm({
 });
 
 // src/routes/setting/vendorConfig/modelTest/textTest.ts
-var import_express166, router166, textTest_default;
+var import_express167, router167, textTest_default;
 var init_textTest = __esm({
   "src/routes/setting/vendorConfig/modelTest/textTest.ts"() {
     "use strict";
-    import_express166 = __toESM(require_express2());
+    import_express167 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
     init_dist22();
-    router166 = import_express166.default.Router();
-    textTest_default = router166.post(
+    router167 = import_express167.default.Router();
+    textTest_default = router167.post(
       "/",
       validateFields({
         modelName: external_exports.string(),
@@ -278938,17 +278949,17 @@ var init_textTest = __esm({
 });
 
 // src/routes/setting/vendorConfig/modelTest/videoTest.ts
-var import_express167, router167, videoTest_default;
+var import_express168, router168, videoTest_default;
 var init_videoTest = __esm({
   "src/routes/setting/vendorConfig/modelTest/videoTest.ts"() {
     "use strict";
-    import_express167 = __toESM(require_express2());
+    import_express168 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
-    router167 = import_express167.default.Router();
-    videoTest_default = router167.post(
+    router168 = import_express168.default.Router();
+    videoTest_default = router168.post(
       "/",
       validateFields({
         modelName: external_exports.string(),
@@ -279014,18 +279025,18 @@ var init_videoTest = __esm({
 });
 
 // src/routes/setting/vendorConfig/updateCode.ts
-var import_express168, import_sucrase5, router168, vendorConfigSchema2, updateCode_default;
+var import_express169, import_sucrase5, router169, vendorConfigSchema2, updateCode_default;
 var init_updateCode = __esm({
   "src/routes/setting/vendorConfig/updateCode.ts"() {
     "use strict";
-    import_express168 = __toESM(require_express2());
+    import_express169 = __toESM(require_express2());
     init_serialize_error();
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
     import_sucrase5 = __toESM(require_dist5());
-    router168 = import_express168.default.Router();
+    router169 = import_express169.default.Router();
     vendorConfigSchema2 = external_exports.object({
       id: external_exports.string(),
       author: external_exports.string(),
@@ -279077,7 +279088,7 @@ var init_updateCode = __esm({
         ])
       )
     });
-    updateCode_default = router168.post(
+    updateCode_default = router169.post(
       "/",
       validateFields({
         id: external_exports.string(),
@@ -279114,17 +279125,17 @@ var init_updateCode = __esm({
 });
 
 // src/routes/setting/vendorConfig/updateVendorInputs.ts
-var import_express169, router169, updateVendorInputs_default;
+var import_express170, router170, updateVendorInputs_default;
 var init_updateVendorInputs = __esm({
   "src/routes/setting/vendorConfig/updateVendorInputs.ts"() {
     "use strict";
-    import_express169 = __toESM(require_express2());
+    import_express170 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
-    router169 = import_express169.default.Router();
-    updateVendorInputs_default = router169.post(
+    router170 = import_express170.default.Router();
+    updateVendorInputs_default = router170.post(
       "/",
       validateFields({
         id: external_exports.string(),
@@ -279142,17 +279153,17 @@ var init_updateVendorInputs = __esm({
 });
 
 // src/routes/setting/vendorConfig/upVendorModel.ts
-var import_express170, router170, upVendorModel_default;
+var import_express171, router171, upVendorModel_default;
 var init_upVendorModel = __esm({
   "src/routes/setting/vendorConfig/upVendorModel.ts"() {
     "use strict";
-    import_express170 = __toESM(require_express2());
+    import_express171 = __toESM(require_express2());
     init_responseFormat();
     init_middleware();
     init_utils3();
     init_zod();
-    router170 = import_express170.default.Router();
-    upVendorModel_default = router170.post(
+    router171 = import_express171.default.Router();
+    upVendorModel_default = router171.post(
       "/",
       validateFields({
         id: external_exports.string(),
@@ -279213,15 +279224,15 @@ var init_upVendorModel = __esm({
 });
 
 // src/routes/task/getProject.ts
-var import_express171, router171, getProject_default2;
+var import_express172, router172, getProject_default2;
 var init_getProject2 = __esm({
   "src/routes/task/getProject.ts"() {
     "use strict";
-    import_express171 = __toESM(require_express2());
+    import_express172 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
-    router171 = import_express171.default.Router();
-    getProject_default2 = router171.post("/", async (req, res) => {
+    router172 = import_express172.default.Router();
+    getProject_default2 = router172.post("/", async (req, res) => {
       const list2 = await utils_default.db("o_project").select("id", "name").groupBy("name");
       const data = list2.filter((item) => item.name);
       res.status(200).send(success3(data));
@@ -279230,17 +279241,17 @@ var init_getProject2 = __esm({
 });
 
 // src/routes/task/getTaskApi.ts
-var import_express172, router172, getTaskApi_default;
+var import_express173, router173, getTaskApi_default;
 var init_getTaskApi = __esm({
   "src/routes/task/getTaskApi.ts"() {
     "use strict";
-    import_express172 = __toESM(require_express2());
+    import_express173 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     init_middleware();
     init_zod();
-    router172 = import_express172.default.Router();
-    getTaskApi_default = router172.post(
+    router173 = import_express173.default.Router();
+    getTaskApi_default = router173.post(
       "/",
       validateFields({
         state: external_exports.string().optional().nullable(),
@@ -279281,15 +279292,15 @@ var init_getTaskApi = __esm({
 });
 
 // src/routes/task/getTaskCategories.ts
-var import_express173, router173, getTaskCategories_default;
+var import_express174, router174, getTaskCategories_default;
 var init_getTaskCategories = __esm({
   "src/routes/task/getTaskCategories.ts"() {
     "use strict";
-    import_express173 = __toESM(require_express2());
+    import_express174 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
-    router173 = import_express173.default.Router();
-    getTaskCategories_default = router173.post("/", async (req, res) => {
+    router174 = import_express174.default.Router();
+    getTaskCategories_default = router174.post("/", async (req, res) => {
       const list2 = await utils_default.db("o_tasks").select("taskClass").groupBy("taskClass");
       const data = list2.filter((item) => item.taskClass);
       res.status(200).send(success3(data));
@@ -279298,17 +279309,17 @@ var init_getTaskCategories = __esm({
 });
 
 // src/routes/task/taskDetails.ts
-var import_express174, router174, taskDetails_default;
+var import_express175, router175, taskDetails_default;
 var init_taskDetails = __esm({
   "src/routes/task/taskDetails.ts"() {
     "use strict";
-    import_express174 = __toESM(require_express2());
+    import_express175 = __toESM(require_express2());
     init_utils3();
     init_responseFormat();
     init_middleware();
     init_zod();
-    router174 = import_express174.default.Router();
-    taskDetails_default = router174.post(
+    router175 = import_express175.default.Router();
+    taskDetails_default = router175.post(
       "/",
       validateFields({
         taskId: external_exports.number()
@@ -279323,15 +279334,15 @@ var init_taskDetails = __esm({
 });
 
 // src/routes/test/test.ts
-var import_express175, import_fs19, router175, test_default;
+var import_express176, import_fs19, router176, test_default;
 var init_test = __esm({
   "src/routes/test/test.ts"() {
     "use strict";
-    import_express175 = __toESM(require_express2());
+    import_express176 = __toESM(require_express2());
     init_utils3();
     import_fs19 = __toESM(require("fs"));
-    router175 = import_express175.default.Router();
-    test_default = router175.get("/", async (req, res) => {
+    router176 = import_express176.default.Router();
+    test_default = router176.get("/", async (req, res) => {
       return res.send("ok");
       const test2 = await utils_default.db("o_vendorConfig").select("*");
       import_fs19.default.writeFileSync("test.json", JSON.stringify(test2, null, 2));
@@ -279384,6 +279395,7 @@ var init_router = __esm({
     init_autoImportSamples();
     init_delFaceAsset();
     init_editFaceAsset();
+    init_faceAssetStats();
     init_getFaceAssets();
     init_generalStatistics();
     init_getSingleProject();
@@ -279560,6 +279572,7 @@ var init_router = __esm({
       app2.use("/api/faceAsset/autoImportSamples", autoImportSamples_default);
       app2.use("/api/faceAsset/delFaceAsset", delFaceAsset_default);
       app2.use("/api/faceAsset/editFaceAsset", editFaceAsset_default);
+      app2.use("/api/faceAsset/faceAssetStats", faceAssetStats_default);
       app2.use("/api/faceAsset/getFaceAssets", getFaceAssets_default);
       app2.use("/api/general/generalStatistics", generalStatistics_default);
       app2.use("/api/general/getSingleProject", getSingleProject_default);
@@ -279755,7 +279768,7 @@ if (!env) {
 }
 
 // src/app.ts
-var import_express176 = __toESM(require_express2());
+var import_express177 = __toESM(require_express2());
 
 // node_modules/socket.io/wrapper.mjs
 var import_dist = __toESM(require_dist3(), 1);
@@ -282586,7 +282599,7 @@ async function ensureThumbnail(originalPath, thumbnailPath, size) {
 }
 
 // src/app.ts
-var app = (0, import_express176.default)();
+var app = (0, import_express177.default)();
 var server = import_node_http.default.createServer(app);
 async function checkPermissions() {
   if (!isEletron()) return true;
@@ -282623,8 +282636,8 @@ async function startServe(randomPort = false) {
   (0, import_express_ws.default)(app);
   app.use((0, import_morgan.default)("dev"));
   app.use((0, import_cors.default)({ origin: "*" }));
-  app.use(import_express176.default.json({ limit: "100mb" }));
-  app.use(import_express176.default.urlencoded({ extended: true, limit: "100mb" }));
+  app.use(import_express177.default.json({ limit: "100mb" }));
+  app.use(import_express177.default.urlencoded({ extended: true, limit: "100mb" }));
   const ossDir = utils_default.getPath("oss");
   if (!import_fs20.default.existsSync(ossDir)) {
     import_fs20.default.mkdirSync(ossDir, { recursive: true });
@@ -282651,7 +282664,7 @@ async function startServe(randomPort = false) {
           sizeSubDir = `${percentMatch[1]}p`;
           sizeOpts = { type: "percentage", value: pct };
         } else {
-          import_express176.default.static(ossDir, { acceptRanges: false })(req, res, next);
+          import_express177.default.static(ossDir, { acceptRanges: false })(req, res, next);
           return;
         }
         const ext = import_path30.default.extname(req.path);
@@ -282662,14 +282675,14 @@ async function startServe(randomPort = false) {
           if (thumbnailPath) {
             res.sendFile(thumbnailPath);
           } else {
-            import_express176.default.static(ossDir, { acceptRanges: false })(req, res, next);
+            import_express177.default.static(ossDir, { acceptRanges: false })(req, res, next);
           }
         });
         return;
       }
       next();
     },
-    import_express176.default.static(ossDir, { acceptRanges: false })
+    import_express177.default.static(ossDir, { acceptRanges: false })
   );
   const skillsDir = utils_default.getPath("skills");
   if (!import_fs20.default.existsSync(skillsDir)) {
@@ -282681,18 +282694,18 @@ async function startServe(randomPort = false) {
     (req, res, next) => {
       /\.(jpe?g|png|gif|webp|svg|ico|bmp)$/i.test(req.path) ? next() : res.status(403).end();
     },
-    import_express176.default.static(skillsDir, { acceptRanges: false })
+    import_express177.default.static(skillsDir, { acceptRanges: false })
   );
   const assetsDir = utils_default.getPath("assets");
   if (!import_fs20.default.existsSync(assetsDir)) {
     import_fs20.default.mkdirSync(assetsDir, { recursive: true });
   }
   console.log("\u6587\u4EF6\u76EE\u5F55:", assetsDir);
-  app.use("/assets", import_express176.default.static(assetsDir, { acceptRanges: false }));
+  app.use("/assets", import_express177.default.static(assetsDir, { acceptRanges: false }));
   const webDir = utils_default.getPath("web");
   if (import_fs20.default.existsSync(webDir)) {
     console.log("\u9759\u6001\u7F51\u7AD9\u76EE\u5F55:", webDir);
-    app.use(import_express176.default.static(webDir, { acceptRanges: false }));
+    app.use(import_express177.default.static(webDir, { acceptRanges: false }));
   } else {
     console.warn("\u9759\u6001\u7F51\u7AD9\u76EE\u5F55\u4E0D\u5B58\u5728:", webDir);
   }
@@ -282712,8 +282725,8 @@ async function startServe(randomPort = false) {
       return res.status(401).send({ message: "\u65E0\u6548\u7684token" });
     }
   });
-  const router176 = await Promise.resolve().then(() => (init_router(), router_exports));
-  await router176.default(app);
+  const router177 = await Promise.resolve().then(() => (init_router(), router_exports));
+  await router177.default(app);
   app.use((_2, res, next) => {
     return res.status(404).send({ message: "API 404 Not Found" });
   });
