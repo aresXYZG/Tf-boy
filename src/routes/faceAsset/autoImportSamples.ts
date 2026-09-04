@@ -58,7 +58,7 @@ export default router.post(
     perGroup: z.number().optional(), // 每组张数，默认 5
   }),
   async (req, res) => {
-    const perGroup = Math.min(Math.max(req.body?.perGroup ?? 5, 1), 10);
+    const perGroup = Math.min(Math.max(req.body?.perGroup ?? 8, 1), 20);
 
     try {
       // 1. 按族裔码值 × 性别码值逐组抓取（跳过无图源的族裔）
@@ -104,9 +104,6 @@ export default router.post(
             ethnicity: String(ethnicityCode),
             ageGroup: String(ageGroupCode),
             beautyScore,
-            tags: JSON.stringify(["真人样例", genderLabel, ethnicityLabel]),
-            description: `自动导入的${ethnicityLabel}${genderLabel}性真人样例（${ageGroupLabel}，视觉估值 ${beautyScore} 分），来源 randomuser.me，可用于角色生图参考底图。`,
-            createTime: Date.now(),
           });
           if (id) {
             successCount++;

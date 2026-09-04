@@ -1059,12 +1059,11 @@ export default async (knex: Knex, forceInit: boolean = false): Promise<void> => 
         table.increments("id").primary();
         table.string("name");
         table.text("filePath");
+        table.integer("species").defaultTo(1); // 1: 人类, 2: 非人类
         table.string("gender"); // 数字码值字符串: "1"男 | "2"女 | "3"中性
         table.string("ageGroup"); // 数字码值字符串: "1"少年 | "2"青年 | "3"中年 | "4"老年
         table.string("ethnicity"); // 数字码值字符串: "1"东亚 ~ "7"混血/其他
-        table.text("tags"); // JSON 字符串数组，如 ["内双", "高鼻梁", "下颌清晰"]
-        table.text("description"); // 详细面容骨相神态描述
-        table.integer("createTime");
+        table.float("beautyScore"); // 颜值打分 2.0 ~ 10.0
       },
     },
   ];

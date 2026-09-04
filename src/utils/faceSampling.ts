@@ -74,7 +74,9 @@ function weightedPickOne(candidates: any[], targetScore: number, temperature: nu
 }
 
 /**
- * 结构化人脸资产抽样函数（基于数字码值全等匹配与颜值加权采样）
+ * 结构化人脸资产抽样函数
+ * 筛选策略：年龄段硬锁（放开年龄会让老年角色配到年轻底图，出戏），族裔允许放宽（混血感可接受）
+ * 一级：同性别+同族裔+同年龄段 → 二级：同性别+同年龄段（仅放宽族裔）→ 不再降级，单图/空参考兜底
  */
 export async function sampleAssetReferences(roleMeta?: RoleMeta | null, roleName: string = ""): Promise<FaceSampleResult> {
   // 1. 非人类角色：直接返回空参考，不注入人脸融合
@@ -96,27 +98,27 @@ export async function sampleAssetReferences(roleMeta?: RoleMeta | null, roleName
   const ethnicityLabel = ETHNICITY_MAP[ethnicityCode] || "东亚";
   const ageGroupLabel = AGE_GROUP_MAP[ageGroupCode] || "青年";
 
-  // 3. 数据库全等查询（仅抽人类底图；species 为 integer 列，gender/ethnicity 为 varchar 码值列须按字符串 '1' 匹配）
+  // 3. 一级查询：同性别+同族裔+同年龄段（species 为 integer 列，varchar 码值列须按字符串 '1' 匹配）
   let candidates = await u
     .db("o_faceAsset")
-    .where({ species: 1, gender: String(genderCode), ethnicity: String(ethnicityCode) })
+    .where({ species: 1, gender: String(genderCode), ethnicity: String(ethnicityCode), ageGroup: String(ageGroupCode) })
     .select("*");
 
-  // 级联降级1：按性别匹配
+  // 二级降级：仅放宽族裔，年龄段硬锁不动
+  let ethnicityRelaxed = false;
   if (candidates.length < 2) {
-    candidates = await u.db("o_faceAsset").where({ species: 1, gender: String(genderCode) }).select("*");
-  }
-
-  // 级联降级2：全量人类底图匹配
-  if (candidates.length < 2) {
-    candidates = await u.db("o_faceAsset").where("species", 1).select("*");
+    candidates = await u
+      .db("o_faceAsset")
+      .where({ species: 1, gender: String(genderCode), ageGroup: String(ageGroupCode) })
+      .select("*");
+    ethnicityRelaxed = true;
   }
 
   if (candidates.length === 0) {
     return {
       referenceList: [],
       faceAssetIds: [],
-      faceSummaryPrompt: `【角色特征建议】：全新原创${ageGroupLabel}${genderLabel}角色，骨相立体自然，杜绝模板化假脸。`,
+      faceSummaryPrompt: `【角色特征建议】：全新原创${ethnicityLabel}${ageGroupLabel}${genderLabel}角色，骨相立体自然，杜绝模板化假脸。（人脸库缺${ageGroupLabel}${genderLabel}底图，补充后可启用参考融合）`,
     };
   }
 
@@ -125,7 +127,7 @@ export async function sampleAssetReferences(roleMeta?: RoleMeta | null, roleName
     const score = typeof item.beautyScore === "number" && !isNaN(item.beautyScore) ? item.beautyScore : DEFAULT_BEAUTY_SCORE;
     return Math.abs(score - targetScore) <= 1.5;
   });
-  if (windowCandidates.length < 3) windowCandidates = candidates;
+  if (windowCandidates.length < 2) windowCandidates = candidates;
 
   // 5. 非对称加权抽样：图2 (70%五官主导) + 图1 (30%骨相辅助)
   const primaryFace = weightedPickOne(windowCandidates, targetScore, 0.8);
@@ -149,18 +151,20 @@ export async function sampleAssetReferences(roleMeta?: RoleMeta | null, roleName
   }
 
   // 6. 组装双底图特征解耦融合 Prompt
-  // 不注入底图的具体 description：模型本身看得见垫图，文字复述特征反而会把融合锁死在少数词上
-  // 主次分工：图2 定结构五官气质（像谁），图1 只借骨相立体感与皮肤质感（质感氛围）
+  // 不注入底图的具体描述：模型本身看得见垫图，文字复述特征反而会把融合锁死在少数词上
+  // 目标族裔文字锚 + 体型解耦：参考底图只管脸，体型永远以角色设定为准
   let faceSummaryPrompt = "";
+  const ethnicAnchor = `全新原创${ethnicityLabel}${ageGroupLabel}${genderLabel}角色`;
   if (selected.length >= 2) {
     faceSummaryPrompt = `【双真人参考底图融合（核心必守）】：
-基于两张参考底图生成全新原创${ageGroupLabel}${genderLabel}角色（严禁直接复制任一张）：
+基于两张参考底图生成${ethnicAnchor}（严禁直接复制任一张）：
 - 图2（主要参考70%）：人物脸部结构、五官比例、眼型神韵、唇形与核心气质以图2为主；
 - 图1（辅助参考30%）：只借少量下颌线与鼻骨立体轮廓、皮肤质感、面部状态与肖像氛围；
+${ethnicityRelaxed ? "- 两图若族裔不同：五官族裔特征以图2为主自然融合，允许适度混血感，最终族裔向设定（" + ethnicityLabel + "）靠拢；\n" : ""}- 体型与身形以角色设定的身材描述为准，参考底图不约束体型；
 两图解耦重构为独立原创角色。`;
   } else if (selected.length === 1) {
     faceSummaryPrompt = `【单真人参考底图融合（核心必守）】：
-基于参考底图生成全新原创${ageGroupLabel}${genderLabel}角色（严禁直接复制），参考底图提供面部骨相、五官气质与肖像质感。`;
+基于参考底图生成${ethnicAnchor}（严禁直接复制），参考底图仅提供面部骨相、五官气质与肖像质感，体型以角色设定为准。`;
   }
 
   return { referenceList, faceAssetIds, faceSummaryPrompt };

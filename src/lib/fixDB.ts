@@ -75,8 +75,11 @@ export default async (knex: Knex): Promise<void> => {
   await addColumn("o_project", "totalEpisodes", "integer");
   await addColumn("o_faceAsset", "species", "integer"); // 物种: 1(人类), 2(非人类)
   await addColumn("o_faceAsset", "beautyScore", "float"); // 颜值打分: 2.0 ~ 10.0
-  await addColumn("o_faceAsset", "useCount", "integer"); // 被使用次数
   await dropColumn("o_faceAsset", "beautyLevel"); // 已废弃：由 beautyScore 连续分完全取代
+  await dropColumn("o_faceAsset", "tags"); // 已精简：标签仅前端展示，选图不用，不入库
+  await dropColumn("o_faceAsset", "description"); // 已精简：融合提示词明确不注入描述
+  await dropColumn("o_faceAsset", "useCount"); // 已精简：从未读写的死字段
+  await dropColumn("o_faceAsset", "createTime"); // 已精简：未被使用
 
   // 确保 o_faceAsset 表存在
   if (!(await knex.schema.hasTable("o_faceAsset"))) {
@@ -89,10 +92,6 @@ export default async (knex: Knex): Promise<void> => {
       table.string("ageGroup"); // "少年" | "青年" | "中年" | "老年"
       table.string("ethnicity"); // "东亚" | "欧美" | "混血" | "非裔" | "其他"
       table.float("beautyScore").defaultTo(7.0); // 颜值打分 2.0 ~ 10.0
-      table.text("tags"); // JSON 数组，如 ["单眼皮", "高鼻梁"]
-      table.text("description"); // 视觉分析详细描述
-      table.integer("createTime");
-      table.integer("useCount").defaultTo(0);
     });
   }
   // 确保 o_agentStateSnapshot 表存在（剧本Agent按轮次状态快照/回退）

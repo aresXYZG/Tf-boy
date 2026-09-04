@@ -31,22 +31,6 @@ function toBeautyScore(raw: any): number | undefined {
   return Math.round(Math.max(2, Math.min(10, n)) * 10) / 10;
 }
 
-/** 标签数组清洗：去空、去重、上限 8 个 */
-function toTags(raw: any): string[] {
-  if (!Array.isArray(raw)) return [];
-  const seen = new Set<string>();
-  const list: string[] = [];
-  for (const item of raw) {
-    const s = typeof item === "string" ? item.trim() : "";
-    if (s && !seen.has(s)) {
-      seen.add(s);
-      list.push(s);
-      if (list.length >= 8) break;
-    }
-  }
-  return list;
-}
-
 export default router.post(
   "/",
   validateFields({
@@ -57,12 +41,10 @@ export default router.post(
     ethnicity: z.number().int().min(1).max(7).optional(), // 1: 东亚 ... 7: 混血/其他
     ageGroup: z.number().int().min(1).max(4).optional(), // 1: 少年 ... 4: 老年
     beautyScore: z.number().min(2).max(10).optional(), // 2.0 ~ 10.0 连续客观打分
-    tags: z.array(z.string()).optional(),
-    description: z.string().optional(),
     model: z.string().optional(), // 允许用户自行指定用于智能打标的 Vision 模型，如 "openai:gpt-4o" 或 "universalAi"
   }),
   async (req, res) => {
-    const { name, fileUrl, species, gender, ethnicity, ageGroup, beautyScore, tags, description, model = "faceAssetVisionAgent" } = req.body;
+    const { name, fileUrl, species, gender, ethnicity, ageGroup, beautyScore, model = "faceAssetVisionAgent" } = req.body;
 
     try {
       // 解析真实 MIME 类型与 base64，避免 PNG/WebP 被强制当作 JPEG 导致 Vision 解析失败
@@ -80,14 +62,9 @@ export default router.post(
       let autoEthnicity = ethnicity;
       let autoAgeGroup = ageGroup;
       let autoBeautyScore = beautyScore;
-      let autoTags = tags || [];
-      let autoDesc = description;
 
       // Vision 智能打标：用户未传的字段交给模型识别，依次尝试 指定模型 → universalAi
-      if (
-        model !== "none" &&
-        (!autoSpecies || !autoGender || !autoEthnicity || !autoAgeGroup || autoBeautyScore === undefined || autoTags.length === 0 || !autoDesc)
-      ) {
+      if (model !== "none" && (!autoSpecies || !autoGender || !autoEthnicity || !autoAgeGroup || autoBeautyScore === undefined)) {
         const modelCandidates = [...new Set([model || "faceAssetVisionAgent", "universalAi"])].filter(Boolean) as string[];
 
         for (const tryModel of modelCandidates) {
@@ -107,11 +84,8 @@ beautyScore（客观颜值连续打分 2.0~10.0）——严禁谄媚与分数通
 - 4.0~5.4 平平无奇/大众脸：五官无亮点，可能有轻微凸嘴、不对称、塌鼻梁等小瑕疵
 - 2.0~3.9 沧桑特型/丑角：明显不对称、大疤痕、严重衰老或特定反向特征
 
-tags：3~6 个结构化特征词，聚焦骨相、五官硬特征与神态（如 "高鼻梁"、"内双"、"下颌线清晰"、"眼神冷峻"），避免空泛形容词
-description：50 字以内，重点提炼骨相结构（眉弓/鼻骨/颧骨/下颌折角）、眼型神韵与皮肤质感，供双底图融合 Prompt 使用
-
 只输出如下纯 JSON，禁止 markdown 代码块、注释或任何多余文字：
-{"species":1,"gender":1,"ethnicity":1,"ageGroup":2,"beautyScore":6.8,"tags":["单眼皮","鼻梁高挺","下颌线清晰","眼神内敛"],"description":"骨相立体自然的东亚青年男性，眉眼深邃，下颌折角清晰，眼神坚毅冷峻"}`,
+{"species":1,"gender":1,"ethnicity":1,"ageGroup":2,"beautyScore":6.8}`,
               messages: [
                 {
                   role: "user",
@@ -135,11 +109,9 @@ description：50 字以内，重点提炼骨相结构（眉弓/鼻骨/颧骨/下
               if (autoEthnicity === undefined) autoEthnicity = toCode(parsed.ethnicity, 1, 7);
               if (autoAgeGroup === undefined) autoAgeGroup = toCode(parsed.ageGroup, 1, 4);
               if (autoBeautyScore === undefined) autoBeautyScore = toBeautyScore(parsed.beautyScore);
-              if (autoTags.length === 0) autoTags = toTags(parsed.tags);
-              if (!autoDesc && typeof parsed.description === "string") autoDesc = parsed.description.trim();
             }
             // 至少拿到一个有效结果就停止重试
-            if (autoGender || autoEthnicity || autoAgeGroup || autoBeautyScore !== undefined || autoTags.length || autoDesc) break;
+            if (autoGender || autoEthnicity || autoAgeGroup || autoBeautyScore !== undefined) break;
           } catch (visionErr) {
             console.warn(`[addFaceAsset] Vision 模型 ${tryModel} 打标失败，尝试下一个:`, u.error(visionErr).message);
           }
@@ -148,8 +120,6 @@ description：50 字以内，重点提炼骨相结构（眉弓/鼻骨/颧骨/下
 
       // 兜底：无法识别的字段不猜测（species 默认人类 1，人脸库本身就是人类底图库；其余留空待人工补录）
       autoSpecies = autoSpecies ?? 1;
-      autoTags = autoTags && autoTags.length ? autoTags : [];
-      autoDesc = autoDesc || "";
 
       const fallbackName = `${ETHNICITY_LABEL[autoEthnicity ?? 7] || "未知"}${AGE_GROUP_LABEL[autoAgeGroup ?? 2] || ""}${
         GENDER_LABEL[autoGender ?? 3] || ""
@@ -163,9 +133,6 @@ description：50 字以内，重点提炼骨相结构（眉弓/鼻骨/颧骨/下
         ethnicity: autoEthnicity != null ? String(autoEthnicity) : null,
         ageGroup: autoAgeGroup != null ? String(autoAgeGroup) : null,
         beautyScore: autoBeautyScore ?? null,
-        tags: JSON.stringify(autoTags),
-        description: autoDesc,
-        createTime: Date.now(),
       };
       const [id] = await u.db("o_faceAsset").insert(insertData);
 
@@ -182,7 +149,6 @@ description：50 字以内，重点提炼骨相结构（眉弓/鼻骨/颧骨/下
           ...insertData,
           name: insertData.name,
           fileUrl: smallUrl,
-          tags: autoTags,
         }),
       );
     } catch (e) {

@@ -47,17 +47,10 @@ export default router.post(
         list.map(async (item: any) => {
           const fileUrl = item.filePath ? await u.oss.getSmallImageUrl(item.filePath) : "";
           const fileUrlRaw = item.filePath ? await u.oss.getFileUrl(item.filePath) : "";
-          let tags: string[] = [];
-          try {
-            tags = item.tags ? JSON.parse(item.tags) : [];
-          } catch {
-            tags = [];
-          }
           return {
             ...item,
             fileUrl,
             fileUrlRaw,
-            tags,
           };
         }),
       );
