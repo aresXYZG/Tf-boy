@@ -1037,7 +1037,7 @@ var require_node = __commonJS({
     exports2.inspectOpts = Object.keys(process.env).filter((key) => {
       return /^debug_/i.test(key);
     }).reduce((obj, key) => {
-      const prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, (_, k) => {
+      const prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, (_2, k) => {
         return k.toUpperCase();
       });
       let val = process.env[key];
@@ -20725,7 +20725,7 @@ var require_shams = __commonJS({
       }
       var symVal = 42;
       obj[sym] = symVal;
-      for (var _ in obj) {
+      for (var _2 in obj) {
         return false;
       }
       if (typeof Object.keys === "function" && Object.keys(obj).length !== 0) {
@@ -22919,14 +22919,14 @@ var require_etag = __commonJS({
   "node_modules/etag/index.js"(exports2, module2) {
     "use strict";
     module2.exports = etag;
-    var crypto6 = require("crypto");
+    var crypto7 = require("crypto");
     var Stats = require("fs").Stats;
     var toString4 = Object.prototype.toString;
     function entitytag(entity) {
       if (entity.length === 0) {
         return '"0-2jmj7l5rSw0yVb/vlWAYkK/YBwk"';
       }
-      var hash3 = crypto6.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
+      var hash3 = crypto7.createHash("sha1").update(entity, "utf8").digest("base64").substring(0, 27);
       var len = typeof entity === "string" ? Buffer.byteLength(entity, "utf8") : entity.length;
       return '"' + len.toString(16) + "-" + hash3 + '"';
     }
@@ -26356,17 +26356,17 @@ var require_content_disposition = __commonJS({
 var require_cookie_signature = __commonJS({
   "node_modules/cookie-signature/index.js"(exports2) {
     "use strict";
-    var crypto6 = require("crypto");
+    var crypto7 = require("crypto");
     exports2.sign = function(val, secret) {
       if ("string" != typeof val) throw new TypeError("Cookie value must be provided as a string.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
-      return val + "." + crypto6.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
+      return val + "." + crypto7.createHmac("sha256", secret).update(val).digest("base64").replace(/\=+$/, "");
     };
     exports2.unsign = function(input, secret) {
       if ("string" != typeof input) throw new TypeError("Signed cookie string must be provided.");
       if (null == secret) throw new TypeError("Secret key must be provided.");
       var tentativeValue = input.slice(0, input.lastIndexOf(".")), expectedInput = exports2.sign(tentativeValue, secret), expectedBuffer = Buffer.from(expectedInput), inputBuffer = Buffer.from(input);
-      return expectedBuffer.length === inputBuffer.length && crypto6.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
+      return expectedBuffer.length === inputBuffer.length && crypto7.timingSafeEqual(expectedBuffer, inputBuffer) ? tentativeValue : false;
     };
   }
 });
@@ -36920,7 +36920,7 @@ var require_accepts2 = __commonJS({
 var require_base64id = __commonJS({
   "node_modules/base64id/lib/base64id.js"(exports2, module2) {
     "use strict";
-    var crypto6 = require("crypto");
+    var crypto7 = require("crypto");
     var Base64Id = function() {
     };
     Base64Id.prototype.getRandomBytes = function(bytes) {
@@ -36928,12 +36928,12 @@ var require_base64id = __commonJS({
       var self2 = this;
       bytes = bytes || 12;
       if (bytes > BUFFER_SIZE) {
-        return crypto6.randomBytes(bytes);
+        return crypto7.randomBytes(bytes);
       }
       var bytesInBuffer = parseInt(BUFFER_SIZE / bytes);
       var threshold = parseInt(bytesInBuffer * 0.85);
       if (!threshold) {
-        return crypto6.randomBytes(bytes);
+        return crypto7.randomBytes(bytes);
       }
       if (this.bytesBufferIndex == null) {
         this.bytesBufferIndex = -1;
@@ -36945,14 +36945,14 @@ var require_base64id = __commonJS({
       if (this.bytesBufferIndex == -1 || this.bytesBufferIndex > threshold) {
         if (!this.isGeneratingBytes) {
           this.isGeneratingBytes = true;
-          crypto6.randomBytes(BUFFER_SIZE, function(err, bytes2) {
+          crypto7.randomBytes(BUFFER_SIZE, function(err, bytes2) {
             self2.bytesBuffer = bytes2;
             self2.bytesBufferIndex = 0;
             self2.isGeneratingBytes = false;
           });
         }
         if (this.bytesBufferIndex == -1) {
-          return crypto6.randomBytes(bytes);
+          return crypto7.randomBytes(bytes);
         }
       }
       var result = this.bytesBuffer.slice(bytes * this.bytesBufferIndex, bytes * (this.bytesBufferIndex + 1));
@@ -36966,7 +36966,7 @@ var require_base64id = __commonJS({
       }
       this.sequenceNumber = this.sequenceNumber + 1 | 0;
       rand.writeInt32BE(this.sequenceNumber, 11);
-      if (crypto6.randomBytes) {
+      if (crypto7.randomBytes) {
         this.getRandomBytes(12).copy(rand);
       } else {
         [0, 4, 8].forEach(function(i) {
@@ -49745,7 +49745,7 @@ var require_sender = __commonJS({
         const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
         this._bufferedBytes += options[kByteLength];
         this._state = DEFLATING;
-        perMessageDeflate.compress(data, options.fin, (_, buf) => {
+        perMessageDeflate.compress(data, options.fin, (_2, buf) => {
           if (this._socket.destroyed) {
             const err = new Error(
               "The socket was closed while data was being compressed"
@@ -58100,7 +58100,7 @@ var require_sender2 = __commonJS({
         const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
         this._bufferedBytes += options[kByteLength];
         this._state = DEFLATING;
-        perMessageDeflate.compress(data, options.fin, (_, buf) => {
+        perMessageDeflate.compress(data, options.fin, (_2, buf) => {
           if (this._socket.destroyed) {
             const err = new Error(
               "The socket was closed while data was being compressed"
@@ -63481,7 +63481,7 @@ var require_sender3 = __commonJS({
         const perMessageDeflate = this._extensions[PerMessageDeflate.extensionName];
         this._bufferedBytes += data.length;
         this._deflating = true;
-        perMessageDeflate.compress(data, options.fin, (_, buf) => {
+        perMessageDeflate.compress(data, options.fin, (_2, buf) => {
           if (this._socket.destroyed) {
             const err = new Error(
               "The socket was closed while data was being compressed"
@@ -65814,7 +65814,7 @@ var require_node2 = __commonJS({
     exports2.inspectOpts = Object.keys(process.env).filter(function(key) {
       return /^debug_/i.test(key);
     }).reduce(function(obj, key) {
-      var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_, k) {
+      var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_2, k) {
         return k.toUpperCase();
       });
       var val = process.env[key];
@@ -66282,7 +66282,7 @@ var require_morgan = __commonJS({
         throw new TypeError("argument format must be a string");
       }
       var fmt = String(JSON.stringify(format2));
-      var js = '  "use strict"\n  return ' + fmt.replace(/:([-\w]{2,})(?:\[([^\]]+)\])?/g, function(_, name28, arg) {
+      var js = '  "use strict"\n  return ' + fmt.replace(/:([-\w]{2,})(?:\[([^\]]+)\])?/g, function(_2, name28, arg) {
         var tokenArguments = "req, res";
         var tokenFunction = "tokens[" + String(JSON.stringify(name28)) + "]";
         if (arg !== void 0) {
@@ -75218,7 +75218,7 @@ var require_runner = __commonJS({
         const queryContext = this.builder.queryContext();
         const stream4 = new Transform({
           objectMode: true,
-          transform: (chunk, _, callback) => {
+          transform: (chunk, _2, callback) => {
             callback(null, this.client.postProcessResponse(chunk, queryContext));
           }
         });
@@ -75970,7 +75970,7 @@ var require_node3 = __commonJS({
     exports2.inspectOpts = Object.keys(process.env).filter((key) => {
       return /^debug_/i.test(key);
     }).reduce((obj, key) => {
-      const prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, (_, k) => {
+      const prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, (_2, k) => {
         return k.toUpperCase();
       });
       let val = process.env[key];
@@ -77974,7 +77974,7 @@ var require_async7 = __commonJS({
       }
       try {
         return JSON.parse(await readFile3(path35.resolve(directory, "package.json"))).type || "commonjs";
-      } catch (_) {
+      } catch (_2) {
       }
       const parent = path35.dirname(directory);
       if (parent === directory) {
@@ -78017,7 +78017,7 @@ var require_sync7 = __commonJS({
       }
       try {
         return JSON.parse(readFileSync2(path35.resolve(directory, "package.json"))).type || "commonjs";
-      } catch (_) {
+      } catch (_2) {
       }
       const parent = path35.dirname(directory);
       if (parent === directory) {
@@ -94152,7 +94152,7 @@ var require_utils10 = __commonJS({
         }
       }
       generateCombinedName(logger3, postfix, name28, subNames) {
-        const crypto6 = require("crypto");
+        const crypto7 = require("crypto");
         if (!Array.isArray(subNames)) subNames = subNames ? [subNames] : [];
         const table = name28.replace(/\.|-/g, "_");
         const subNamesPart = subNames.join("_");
@@ -94161,7 +94161,7 @@ var require_utils10 = __commonJS({
           logger3.warn(
             `Automatically generated name "${result}" exceeds ${this.limit} character limit for Oracle Database ${this.oracleVersion}. Using base64 encoded sha1 of that name instead.`
           );
-          result = crypto6.createHash("sha1").update(result).digest("base64").replace("=", "");
+          result = crypto7.createHash("sha1").update(result).digest("base64").replace("=", "");
         }
         return result;
       }
@@ -98668,6 +98668,22 @@ A medium tracking shot follows the woman from behind as she ascends and approach
             table.unique(["assetsAudioId", "assetsRoleId"]);
           }
         },
+        // 剧本Agent状态快照表（按对话轮次记录工作区状态，支持回退）
+        {
+          name: "o_agentStateSnapshot",
+          builder: (table) => {
+            table.increments("id").primary();
+            table.integer("projectId").notNullable();
+            table.text("isolationKey").notNullable();
+            table.integer("userMessageTime").notNullable();
+            table.integer("turnEndTime").notNullable();
+            table.text("stateHash").notNullable();
+            table.text("payload");
+            table.integer("refId");
+            table.integer("createTime").notNullable();
+            table.index(["projectId", "isolationKey"]);
+          }
+        },
         // 人脸参考资产库表
         {
           name: "o_faceAsset",
@@ -98678,7 +98694,6 @@ A medium tracking shot follows the woman from behind as she ascends and approach
             table.string("gender");
             table.string("ageGroup");
             table.string("ethnicity");
-            table.string("beautyLevel");
             table.text("tags");
             table.text("description");
             table.integer("createTime");
@@ -120785,7 +120800,7 @@ var require_JestHoistTransformer = __commonJS({
       }
       process() {
         if (this.tokens.currentToken().scopeDepth === 0 && this.tokens.matches4(_types.TokenType.name, _types.TokenType.dot, _types.TokenType.name, _types.TokenType.parenL) && this.tokens.identifierName() === JEST_GLOBAL_NAME) {
-          if (_optionalChain([this, "access", (_) => _.importProcessor, "optionalAccess", (_2) => _2.getGlobalNames, "call", (_3) => _3(), "optionalAccess", (_4) => _4.has, "call", (_5) => _5(JEST_GLOBAL_NAME)])) {
+          if (_optionalChain([this, "access", (_2) => _2.importProcessor, "optionalAccess", (_2) => _2.getGlobalNames, "call", (_3) => _3(), "optionalAccess", (_4) => _4.has, "call", (_5) => _5(JEST_GLOBAL_NAME)])) {
             return false;
           }
           return this.extractHoistedCalls();
@@ -122305,6 +122320,7 @@ var vendor_default;
 var init_vendor = __esm({
   "src/lib/vendor.json"() {
     vendor_default = {
+      "apicangku.ts": '/**\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - API\u4ED3\u5E93(apicangku)\n * @version 1.0\n *\n * \u8BF4\u660E\uFF1A\n * 1) API\u4ED3\u5E93(apicangku.icu) \u4E3A AI \u6A21\u578B\u805A\u5408\u4E2D\u8F6C\u5E73\u53F0\uFF08New API \u67B6\u6784\uFF09\uFF0COpenAI \u517C\u5BB9\u683C\u5F0F\n * 2) \u6587\u672C\u63A5\u53E3\uFF1Ahttps://apicangku.icu/v1\uFF08OpenAI \u517C\u5BB9\uFF09\uFF0C\u652F\u6301 GPT/Claude/DeepSeek/Gemini \u7B49\u6A21\u578B\n * 3) \u56FE\u7247\u63A5\u53E3\uFF1A\n *    - \u6587\u751F\u56FE\uFF1APOST /images/generations\uFF08JSON\uFF09\n *    - \u56FE\u751F\u56FE\uFF1APOST /images/edits\uFF08multipart\uFF0C\u53C2\u8003\u56FE\u968F form-data \u4E0A\u4F20\uFF09\n *    \u652F\u6301 gpt-image-2\u3001gemini-3.1-flash-image\uFF08Nano Banana 2\uFF09\u7B49\n * 4) TTS \u63A5\u53E3\uFF1APOST /v1/audio/speech\uFF08OpenAI \u517C\u5BB9\uFF09\n * 5) \u6A21\u578B\u5217\u8868\u53EF\u5728 API\u4ED3\u5E93 \u63A7\u5236\u53F0\u67E5\u770B\uFF08Console \u2192 \u6A21\u578B\uFF09\u6216 GET /v1/models\n */\n\n// ============================================================\n// \u7C7B\u578B\u5B9A\u4E49\n// ============================================================\ntype VideoMode =\n  | "singleImage"\n  | "startEndRequired"\n  | "endFrameOptional"\n  | "startFrameOptional"\n  | "text"\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\ninterface TextModel {\n  name: string;\n  modelName: string;\n  type: "text";\n  think: boolean;\n  apiKey?: string; // \u53EF\u9009\uFF1A\u6A21\u578B\u7EA7\u72EC\u7ACB API Key\uFF08\u90E8\u5206\u6E20\u9053\u6BCF\u4E2A\u6A21\u578B\u4E00\u4E2A key\uFF09\n}\ninterface ImageModel {\n  name: string;\n  modelName: string;\n  type: "image";\n  mode: ("text" | "singleImage" | "multiReference")[];\n  associationSkills?: string;\n}\ninterface VideoModel {\n  name: string;\n  modelName: string;\n  type: "video";\n  mode: VideoMode[];\n  associationSkills?: string;\n  audio: "optional" | false | true;\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\n}\ninterface TTSModel {\n  name: string;\n  modelName: string;\n  type: "tts";\n  voices: { title: string; voice: string }[];\n}\ninterface VendorConfig {\n  id: string;\n  version: string;\n  name: string;\n  author: string;\n  description?: string;\n  icon?: string;\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\n  inputValues: Record<string, string>;\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\n}\ntype ReferenceList =\n  | { type: "image"; sourceType: "base64"; base64: string }\n  | { type: "audio"; sourceType: "base64"; base64: string }\n  | { type: "video"; sourceType: "base64"; base64: string };\ninterface ImageConfig {\n  prompt: string;\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\n  size: "1K" | "2K" | "4K";\n  aspectRatio: `${number}:${number}`;\n}\ninterface VideoConfig {\n  duration: number;\n  resolution: string;\n  aspectRatio: "16:9" | "9:16";\n  prompt: string;\n  referenceList?: ReferenceList[];\n  audio?: boolean;\n  mode: VideoMode[];\n}\ninterface TTSConfig {\n  text: string;\n  voice: string;\n  speechRate: number;\n  pitchRate: number;\n  volume: number;\n}\ninterface PollResult {\n  completed: boolean;\n  data?: string;\n  error?: string;\n}\n// ============================================================\n// \u5168\u5C40\u58F0\u660E\n// ============================================================\ndeclare const axios: any;\ndeclare const logger: (msg: string) => void;\ndeclare const jsonwebtoken: any;\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\ndeclare const urlToBase64: (url: string) => Promise<string>;\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\ndeclare const createOpenAI: any;\ndeclare const createDeepSeek: any;\ndeclare const createZhipu: any;\ndeclare const createQwen: any;\ndeclare const createAnthropic: any;\ndeclare const createOpenAICompatible: any;\ndeclare const createXai: any;\ndeclare const createMinimax: any;\ndeclare const createGoogleGenerativeAI: any;\ndeclare const Buffer: any;\ndeclare const FormData: any;\ndeclare const TextDecoder: any;\ndeclare const TextEncoder: any;\ndeclare const TransformStream: any;\ndeclare const Response: any;\ndeclare const exports: {\n  vendor: VendorConfig;\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\n  updateVendor?: () => Promise<string>;\n};\n// ============================================================\n// \u4F9B\u5E94\u5546\u914D\u7F6E\n// ============================================================\nconst vendor: VendorConfig = {\n  id: "apicangku",\n  version: "1.0",\n  author: "Toonflow",\n  name: "API\u4ED3\u5E93",\n  description:\n    "API\u4ED3\u5E93(apicangku.icu) AI \u805A\u5408\u4E2D\u8F6C\u5E73\u53F0\uFF08OpenAI \u517C\u5BB9\uFF09\uFF0C\u652F\u6301 GPT / Claude / DeepSeek / Gemini \u6587\u672C\u5BF9\u8BDD\u53CA\u56FE\u7247\u751F\u6210/\u56FE\u751F\u56FE\u3002\\n[\u5B98\u65B9\u6587\u6863](https://apicangku.icu) \uFF5C [\u4EF7\u683C\u9875](https://apicangku.icu/pricing)\\n\\n\u53EF\u7528\u6A21\u578B\u8BF7\u5728 API\u4ED3\u5E93 \u63A7\u5236\u53F0\u300C\u6A21\u578B\u300D\u4E2D\u67E5\u770B\uFF0C\u6216\u586B\u5165\u5BC6\u94A5\u540E\u8BBF\u95EE `GET /v1/models`\uFF1B\u4E5F\u53EF\u5728\u4E0B\u65B9\u624B\u52A8\u6DFB\u52A0/\u4FEE\u6539\u6A21\u578B\u3002",\n  icon: "",\n  inputs: [\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "\u63A7\u5236\u53F0\u521B\u5EFA\uFF0C\u683C\u5F0F sk-xxx" },\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u4EE5v1\u7ED3\u675F\uFF0C\u793A\u4F8B\uFF1Ahttps://apicangku.icu/v1" },\n  ],\n  inputValues: {\n    apiKey: "",\n    baseUrl: "https://apicangku.icu/v1",\n  },\n  models: [\n    // ---- \u6587\u672C\u5BF9\u8BDD\uFF08\u57FA\u7840\u6A21\u578B\uFF0C\u4EC5\u4FDD\u7559\u4E24\u4E2A\uFF09----\n    { name: "DeepSeek V4 Flash Vision", modelName: "deepseek-v4-flash-vision-exp", type: "text", think: false },\n    { name: "GPT-5.6 Sol", modelName: "gpt-5.6-sol", type: "text", think: false },\n  ],\n};\n// ============================================================\n// \u8F85\u52A9\u51FD\u6570\n// ============================================================\nconst getHeaders = () => {\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  return {\n    "Content-Type": "application/json",\n    Authorization: `Bearer ${apiKey}`,\n  };\n};\n\n// ============================================================\n// SSE \u6D41\u6E05\u6D17\uFF1A\u90E8\u5206\u4E2D\u8F6C\u6A21\u578B\uFF08\u5982 deepseek-v4-flash\uFF09\u5728 tool_calls \u5206\u7247\u91CC\u53D1\u9001\n// "type":""/"id":""/"name":""\uFF08\u6807\u51C6\u5E94\u4E3A "type":"function" \u6216\u7701\u7565\u5B57\u6BB5\uFF09\uFF0C\n// AI SDK \u4E25\u683C\u6821\u9A8C\u4F1A\u6574\u5757\u4E22\u5F03\u5206\u7247\uFF0C\u5BFC\u81F4\u5DE5\u5177\u8C03\u7528\u53C2\u6570\u4E22\u5931\u2014\u2014\u8868\u73B0\u4E3A\u51B3\u7B56\u5C42\n// \u6D3E\u53D1\u5B50\u4EFB\u52A1\u540E\u65E0\u54CD\u5E94\u3002\u8FD9\u91CC\u5728\u6D41\u4E0A\u539F\u4F4D\u4FEE\u6B63\u4E3A\u6807\u51C6\u683C\u5F0F\u3002\n// ============================================================\nconst sanitizeSseLine = (line: string): string => {\n  if (!line.includes(\'"tool_calls"\')) return line;\n  const prefixMatch = line.match(/^(\\s*data:\\s?)(.*)$/);\n  if (!prefixMatch) return line;\n  const dataRaw = prefixMatch[2];\n  if (!dataRaw || dataRaw === "[DONE]") return line;\n  try {\n    const obj = JSON.parse(dataRaw);\n    let changed = false;\n    for (const choice of obj.choices ?? []) {\n      const tcs = choice?.delta?.tool_calls;\n      if (!Array.isArray(tcs)) continue;\n      for (const tc of tcs) {\n        if (!tc || typeof tc !== "object") continue;\n        if (tc.type === "" || tc.type == null) {\n          tc.type = "function";\n          changed = true;\n        }\n        if (tc.id === "") {\n          delete tc.id;\n          changed = true;\n        }\n        if (tc.function && tc.function.name === "") {\n          delete tc.function.name;\n          changed = true;\n        }\n      }\n    }\n    if (!changed) return line;\n    return `${prefixMatch[1]}${JSON.stringify(obj)}`;\n  } catch {\n    return line;\n  }\n};\n\nconst makeSanitizedFetch = () => async (url: any, init?: any) => {\n  const res = await fetch(url, init);\n  const contentType = String(res.headers?.get?.("content-type") ?? "");\n  if (!res.ok || !res.body || !contentType.includes("text/event-stream")) return res;\n  const decoder = new TextDecoder();\n  const encoder = new TextEncoder();\n  let buffer = "";\n  const fixStream = new TransformStream({\n    transform(chunk: any, controller: any) {\n      buffer += decoder.decode(chunk, { stream: true });\n      const lines = buffer.split(/\\r?\\n/);\n      buffer = lines.pop() ?? "";\n      for (const line of lines) controller.enqueue(encoder.encode(`${sanitizeSseLine(line)}\\n`));\n    },\n    flush(controller: any) {\n      buffer += decoder.decode();\n      if (buffer.trim()) controller.enqueue(encoder.encode(sanitizeSseLine(buffer)));\n    },\n  });\n  return new Response(res.body.pipeThrough(fixStream), { status: res.status, statusText: res.statusText, headers: res.headers });\n};\n// \u89E3\u6790 OpenAI \u517C\u5BB9\u56FE\u7247\u54CD\u5E94\uFF08url \u6216 b64_json\uFF09\nconst parseImageResponse = async (data: any): Promise<string> => {\n  const result = data?.data?.[0];\n  if (!result) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u672A\u8FD4\u56DE\u7ED3\u679C ${JSON.stringify(data).slice(0, 200)}`);\n  const image = result.b64_json || result.url;\n  if (!image) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u65E0\u56FE\u7247\u6570\u636E ${JSON.stringify(data).slice(0, 200)}`);\n  if (image.startsWith("data:") || image.length > 300) return image;\n  return await urlToBase64(image);\n};\n// ============================================================\n// \u9002\u914D\u5668\u51FD\u6570\n// ============================================================\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\n  // \u4F18\u5148\u4F7F\u7528\u6A21\u578B\u7EA7\u72EC\u7ACB API Key\uFF08\u6BCF\u4E2A\u6A21\u578B\u53EF\u914D\u4E0D\u540C key\uFF09\uFF0C\u5426\u5219\u7528\u4F9B\u5E94\u5546\u5168\u5C40 key\n  const apiKey = (model.apiKey || vendor.inputValues.apiKey || "").replace(/^Bearer\\s+/i, "");\n  if (!apiKey) throw new Error("\u7F3A\u5C11API Key\uFF08\u53EF\u5728\u6A21\u578B\u914D\u7F6E\u4E2D\u5355\u72EC\u586B\u5199\u8BE5\u6A21\u578B\u7684 key\uFF09");\n  return createOpenAI({ baseURL: vendor.inputValues.baseUrl, apiKey, fetch: makeSanitizedFetch() }).chat(model.modelName);\n};\n\n// ============================================================\n// \u5206\u8FA8\u7387\u6863\u4F4D + \u6BD4\u4F8B \u2192 OpenAI Images \u534F\u8BAE\u8981\u6C42\u7684 "\u5BBDx\u9AD8" \u50CF\u7D20\u5C3A\u5BF8\n// \u8BF4\u660E\uFF1AOpenAI Images \u534F\u8BAE\u5BF9 gpt-image \u7CFB\u5217\u53EA\u8BA4 size="WxH"\uFF08\u5BBD\u9AD8\u5747\u80FD\u88AB16\u6574\u9664\uFF0C\n// \u6BD4\u4F8B\u9700\u5728 1:3 ~ 3:1 \u4E4B\u95F4\uFF09\uFF1Baspect_ratio \u662F\u90E8\u5206\u9002\u914D\u5668\u7684\u79C1\u6709\u6269\u5C55\u5B57\u6BB5\uFF0C\n// \u4E0A\u6E38\u900F\u4F20\u65F6\u4F1A\u88AB\u5FFD\u7565\uFF08\u5B9E\u6D4B gpt-image-2 \u4E0D\u4F20 WxH \u4F1A\u8F93\u51FA\u6B63\u65B9\u5F62\uFF09\uFF0C\u56E0\u6B64\u5FC5\u987B\u6362\u7B97\u50CF\u7D20\u5C3A\u5BF8\u3002\n// ============================================================\nconst PIXEL_SIZE_MAP: Record<string, Record<string, string>> = {\n  "1K": { "16:9": "1280x720", "9:16": "720x1280", "1:1": "1024x1024", "4:3": "1152x864", "3:4": "864x1152" },\n  "2K": { "16:9": "2048x1152", "9:16": "1152x2048", "1:1": "2048x2048", "4:3": "2048x1536", "3:4": "1536x2048" },\n  "4K": { "16:9": "4096x2304", "9:16": "2304x4096", "1:1": "4096x4096", "4:3": "3840x2880", "3:4": "2880x3840" },\n};\nconst toPixelSize = (tier: string, ratio: string): string => {\n  const hit = PIXEL_SIZE_MAP[tier]?.[ratio];\n  if (hit) return hit;\n  // \u672A\u77E5\u6BD4\u4F8B\u515C\u5E95\uFF1A\u957F\u8FB9\u6309\u6863\u4F4D\u56FA\u5B9A\uFF0C\u77ED\u8FB9\u6309\u6BD4\u4F8B\u6362\u7B97\u5E76\u53D616\u7684\u500D\u6570\uFF08\u4E0D\u5C0F\u4E8E256\uFF09\n  const [w, h] = String(ratio || "16:9").split(":").map(Number);\n  const long = tier === "4K" ? 4096 : tier === "2K" ? 2048 : 1280;\n  if (!w || !h) return `${long}x${Math.round(((long * 9) / 16) / 16) * 16}`;\n  const short = Math.max(256, Math.round(((long * Math.min(w, h)) / Math.max(w, h)) / 16) * 16);\n  return w >= h ? `${long}x${short}` : `${short}x${long}`;\n};\n\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const baseUrl = vendor.inputValues.baseUrl.replace(/\\/+$/, "");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n\n  const refs = config.referenceList || [];\n  const pixelSize = toPixelSize(config.size || "1K", config.aspectRatio || "16:9");\n  // \u65E0\u53C2\u8003\u56FE \u2192 \u6587\u751F\u56FE\uFF08JSON\uFF09\n  if (refs.length === 0) {\n    const requestBody: any = {\n      model: model.modelName,\n      prompt: config.prompt,\n      size: pixelSize,\n      aspect_ratio: config.aspectRatio || "16:9", // \u4FDD\u7559\u7ED9\u652F\u6301\u8BE5\u6269\u5C55\u5B57\u6BB5\u7684\u6A21\u578B\uFF08\u5982 gemini \u7CFB\uFF09\n    };\n    logger(`API\u4ED3\u5E93 \u6587\u751F\u56FE\uFF0C\u6A21\u578B\uFF1A${model.modelName}\uFF0C\u6BD4\u4F8B\uFF1A${config.aspectRatio || "16:9"}\uFF0C\u50CF\u7D20\uFF1A${pixelSize}`);\n    const resp = await fetch(`${baseUrl}/images/generations`, {\n      method: "POST",\n      headers: getHeaders(),\n      body: JSON.stringify(requestBody),\n    });\n    if (!resp.ok) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A${await resp.text()}`);\n    return await parseImageResponse(await resp.json());\n  }\n\n  // \u6709\u53C2\u8003\u56FE \u2192 \u56FE\u751F\u56FE\uFF08multipart /images/edits\uFF09\n  const fd = new FormData();\n  fd.append("model", model.modelName);\n  fd.append("prompt", config.prompt);\n  fd.append("size", pixelSize);\n  fd.append("aspect_ratio", config.aspectRatio || "16:9"); // \u4FDD\u7559\u7ED9\u652F\u6301\u8BE5\u6269\u5C55\u5B57\u6BB5\u7684\u6A21\u578B\n  refs.forEach((img, i) => {\n    const b64 = String(img.base64).replace(/^data:image\\/\\w+;base64,/, "");\n    fd.append(`image`, Buffer.from(b64, "base64"), `ref_${i}.png`);\n  });\n  logger(`API\u4ED3\u5E93 \u56FE\u751F\u56FE\uFF0C\u6A21\u578B\uFF1A${model.modelName}\uFF0C\u53C2\u8003\u56FE ${refs.length} \u5F20\uFF0C\u6BD4\u4F8B\uFF1A${config.aspectRatio || "16:9"}\uFF0C\u50CF\u7D20\uFF1A${pixelSize}`);\n  const resp = await fetch(`${baseUrl}/images/edits`, {\n    method: "POST",\n    headers: { Authorization: `Bearer ${apiKey}`, ...fd.getHeaders() },\n    body: fd.getBuffer(),\n  });\n  if (!resp.ok) throw new Error(`\u56FE\u751F\u56FE\u5931\u8D25\uFF1A${await resp.text()}`);\n  return await parseImageResponse(await resp.json());\n};\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\n  return "";\n};\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const baseUrl = vendor.inputValues.baseUrl.replace(/\\/+$/, "");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n\n  logger(`API\u4ED3\u5E93 TTS \u5408\u6210\uFF0C\u6A21\u578B\uFF1A${model.modelName}\uFF0C\u97F3\u8272\uFF1A${config.voice}`);\n  const resp = await fetch(`${baseUrl}/audio/speech`, {\n    method: "POST",\n    headers: getHeaders(),\n    body: JSON.stringify({\n      model: model.modelName,\n      input: config.text,\n      voice: config.voice || "alloy",\n      response_format: "mp3",\n      speed: config.speechRate || 1,\n    }),\n  });\n  if (!resp.ok) throw new Error(`TTS \u751F\u6210\u5931\u8D25\uFF1A${await resp.text()}`);\n  const audioBuffer = await resp.arrayBuffer();\n  return `data:audio/mp3;base64,${Buffer.from(audioBuffer).toString("base64")}`;\n};\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\n  return { hasUpdate: false, latestVersion: "1.0", notice: "" };\n};\nconst updateVendor = async (): Promise<string> => {\n  return "";\n};\n// ============================================================\n// \u5BFC\u51FA\n// ============================================================\nexports.vendor = vendor;\nexports.textRequest = textRequest;\nexports.imageRequest = imageRequest;\nexports.videoRequest = videoRequest;\nexports.ttsRequest = ttsRequest;\nexports.checkForUpdates = checkForUpdates;\nexports.updateVendor = updateVendor;\nexport {};\n',
       "atlascloud.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - AtlasCloud MASS\r\n * @version 0.8\r\n *\r\n * \u8BF4\u660E\uFF1A\r\n * 1) \u6587\u672C\u63A5\u53E3\u4F7F\u7528 OpenAI \u517C\u5BB9\u57FA\u5730\u5740\uFF1Ahttps://api.atlascloud.ai/v1\r\n * 2) \u56FE\u7247/\u89C6\u9891\u4F7F\u7528 Atlas Cloud \u5A92\u4F53\u63A5\u53E3\uFF1Ahttps://api.atlascloud.ai/api/v1\r\n * 3) \u56FE\u7247/\u89C6\u9891\u4E3A\u5F02\u6B65\u4EFB\u52A1\uFF1A\u63D0\u4EA4\u540E\u8F6E\u8BE2 /api/v1/model/prediction/{id}\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage"\r\n  | "startEndRequired"\r\n  | "endFrameOptional"\r\n  | "startFrameOptional"\r\n  | "text"\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string;\r\n  version: string;\r\n  name: string;\r\n  author: string;\r\n  description?: string;\r\n  icon?: string;\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string; disabled?: boolean }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ntype ReferenceList =\r\n  | { type: "image"; sourceType: "base64"; base64: string }\r\n  | { type: "audio"; sourceType: "base64"; base64: string }\r\n  | { type: "video"; sourceType: "base64"; base64: string };\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  referenceList?: ReferenceList[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n  referenceList?: Extract<ReferenceList, { type: "audio" }>[];\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\ntype AtlasVideoModelKind =\r\n  | "seedanceTextToVideo"\r\n  | "seedanceReferenceToVideo"\r\n  | "seedanceImageToVideo"\r\n  | "wanReferenceToVideo"\r\n  | "generic";\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const axios: any;\r\ndeclare const logger: (msg: string) => void;\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\r\n  updateVendor?: () => Promise<string>;\r\n};\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "atlascloud",\r\n  version: "1.0",\r\n  author: "AtlasCloud",\r\n  name: "AtlasCloud MASS",\r\n  description: "AtlasCloud \u5168\u6A21\u6001\u5E73\u53F0\u63A5\u5165 Toonflow\u3002\u9ED8\u8BA4\u6309\u5B98\u65B9\u6587\u6863\u586B\u5199\u6587\u672C\u3001\u56FE\u7247\u3001\u89C6\u9891\u4E0E\u4EFB\u52A1\u8F6E\u8BE2\u8DEF\u5F84\u3002",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "AtlasCloud API Key" },\r\n    { key: "chatBaseUrl", label: "\u6587\u672C\u57FA\u5730\u5740", type: "url", required: true, placeholder: "https://api.atlascloud.ai/v1", disabled: true },\r\n    { key: "mediaBaseUrl", label: "\u5A92\u4F53\u57FA\u5730\u5740", type: "url", required: true, placeholder: "https://api.atlascloud.ai/api/v1", disabled: true },\r\n  ],\r\n  inputValues: {\r\n    apiKey: "",\r\n    chatBaseUrl: "https://api.atlascloud.ai/v1",\r\n    mediaBaseUrl: "https://api.atlascloud.ai/api/v1",\r\n  },\r\n  models: [\r\n    { name: "DeepSeek V4 Pro", modelName: "deepseek-ai/deepseek-v4-pro", type: "text", think: false },\r\n    { name: "DeepSeek V4 Flash", modelName: "deepseek-ai/deepseek-v4-flash", type: "text", think: false },\r\n    { name: "Kimi K2.6", modelName: "moonshotai/kimi-k2.6", type: "text", think: false },\r\n    { name: "GLM 5.1", modelName: "zai-org/glm-5.1", type: "text", think: false },\r\n    { name: "MiniMax M2.7", modelName: "minimaxai/minimax-m2.7", type: "text", think: false },\r\n    { name: "GPT Image 2", modelName: "openai/gpt-image-2/text-to-image", type: "image", mode: ["text", "singleImage"] },\r\n    { name: "Nano Banana Pro", modelName: "google/nano-banana-pro/text-to-image", type: "image", mode: ["text", "singleImage", "multiReference"] },\r\n    { name: "Nano Banana 2", modelName: "google/nano-banana-2/text-to-image", type: "image", mode: ["text", "singleImage", "multiReference"] },\r\n    { name: "Seedream v5", modelName: "bytedance/seedream-v5.0-lite/sequential", type: "image", mode: ["text"] },\r\n    { name: "Qwen Image 2 Pro", modelName: "qwen/qwen-image-2.0-pro/text-to-image", type: "image", mode: ["text"] },\r\n    {\r\n      name: "Seedance 2.0 Audio-Visual",\r\n      modelName: "bytedance/seedance-2.0/text-to-video",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Seedance 2.0 Reference-to-Video",\r\n      modelName: "bytedance/seedance-2.0/reference-to-video",\r\n      type: "video",\r\n      mode: ["singleImage"],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Seedance 2.0 Multi-Image-to-Video",\r\n      modelName: "bytedance/seedance-2.0/image-to-video",\r\n      type: "video",\r\n      mode: ["startFrameOptional", ["imageReference:4"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Seedance 2.0 Fast Audio-Visual",\r\n      modelName: "bytedance/seedance-2.0-fast/text-to-video",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Seedance 2.0 Fast Reference-to-Video",\r\n      modelName: "bytedance/seedance-2.0-fast/reference-to-video",\r\n      type: "video",\r\n      mode: ["singleImage"],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Wan-2.7 Reference-to-video",\r\n      modelName: "alibaba/wan-2.7/reference-to-video",\r\n      type: "video",\r\n      mode: ["singleImage"],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10], resolution: ["720p", "1080p"] }],\r\n    },\r\n  ],\r\n};\r\n\r\n// ============================================================\r\n// \u8F85\u52A9\u5DE5\u5177\r\n// ============================================================\r\n\r\nconst getChatBaseUrl = () => vendor.inputValues.chatBaseUrl.replace(/\\/+$/, "");\r\n\r\nconst getMediaBaseUrl = () => vendor.inputValues.mediaBaseUrl.replace(/\\/+$/, "");\r\n\r\nconst joinUrl = (base: string, path: string) => `${base}${path.startsWith("/") ? "" : "/"}${path}`;\r\n\r\nconst getHeaders = () => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11 API Key");\r\n  return {\r\n    "Content-Type": "application/json",\r\n    Authorization: `Bearer ${vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "")}`,\r\n  };\r\n};\r\n\r\nconst readByPath = (obj: any, path: string): any => {\r\n  if (!obj || !path) return undefined;\r\n  const normalizedPath = path.replace(/\\[(\\d+)\\]/g, ".$1");\r\n  return normalizedPath.split(".").reduce((acc, key) => (acc == null ? undefined : acc[key]), obj);\r\n};\r\n\r\nconst pickFirstPath = (obj: any, paths: string[]): any => {\r\n  for (const path of paths) {\r\n    const value = readByPath(obj, path);\r\n    if (value !== undefined && value !== null && value !== "") return value;\r\n  }\r\n  return undefined;\r\n};\r\n\r\nconst extractTaskId = (data: any): string | undefined => {\r\n  return pickFirstPath(data, ["id", "taskId", "task_id", "data.id", "data.taskId", "data.task_id"]);\r\n};\r\n\r\nconst extractUrl = (data: any): string | undefined => {\r\n  return (\r\n    (Array.isArray(readByPath(data, "data.outputs")) ? readByPath(data, "data.outputs")[0] : undefined) ||\r\n    (Array.isArray(readByPath(data, "outputs")) ? readByPath(data, "outputs")[0] : undefined) ||\r\n    readByPath(data, "url") ||\r\n    readByPath(data, "video_url") ||\r\n    readByPath(data, "image_url") ||\r\n    readByPath(data, "data.url") ||\r\n    readByPath(data, "data.video_url") ||\r\n    readByPath(data, "data.image_url") ||\r\n    readByPath(data, "data.output.url") ||\r\n    readByPath(data, "data.output.video_url") ||\r\n    readByPath(data, "output.url")\r\n  );\r\n};\r\n\r\nconst extractB64 = (data: any): string | undefined => {\r\n  return pickFirstPath(data, ["b64_json", "data.b64_json", "data.0.b64_json", "data[0].b64_json"]);\r\n};\r\n\r\nconst extractStatus = (data: any): string => {\r\n  const statusRaw = pickFirstPath(data, ["status", "data.status", "data.state", "state"]);\r\n  return String(statusRaw || "").toLowerCase();\r\n};\r\n\r\nconst extractError = (data: any): string | undefined => {\r\n  return pickFirstPath(data, ["error.message", "message", "msg", "data.error.message", "data.message"]);\r\n};\r\n\r\nconst isDnsOrNetworkError = (err: any): boolean => {\r\n  const msg = String(err?.message || err || "");\r\n  return /ENOTFOUND|EAI_AGAIN|ECONNRESET|ETIMEDOUT|timeout/i.test(msg);\r\n};\r\n\r\nconst withNetworkRetry = async <T>(fn: () => Promise<T>, maxRetry = 3, waitMs = 1500): Promise<T> => {\r\n  let lastErr: any;\r\n  for (let i = 0; i < maxRetry; i += 1) {\r\n    try {\r\n      return await fn();\r\n    } catch (err) {\r\n      lastErr = err;\r\n      if (!isDnsOrNetworkError(err) || i === maxRetry - 1) throw err;\r\n      await new Promise((resolve) => setTimeout(resolve, waitMs * (i + 1)));\r\n    }\r\n  }\r\n  throw lastErr;\r\n};\r\n\r\nconst resolveAtlasImageModelName = (modelName: string, hasImageRefs: boolean): string => {\r\n  if (!hasImageRefs) return modelName;\r\n\r\n  switch (modelName) {\r\n    case "google/nano-banana-pro/text-to-image":\r\n      return "google/nano-banana-pro/edit";\r\n    case "google/nano-banana-2/text-to-image":\r\n      return "google/nano-banana-2/edit";\r\n    default:\r\n      return modelName;\r\n  }\r\n};\r\n\r\nconst resolveAtlasVideoModelKind = (modelName: string): AtlasVideoModelKind => {\r\n  if (modelName === "alibaba/wan-2.7/reference-to-video") return "wanReferenceToVideo";\r\n  if (/^bytedance\\/seedance-2\\.0(?:-fast)?\\/reference-to-video$/.test(modelName)) return "seedanceReferenceToVideo";\r\n  if (/^bytedance\\/seedance-2\\.0(?:-fast)?\\/image-to-video$/.test(modelName)) return "seedanceImageToVideo";\r\n  if (/^bytedance\\/seedance-2\\.0(?:-fast)?\\/text-to-video$/.test(modelName)) return "seedanceTextToVideo";\r\n  return "generic";\r\n};\r\n\r\nconst clampNumber = (value: unknown, min: number, max: number, fallback: number): number => {\r\n  const num = Number(value);\r\n  if (!Number.isFinite(num)) return fallback;\r\n  return Math.max(min, Math.min(max, num));\r\n};\r\n\r\nconst normalizeResolution = (value: unknown, allowed: string[], fallback: string): string => {\r\n  const lower = String(value || "").toLowerCase();\r\n  const matched = allowed.find((item) => item.toLowerCase() === lower);\r\n  if (matched) return matched;\r\n  if (/1080/.test(lower)) return allowed.find((item) => /1080/i.test(item)) || fallback;\r\n  if (/720/.test(lower)) return allowed.find((item) => /720/i.test(item)) || fallback;\r\n  if (/480/.test(lower)) return allowed.find((item) => /480/i.test(item)) || fallback;\r\n  return fallback;\r\n};\r\n\r\nconst getReferenceLimit = (\r\n  modes: VideoMode[],\r\n  prefix: "imageReference" | "videoReference" | "audioReference",\r\n): number | undefined => {\r\n  for (const mode of modes) {\r\n    if (!Array.isArray(mode)) continue;\r\n    for (const entry of mode) {\r\n      if (!entry.startsWith(`${prefix}:`)) continue;\r\n      const limit = Number(entry.split(":")[1]);\r\n      if (Number.isFinite(limit) && limit > 0) return limit;\r\n    }\r\n  }\r\n  return undefined;\r\n};\r\n\r\nconst limitReferences = (refs: string[], maxCount?: number): string[] => {\r\n  if (!maxCount || maxCount < 1) return refs;\r\n  return refs.slice(0, maxCount);\r\n};\r\n\r\nconst summarizeRefCount = (usedCount: number, rawCount: number): string => {\r\n  return usedCount === rawCount ? String(usedCount) : `${usedCount}/${rawCount}`;\r\n};\r\n\r\nconst buildAtlasVideoPayload = (config: VideoConfig, model: VideoModel) => {\r\n  const rawImageRefs = (config.referenceList || []).filter((r) => r.type === "image").map((r) => r.base64).filter(Boolean);\r\n  const rawVideoRefs = (config.referenceList || []).filter((r) => r.type === "video").map((r) => r.base64).filter(Boolean);\r\n  const rawAudioRefs = (config.referenceList || []).filter((r) => r.type === "audio").map((r) => r.base64).filter(Boolean);\r\n\r\n  const imageRefs = limitReferences(rawImageRefs, getReferenceLimit(model.mode, "imageReference"));\r\n  const videoRefs = limitReferences(rawVideoRefs, getReferenceLimit(model.mode, "videoReference"));\r\n  const audioRefs = limitReferences(rawAudioRefs, getReferenceLimit(model.mode, "audioReference"));\r\n  const kind = resolveAtlasVideoModelKind(model.modelName);\r\n  const ratio = config.aspectRatio || "16:9";\r\n  const shouldGenerateAudio = model.audio === true || (model.audio === "optional" && config.audio !== false);\r\n  const body: any = {\r\n    model: model.modelName,\r\n    prompt: config.prompt || "",\r\n  };\r\n\r\n  if (kind === "wanReferenceToVideo") {\r\n    if (imageRefs.length < 1) {\r\n      throw new Error(`${model.name} \u9700\u8981\u81F3\u5C11 1 \u5F20\u53C2\u8003\u56FE`);\r\n    }\r\n    body.images = [imageRefs[0]];\r\n    body.ratio = ratio;\r\n    body.duration = clampNumber(config.duration, 2, 10, 5);\r\n    body.resolution = normalizeResolution(config.resolution, ["720P", "1080P"], "720P");\r\n    body.prompt_extend = false;\r\n    body.seed = -1;\r\n  } else if (kind === "seedanceReferenceToVideo") {\r\n    if (imageRefs.length < 1) {\r\n      throw new Error(`${model.name} \u9700\u8981\u81F3\u5C11 1 \u5F20\u53C2\u8003\u56FE`);\r\n    }\r\n    if (shouldGenerateAudio) body.generate_audio = true;\r\n    body.images = [imageRefs[0]];\r\n    body.ratio = ratio;\r\n    body.duration = clampNumber(config.duration, 4, 15, 5);\r\n    body.resolution = normalizeResolution(config.resolution, ["480p", "720p", "1080p"], "720p");\r\n    body.watermark = false;\r\n  } else if (kind === "seedanceImageToVideo") {\r\n    if (imageRefs.length < 1) {\r\n      throw new Error(`${model.name} \u9700\u8981\u81F3\u5C11 1 \u5F20\u53C2\u8003\u56FE`);\r\n    }\r\n    if (shouldGenerateAudio) body.generate_audio = true;\r\n    body.images = imageRefs;\r\n    body.ratio = ratio;\r\n    body.duration = clampNumber(config.duration, 4, 15, 5);\r\n    body.resolution = normalizeResolution(config.resolution, ["480p", "720p", "1080p"], "720p");\r\n    body.watermark = false;\r\n  } else {\r\n    if (shouldGenerateAudio) body.generate_audio = true;\r\n    if (imageRefs.length > 0) body.reference_images = imageRefs;\r\n    if (videoRefs.length > 0) body.reference_videos = videoRefs;\r\n    if (audioRefs.length > 0) body.reference_audios = audioRefs;\r\n    body.ratio = ratio;\r\n    body.duration = clampNumber(config.duration, 4, 15, 5);\r\n    body.resolution = normalizeResolution(config.resolution, ["480p", "720p"], "720p");\r\n    body.watermark = false;\r\n  }\r\n\r\n  return {\r\n    body,\r\n    summary: `kind=${kind} imageRefs=${summarizeRefCount(imageRefs.length, rawImageRefs.length)} videoRefs=${summarizeRefCount(videoRefs.length, rawVideoRefs.length)} audioRefs=${summarizeRefCount(audioRefs.length, rawAudioRefs.length)} resolution=${body.resolution} duration=${body.duration}${shouldGenerateAudio ? " audio=on" : " audio=off"}`,\r\n  };\r\n};\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11 API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  const effortMap: Record<number, string> = { 0: "minimal", 1: "low", 2: "medium", 3: "high" };\r\n\r\n  return createOpenAICompatible({\r\n    name: "atlascloud",\r\n    baseURL: getChatBaseUrl(),\r\n    apiKey,\r\n    fetch: async (url: string, options?: RequestInit) => {\r\n      const rawBody = JSON.parse((options?.body as string) ?? "{}");\r\n      const body = think\r\n        ? {\r\n          ...rawBody,\r\n          thinking: { type: "enabled" },\r\n          reasoning_effort: effortMap[thinkLevel],\r\n        }\r\n        : rawBody;\r\n      return await fetch(url, { ...options, body: JSON.stringify(body) });\r\n    },\r\n  }).chatModel(model.modelName);\r\n};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  const headers = getHeaders();\r\n  const url = joinUrl(getMediaBaseUrl(), "/model/generateImage");\r\n  const sizeToResolution: Record<ImageConfig["size"], string> = {\r\n    "1K": "1k",\r\n    "2K": "2k",\r\n    "4K": "4k",\r\n  };\r\n  const imageRefs = (config.referenceList || []).map((ref) => ref.base64).filter(Boolean);\r\n  const resolvedModelName = resolveAtlasImageModelName(model.modelName, imageRefs.length > 0);\r\n  const isNanoModel = /^google\\/nano-banana-(pro|2)\\//.test(resolvedModelName);\r\n  const supportsImageConditioning = /^(openai\\/gpt-image-2\\/text-to-image|google\\/nano-banana-(pro|2)\\/edit)$/.test(resolvedModelName);\r\n\r\n  const body: any = {\r\n    model: resolvedModelName,\r\n    prompt: config.prompt || "",\r\n  };\r\n  if (supportsImageConditioning && imageRefs.length > 0) {\r\n    body.images = imageRefs;\r\n  }\r\n  if (isNanoModel) {\r\n    body.aspect_ratio = config.aspectRatio || "16:9";\r\n    body.resolution = sizeToResolution[config.size || "1K"] || "1k";\r\n  }\r\n\r\n  logger(`[AtlasCloud \u56FE\u7247] \u63D0\u4EA4\u4EFB\u52A1: ${model.modelName} -> ${resolvedModelName}, refs=${imageRefs.length}`);\r\n  const submitResp = await axios.post(url, body, { headers });\r\n  const submitData = submitResp.data;\r\n\r\n  // \u540C\u6B65\u8FD4\u56DE\uFF08\u76F4\u63A5\u62FF\u56FE\uFF09\r\n  const syncB64 = extractB64(submitData);\r\n  if (syncB64) return syncB64;\r\n  const syncUrl = extractUrl(submitData);\r\n  if (syncUrl) return await urlToBase64(syncUrl);\r\n\r\n  // \u5F02\u6B65\u8FD4\u56DE\uFF08\u62FF taskId \u518D\u8F6E\u8BE2\uFF09\r\n  const taskId = extractTaskId(submitData);\r\n  if (!taskId) {\r\n    throw new Error(`\u56FE\u7247\u4EFB\u52A1\u63D0\u4EA4\u5931\u8D25\uFF1A\u672A\u83B7\u53D6\u5230\u4EFB\u52A1ID\u3002\u539F\u59CB\u54CD\u5E94\uFF1A${JSON.stringify(submitData).slice(0, 500)}`);\r\n  }\r\n\r\n  const pollResult = await pollTask(\r\n    async (): Promise<PollResult> => {\r\n      const resultUrl = joinUrl(getMediaBaseUrl(), `/model/prediction/${taskId}`);\r\n      const resultResp = await axios.get(resultUrl, { headers });\r\n      const data = resultResp.data;\r\n      const status = extractStatus(data);\r\n\r\n      if (["succeeded", "success", "done", "completed"].includes(status)) {\r\n        const b64 = extractB64(data);\r\n        if (b64) return { completed: true, data: b64 };\r\n        const mediaUrl = extractUrl(data);\r\n        if (mediaUrl) return { completed: true, data: mediaUrl };\r\n        return { completed: true, error: "\u4EFB\u52A1\u6210\u529F\u4F46\u672A\u8FD4\u56DE\u7ED3\u679C\u5730\u5740" };\r\n      }\r\n      if (["failed", "error", "cancelled", "canceled", "expired"].includes(status)) {\r\n        return { completed: true, error: extractError(data) || "\u56FE\u7247\u751F\u6210\u5931\u8D25" };\r\n      }\r\n      return { completed: false };\r\n    },\r\n    3000,\r\n    600000,\r\n  );\r\n\r\n  if (pollResult.error) throw new Error(pollResult.error);\r\n  if (!pollResult.data) throw new Error("\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u8F6E\u8BE2\u672A\u8FD4\u56DE\u6570\u636E");\r\n  if (pollResult.data.startsWith("data:")) return pollResult.data;\r\n  if (pollResult.data.startsWith("http")) return await urlToBase64(pollResult.data);\r\n  return pollResult.data;\r\n};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  const headers = getHeaders();\r\n  const url = joinUrl(getMediaBaseUrl(), "/model/generateVideo");\r\n  const { body, summary } = buildAtlasVideoPayload(config, model);\r\n\r\n  logger(`[AtlasCloud \u89C6\u9891] \u63D0\u4EA4\u4EFB\u52A1: ${model.modelName}, ${summary}`);\r\n  const submitResp: any = await withNetworkRetry<any>(() => axios.post(url, body, { headers }), 3, 1500);\r\n  const submitData = submitResp.data;\r\n\r\n  const taskId = extractTaskId(submitData);\r\n  if (!taskId) {\r\n    const syncUrl = extractUrl(submitData);\r\n    if (syncUrl) return await urlToBase64(syncUrl);\r\n    throw new Error(`\u89C6\u9891\u4EFB\u52A1\u63D0\u4EA4\u5931\u8D25\uFF1A\u672A\u83B7\u53D6\u5230\u4EFB\u52A1ID\u3002\u539F\u59CB\u54CD\u5E94\uFF1A${JSON.stringify(submitData).slice(0, 500)}`);\r\n  }\r\n\r\n  const pollResult = await pollTask(\r\n    async (): Promise<PollResult> => {\r\n      const resultUrl = joinUrl(getMediaBaseUrl(), `/model/prediction/${taskId}`);\r\n      const resultResp: any = await withNetworkRetry<any>(() => axios.get(resultUrl, { headers }), 3, 1200);\r\n      const data = resultResp.data;\r\n      const status = extractStatus(data);\r\n\r\n      if (["succeeded", "success", "done", "completed"].includes(status)) {\r\n        const mediaUrl = extractUrl(data);\r\n        if (mediaUrl) return { completed: true, data: mediaUrl };\r\n        return { completed: true, error: "\u4EFB\u52A1\u6210\u529F\u4F46\u672A\u8FD4\u56DE\u89C6\u9891\u5730\u5740" };\r\n      }\r\n      if (["failed", "error", "cancelled", "canceled", "expired"].includes(status)) {\r\n        return { completed: true, error: extractError(data) || "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n      }\r\n      return { completed: false };\r\n    },\r\n    5000,\r\n    1800000,\r\n  );\r\n\r\n  if (pollResult.error) throw new Error(pollResult.error);\r\n  if (!pollResult.data) throw new Error("\u89C6\u9891\u751F\u6210\u5931\u8D25\uFF1A\u8F6E\u8BE2\u672A\u8FD4\u56DE\u6570\u636E");\r\n  return await urlToBase64(pollResult.data);\r\n};\r\n\r\nconst ttsRequest = async (_config: TTSConfig, _model: TTSModel): Promise<string> => {\r\n  // AtlasCloud \u5F53\u524D\u7248\u672C\u5148\u4E0D\u63A5 TTS\u3002\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  return {\r\n    hasUpdate: false,\r\n    latestVersion: vendor.version,\r\n    notice: "AtlasCloud MASS \u521D\u7A3F\u3002",\r\n  };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\nexport { };\r\n',
       "deepseek.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - DeepSeek\r\n * @version 2.1\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage"\r\n  | "startEndRequired"\r\n  | "endFrameOptional"\r\n  | "startFrameOptional"\r\n  | "text"\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string;\r\n  version: string;\r\n  name: string;\r\n  author: string;\r\n  description?: string;\r\n  icon?: string;\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  imageBase64: string[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  imageBase64?: string[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const axios: any;\r\ndeclare const logger: (msg: string) => void;\r\ndeclare const jsonwebtoken: any;\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\r\n  updateVendor?: () => Promise<string>;\r\n};\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "deepseek",\r\n  version: "2.1",\r\n  author: "Toonflow",\r\n  name: "DeepSeek",\r\n  description:\r\n    "DeepSeek \u5B98\u65B9\u63A5\u53E3\u9002\u914D\uFF0C\u652F\u6301 V4 \u7CFB\u5217\u6A21\u578B\u4E0E\u601D\u8003\u6A21\u5F0F\uFF08\u601D\u7EF4\u94FE\u8F93\u51FA\uFF09\u3002\\n\\n[\u524D\u5F80\u5E73\u53F0](https://platform.deepseek.com/)",\r\n  icon: "",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true },\r\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u793A\u4F8B\uFF1Ahttps://api.deepseek.com" },\r\n  ],\r\n  inputValues: {\r\n    apiKey: "",\r\n    baseUrl: "https://api.deepseek.com/v1",\r\n  },\r\n  models: [\r\n    { name: "DeepSeek V4 Pro", modelName: "deepseek-v4-pro", type: "text", think: true },\r\n    { name: "DeepSeek V4 Flash", modelName: "deepseek-v4-flash", type: "text", think: true },\r\n  ],\r\n};\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n\r\n  // DeepSeek \u601D\u8003\u5F3A\u5EA6\u4EC5\u652F\u6301 high / max\uFF08low\u3001medium \u4F1A\u88AB\u6620\u5C04\u4E3A high\uFF0Cxhigh \u4F1A\u88AB\u6620\u5C04\u4E3A max\uFF09\r\n  // thinkLevel: 0/1/2 \u2192 high, 3 \u2192 max\r\n  const effortMap: Record<0 | 1 | 2 | 3, "high" | "max"> = {\r\n    0: "high",\r\n    1: "high",\r\n    2: "high",\r\n    3: "max",\r\n  };\r\n\r\n  const enableThinking = model.think && think;\r\n  const extraBody: Record<string, any> = {\r\n    thinking: { type: enableThinking ? "enabled" : "disabled" },\r\n  };\r\n  if (enableThinking) {\r\n    extraBody.reasoning_effort = effortMap[thinkLevel];\r\n  }\r\n\r\n  return createOpenAICompatible({\r\n    baseURL: vendor.inputValues.baseUrl,\r\n    apiKey,\r\n    fetch: async (url: string, options?: RequestInit) => {\r\n      const rawBody = JSON.parse((options?.body as string) ?? "{}");\r\n      const modifiedBody = {\r\n        ...rawBody,\r\n        ...extraBody\r\n      };\r\n      return await fetch(url, {\r\n        ...options,\r\n        body: JSON.stringify(modifiedBody),\r\n      });\r\n    },\r\n  }).chatModel(model.modelName);\r\n};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  return { hasUpdate: false, latestVersion: "2.0", notice: "" };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\nexport { };',
       "grsai.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F\r\n * @version 2.0\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage" //\u5355\u56FE\u53C2\u8003\r\n  | "startEndRequired" //\u9996\u5C3E\u5E27\uFF08\u4E24\u5F20\u90FD\u5F97\u6709\uFF09\r\n  | "endFrameOptional" //\u9996\u5C3E\u5E27\uFF08\u5C3E\u5E27\u53EF\u9009\uFF09\r\n  | "startFrameOptional" //\u9996\u5C3E\u5E27\uFF08\u9996\u5E27\u53EF\u9009\uFF09\r\n  | "text" //\u6587\u672C\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[]; //\u591A\u53C2\u8003\uFF08\u6570\u5B57\u4EE3\u8868\u9650\u5236\u6570\u91CF\uFF09\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string; //\u552F\u4E00ID\uFF0C\u4F5C\u4E3A\u6587\u4EF6\u540D\u5B58\u50A8\u7528\u6237\u78C1\u76D8\u4E0A\uFF0C\u7981\u6B62\u7B26\u53F7\r\n  version: string; //\u7248\u672C\u53F7\uFF0C\u683C\u5F0F\u4E3Ax.y\uFF0C\u9700\u9075\u5B88\u8BED\u4E49\u5316\u7248\u672C\u63A7\u5236\r\n  name: string; //\u4F9B\u5E94\u5546\u540D\u79F0\r\n  author: string; //\u4F5C\u8005\r\n  description?: string; //\u63CF\u8FF0\uFF0C\u652F\u6301Markdown\u683C\u5F0F\r\n  icon?: string; //\u56FE\u6807\uFF0C\u4EC5\u652F\u6301Base64\u683C\u5F0F\uFF0C\u5EFA\u8BAE\u5C3A\u5BF8\u4E3A128x128\u50CF\u7D20\r\n  inputs: {\r\n    key: string;\r\n    label: string;\r\n    type: "text" | "password" | "url";\r\n    required: boolean;\r\n    placeholder?: string;\r\n  }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ntype ReferenceList =\r\n  | { type: "image"; sourceType: "base64"; base64: string }\r\n  | { type: "audio"; sourceType: "base64"; base64: string }\r\n  | { type: "video"; sourceType: "base64"; base64: string };\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  referenceList?: ReferenceList[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n  referenceList?: Extract<ReferenceList, { type: "audio" }>[];\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const logger: (msg: string) => void; // \u65E5\u5FD7\u51FD\u6570\r\ndeclare const jsonwebtoken: any; // JWT\u5904\u7406\u5E93\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>; // \u56FE\u7247\u538B\u7F29\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>; // \u56FE\u7247\u5206\u8FA8\u7387\u8C03\u6574\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>; // \u56FE\u7247\u5408\u6210\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const urlToBase64: (url: string) => Promise<string>; // URL\u8F6CBase64\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>; // \u8F6E\u8BE2\u51FD\u6570\uFF0Cfn\u4E3A\u5F02\u6B65\u51FD\u6570\uFF0Cinterval\u4E3A\u8F6E\u8BE2\u95F4\u9694\uFF0Ctimeout\u4E3A\u8D85\u65F6\u65F6\u95F4\uFF0C\u8FD4\u56DEfn\u7684\u7ED3\u679C\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any; //\u6587\u672C\u6A21\u578B\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>; //\u56FE\u7247\u6A21\u578B\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>; //\u89C6\u9891\u6A21\u578B\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>; //\uFF08\u6682\u672A\u5F00\u653E\uFF09\u8BED\u97F3\u6A21\u578B\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\n  checkForUpdates?: () => Promise<{\r\n    hasUpdate: boolean;\r\n    latestVersion: string;\r\n    notice: string;\r\n  }>; //\u68C0\u67E5\u66F4\u65B0\u51FD\u6570\uFF0C\u8FD4\u56DE\u662F\u5426\u6709\u66F4\u65B0\u548C\u6700\u65B0\u7248\u672C\u53F7\u548C\u66F4\u516C\u544A\uFF08\u652F\u6301Markdown\u683C\u5F0F\uFF09\r\n  updateVendor?: () => Promise<string>; //\u66F4\u65B0\u51FD\u6570\uFF0C\u8FD4\u56DE\u6700\u65B0\u7684\u4EE3\u7801\u6587\u672C\r\n};\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "grsai",\r\n  version: "2.2",\r\n  author: "Toonflow",\r\n  name: "Grsai",\r\n  description: "Grsai AI\u5E73\u53F0\u9002\u914D\uFF0C\u652F\u6301\u6587\u751F\u56FE\u3001\u56FE\u751F\u56FE\u3001\u6587\u751F\u89C6\u9891\u3001Gemini\u517C\u5BB9\u6587\u672C\u6A21\u578B \\n [\u524D\u5F80\u4E2D\u8F6C\u5E73\u53F0](https://tf.grsai.ai/zh)",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true },\r\n    {\r\n      key: "baseUrl",\r\n      label: "\u8BF7\u6C42\u5730\u5740",\r\n      type: "url",\r\n      required: true,\r\n      placeholder: "\u793A\u4F8B\uFF1Ahttps://grsai.dakka.com.cn",\r\n    },\r\n  ],\r\n  inputValues: { apiKey: "", baseUrl: "https://grsai.dakka.com.cn" },\r\n  models: [\r\n    {\r\n      name: "GPT Image 2",\r\n      modelName: "gpt-image-2",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Nano Banana Fast",\r\n      modelName: "nano-banana-fast",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Nano Banana 2",\r\n      modelName: "nano-banana-2",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Nano Banana Pro",\r\n      modelName: "nano-banana-pro",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n  ],\r\n};\r\n\r\n// ============================================================\r\n// \u8F85\u52A9\u5DE5\u5177\r\n// ============================================================\r\n\r\nconst getHeaders = () => {\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  return {\r\n    "Content-Type": "application/json",\r\n    Authorization: `Bearer ${apiKey}`,\r\n  };\r\n};\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  return createGoogleGenerativeAI({\r\n    baseURL: `${vendor.inputValues.baseUrl}/v1beta`,\r\n    apiKey,\r\n  }).chat(model.modelName);\r\n};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const baseUrl = vendor.inputValues.baseUrl;\r\n  const headers = getHeaders();\r\n\r\n  // \u6784\u9020\u8BF7\u6C42\u53C2\u6570\r\n  const requestBody: any = {\r\n    model: model.modelName,\r\n    prompt: config.prompt,\r\n    aspectRatio: config.aspectRatio,\r\n    webHook: "-1",\r\n    shutProgress: true,\r\n  };\r\n\r\n  // \u8865\u5145\u6A21\u578B\u4E13\u5C5E\u53C2\u6570\r\n  if (model.modelName.startsWith("nano-banana")) {\r\n    requestBody.imageSize = config.size;\r\n  } else {\r\n    requestBody.size = config.aspectRatio;\r\n    requestBody.variants = 1;\r\n  }\r\n\r\n  // \u5904\u7406\u53C2\u8003\u56FE\r\n  if (config.referenceList && config.referenceList.length > 0) {\r\n    requestBody.urls = config.referenceList.map((img) => img.base64);\r\n  }\r\n\r\n  // \u9009\u62E9\u63A5\u53E3\u8DEF\u5F84\r\n  const apiPath = model.modelName.startsWith("nano-banana") ? "/v1/draw/nano-banana" : "/v1/draw/completions";\r\n\r\n  logger(`\u5F00\u59CB\u63D0\u4EA4\u56FE\u7247\u751F\u6210\u4EFB\u52A1\uFF0C\u6A21\u578B\uFF1A${model.modelName}`);\r\n  logger(`${baseUrl}${apiPath}`)\r\n  const submitResp = await fetch(`${baseUrl}${apiPath}`, {\r\n    method: "POST",\r\n    headers,\r\n    body: JSON.stringify(requestBody),\r\n  });\r\n  if (!submitResp.ok) {\r\n    const errorReason = await submitResp.text();\r\n    throw new Error(`\u4EFB\u52A1\u63D0\u4EA4\u5931\u8D25\uFF1A${errorReason}`);\r\n  }\r\n  const submitData = await submitResp.json();\r\n  if (submitData.code !== 0) throw new Error(`\u4EFB\u52A1\u63D0\u4EA4\u5931\u8D25\uFF1A${submitData.msg}`);\r\n\r\n  const taskId = submitData.data.id;\r\n  logger(`\u56FE\u7247\u4EFB\u52A1\u63D0\u4EA4\u6210\u529F\uFF0C\u4EFB\u52A1ID\uFF1A${taskId}`);\r\n\r\n  // \u8F6E\u8BE2\u7ED3\u679C\r\n  const pollResult = await pollTask(\r\n    async () => {\r\n      const resp = await fetch(`${baseUrl}/v1/draw/result`, {\r\n        method: "POST",\r\n        headers,\r\n        body: JSON.stringify({ id: taskId }),\r\n      });\r\n      if (!resp.ok) {\r\n        const errorReason = await resp.text();\r\n        throw new Error(`\u67E5\u8BE2\u4EFB\u52A1\u5931\u8D25\uFF1A${errorReason}`);\r\n      }\r\n      const respData = await resp.json();\r\n      if (respData.code !== 0) return { completed: true, error: respData.msg };\r\n\r\n      const taskData = respData.data;\r\n      if (taskData.status === "failed")\r\n        return {\r\n          completed: true,\r\n          error: taskData.failure_reason || taskData.error,\r\n        };\r\n      if (taskData.status === "succeeded") {\r\n        const imgUrl = taskData.results?.[0]?.url || taskData.url;\r\n        return { completed: true, data: imgUrl };\r\n      }\r\n      logger(`\u56FE\u7247\u4EFB\u52A1\u751F\u6210\u4E2D\uFF0C\u8FDB\u5EA6\uFF1A${taskData.progress}%`);\r\n      return { completed: false };\r\n    },\r\n    3000,\r\n    600000,\r\n  );\r\n\r\n  if (pollResult.error) throw new Error(pollResult.error);\r\n  logger(`\u56FE\u7247\u751F\u6210\u5B8C\u6210\uFF0C\u5F00\u59CB\u8F6C\u6362Base64`);\r\n  return await urlToBase64(pollResult.data!);\r\n};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const baseUrl = vendor.inputValues.baseUrl;\r\n  const headers = getHeaders();\r\n\r\n  // \u6784\u9020\u8BF7\u6C42\u53C2\u6570\r\n  const requestBody: any = {\r\n    model: model.modelName,\r\n    prompt: config.prompt,\r\n    aspectRatio: config.aspectRatio,\r\n    webHook: "-1",\r\n    shutProgress: true,\r\n  };\r\n\r\n  // \u5904\u7406\u53C2\u8003\u8D44\u6E90\r\n  if (config.referenceList && config.referenceList.length > 0) {\r\n    const imageRefs = config.referenceList.filter((item) => item.type === "image") as Extract<ReferenceList, { type: "image" }>[];\r\n    if (config.mode.includes("endFrameOptional") && imageRefs.length >= 1) {\r\n      requestBody.firstFrameUrl = imageRefs[0].base64;\r\n      if (imageRefs.length >= 2) requestBody.lastFrameUrl = imageRefs[1].base64;\r\n    } else if (config.mode.some((m) => Array.isArray(m) && m.includes("imageReference:3"))) {\r\n      requestBody.urls = imageRefs.map((img) => img.base64);\r\n    }\r\n  }\r\n\r\n  logger(`\u5F00\u59CB\u63D0\u4EA4\u89C6\u9891\u751F\u6210\u4EFB\u52A1\uFF0C\u6A21\u578B\uFF1A${model.modelName}`);\r\n  const submitResp = await fetch(`${baseUrl}/v1/video/veo`, {\r\n    method: "POST",\r\n    headers,\r\n    body: JSON.stringify(requestBody),\r\n  });\r\n  if (!submitResp.ok) {\r\n    const errorReason = await submitResp.text();\r\n    throw new Error(`\u4EFB\u52A1\u63D0\u4EA4\u5931\u8D25\uFF1A ${errorReason}`);\r\n  }\r\n  const submitData = await submitResp.json();\r\n  if (submitData.code !== 0) throw new Error(`\u4EFB\u52A1\u63D0\u4EA4\u5931\u8D25\uFF1A${submitData.msg}`);\r\n\r\n  const taskId = submitData.data.id;\r\n  logger(`\u89C6\u9891\u4EFB\u52A1\u63D0\u4EA4\u6210\u529F\uFF0C\u4EFB\u52A1ID\uFF1A${taskId}`);\r\n\r\n  // \u8F6E\u8BE2\u7ED3\u679C\r\n  const pollResult = await pollTask(\r\n    async () => {\r\n      const resp = await fetch(`${baseUrl}/v1/draw/result`, {\r\n        method: "POST",\r\n        headers,\r\n        body: JSON.stringify({ id: taskId }),\r\n      });\r\n      if (!resp.ok) {\r\n        const errorReason = await resp.text();\r\n        throw new Error(`\u67E5\u8BE2\u89C6\u9891\u4EFB\u52A1\u5931\u8D25 ${errorReason}`);\r\n      }\r\n      const respData = await resp.json();\r\n      logger(respData);\r\n      if (respData.code !== 0) return { completed: true, error: respData.msg };\r\n\r\n      const taskData = respData.data;\r\n      if (taskData.status === "failed")\r\n        return {\r\n          completed: true,\r\n          error: taskData.failure_reason || taskData.error,\r\n        };\r\n      if (taskData.status === "succeeded") {\r\n        return { completed: true, data: taskData.url };\r\n      }\r\n      logger(`\u89C6\u9891\u4EFB\u52A1\u751F\u6210\u4E2D\uFF0C\u8FDB\u5EA6\uFF1A${taskData.progress}%`);\r\n      return { completed: false };\r\n    },\r\n    5000,\r\n    1800000,\r\n  );\r\n\r\n  if (pollResult.error) throw new Error(pollResult.error);\r\n  logger(`\u89C6\u9891\u751F\u6210\u5B8C\u6210\uFF0C\u5F00\u59CB\u8F6C\u6362Base64`);\r\n  return await urlToBase64(pollResult.data!);\r\n};\r\n\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{\r\n  hasUpdate: boolean;\r\n  latestVersion: string;\r\n  notice: string;\r\n}> => {\r\n  return {\r\n    hasUpdate: false,\r\n    latestVersion: "1.0",\r\n    notice: "## \u65B0\u7248\u672C\u66F4\u65B0\u516C\u544A",\r\n  };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\n// \u8FD9\u884C\u4EE3\u7801\u7528\u4E8E\u786E\u4FDD\u5F53\u524D\u6587\u4EF6\u88AB\u8BC6\u522B\u4E3A\u6A21\u5757\uFF0C\u907F\u514D\u5168\u5C40\u53D8\u91CF\u51B2\u7A81\r\nexport {};\r\n',
@@ -122312,11 +122328,12 @@ var init_vendor = __esm({
       "minimax.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - MiniMax(\u6D77\u87BAAI)\r\n * @version 2.0\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage"\r\n  | "startEndRequired"\r\n  | "endFrameOptional"\r\n  | "startFrameOptional"\r\n  | "text"\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string;\r\n  version: string;\r\n  name: string;\r\n  author: string;\r\n  description?: string;\r\n  icon?: string;\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ntype ReferenceList =\r\n  | { type: "image"; sourceType: "base64"; base64: string }\r\n  | { type: "audio"; sourceType: "base64"; base64: string }\r\n  | { type: "video"; sourceType: "base64"; base64: string };\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  referenceList?: ReferenceList[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n  referenceList?: Extract<ReferenceList, { type: "audio" }>[];\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const axios: any;\r\ndeclare const logger: (msg: string) => void;\r\ndeclare const jsonwebtoken: any;\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\r\n  uploadReference: (base64: string, fileType: "image" | "audio" | "video") => Promise<ReferenceList>;\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\r\n  updateVendor?: () => Promise<string>;\r\n};\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "minimax",\r\n  version: "2.1",\r\n  author: "Toonflow",\r\n  name: "MiniMax(\u6D77\u87BAAI)",\r\n  description: "MiniMax\u5B98\u65B9\u63A5\u53E3\u9002\u914D\uFF0C\u652F\u6301M\u7CFB\u5217\u63A8\u7406\u6587\u672C\u6A21\u578B\u3001\u6587\u751F\u56FE/\u56FE\u751F\u56FE\u3001\u89C6\u9891\u751F\u6210\uFF08\u6587\u751F\u89C6\u9891\u3001\u56FE\u751F\u89C6\u9891\u3001\u9996\u5C3E\u5E27\u751F\u6210\uFF09\u80FD\u529B \\n [\u524D\u5F80\u5E73\u53F0](https://minimaxi.com/)",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true },\r\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u793A\u4F8B\uFF1Ahttps://api.minimaxi.com" },\r\n  ],\r\n  inputValues: { apiKey: "", baseUrl: "https://api.minimaxi.com" },\r\n  models: [\r\n    // \u6587\u672C\u6A21\u578B\r\n    { name: "MiniMax-M2.7 (\u63A8\u7406\u7248)", modelName: "MiniMax-M2.7", type: "text", think: true },\r\n    { name: "MiniMax-M2.7 \u6781\u901F\u7248 (\u63A8\u7406\u7248)", modelName: "MiniMax-M2.7-highspeed", type: "text", think: true },\r\n    { name: "MiniMax-M2.5 (\u63A8\u7406\u7248)", modelName: "MiniMax-M2.5", type: "text", think: true },\r\n    { name: "MiniMax-M2.5 \u6781\u901F\u7248 (\u63A8\u7406\u7248)", modelName: "MiniMax-M2.5-highspeed", type: "text", think: true },\r\n    { name: "MiniMax-M2.1 (\u7F16\u7A0B\u7248)", modelName: "MiniMax-M2.1", type: "text", think: true },\r\n    { name: "MiniMax-M2.1 \u6781\u901F\u7248 (\u7F16\u7A0B\u7248)", modelName: "MiniMax-M2.1-highspeed", type: "text", think: true },\r\n    { name: "MiniMax-M2 (Agent\u7248)", modelName: "MiniMax-M2", type: "text", think: false },\r\n    // \u56FE\u7247\u6A21\u578B\r\n    { name: "\u6D77\u87BA\u56FE\u50CFV1", modelName: "image-01", type: "image", mode: ["text", "singleImage"] },\r\n    { name: "\u6D77\u87BA\u56FE\u50CFV1 Live\u7248", modelName: "image-01-live", type: "image", mode: ["text", "singleImage"], associationSkills: "\u652F\u6301\u81EA\u5B9A\u4E49\u753B\u98CE" },\r\n    // \u89C6\u9891\u6A21\u578B\r\n    {\r\n      name: "\u6D77\u87BA2.3",\r\n      modelName: "MiniMax-Hailuo-2.3",\r\n      type: "video",\r\n      mode: ["text", "singleImage"],\r\n      audio: false,\r\n      durationResolutionMap: [\r\n        { duration: [6], resolution: ["768P", "1080P"] },\r\n        { duration: [10], resolution: ["768P"] },\r\n      ],\r\n    },\r\n    {\r\n      name: "\u6D77\u87BA2.3\u6781\u901F\u7248",\r\n      modelName: "MiniMax-Hailuo-2.3-Fast",\r\n      type: "video",\r\n      mode: ["text", "singleImage"],\r\n      audio: false,\r\n      durationResolutionMap: [\r\n        { duration: [6], resolution: ["768P", "1080P"] },\r\n        { duration: [10], resolution: ["768P"] },\r\n      ],\r\n    },\r\n    {\r\n      name: "\u6D77\u87BA02",\r\n      modelName: "MiniMax-Hailuo-02",\r\n      type: "video",\r\n      mode: ["text", "singleImage", "startEndRequired"],\r\n      audio: false,\r\n      durationResolutionMap: [\r\n        { duration: [6], resolution: ["512P", "768P", "1080P"] },\r\n        { duration: [10], resolution: ["512P", "768P"] },\r\n      ],\r\n    },\r\n  ],\r\n};\r\n\r\n// ============================================================\r\n// \u8F85\u52A9\u5DE5\u5177\r\n// ============================================================\r\n\r\n/**\r\n * \u83B7\u53D6\u8BF7\u6C42\u5934\r\n */\r\nconst getHeaders = (): Record<string, string> => {\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  return {\r\n    Authorization: `Bearer ${apiKey}`,\r\n    "Content-Type": "application/json",\r\n  };\r\n};\r\n\r\n/**\r\n * \u83B7\u53D6\u57FA\u7840\u8BF7\u6C42\u5730\u5740\r\n */\r\nconst getBaseUrl = (): string => {\r\n  return vendor.inputValues.baseUrl.replace(/\\/$/, "");\r\n};\r\n\r\n/**\r\n * \u4ECE ReferenceList \u6761\u76EE\u4E2D\u63D0\u53D6\u6709\u5934 base64 \u5B57\u7B26\u4E32\r\n */\r\nconst extractBase64WithHead = (ref: ReferenceList): string => {\r\n  return ref.base64.startsWith("data:") ? ref.base64 : `data:image/png;base64,${ref.base64}`;\r\n};\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  const baseUrl = getBaseUrl();\r\n\r\n  const openaiBaseUrl = `${baseUrl}/v1`;\r\n  const extraBody = model.think ? { reasoning_split: true } : {};\r\n  return createOpenAI({ baseURL: openaiBaseUrl, apiKey, extraBody }).chat(model.modelName);\r\n};\r\n\r\nconst uploadReference = async (base64: string, fileType: "image" | "audio" | "video"): Promise<ReferenceList> => {\r\n  // MiniMax\u7684\u56FE\u7247\u63A5\u53E3\u76F4\u63A5\u63A5\u53D7 base64\uFF0C\u538B\u7F29\u540E\u539F\u6837\u8FD4\u56DE\r\n  if (fileType === "image") {\r\n    const compressed = await zipImage(base64, 10 * 1024);\r\n    return { type: "image", sourceType: "base64", base64: compressed };\r\n  }\r\n  // \u89C6\u9891\u63A5\u53E3\u7684\u56FE\u7247\u53C2\u6570\u4E5F\u662F base64\uFF0C\u538B\u7F29\u523020MB\r\n  return { type: fileType, sourceType: "base64", base64 } as ReferenceList;\r\n};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const baseUrl = getBaseUrl();\r\n  const headers = getHeaders();\r\n\r\n  const reqBody: any = {\r\n    model: model.modelName,\r\n    prompt: config.prompt,\r\n    aspect_ratio: config.aspectRatio,\r\n    response_format: "base64",\r\n    n: 1,\r\n    prompt_optimizer: true,\r\n    aigc_watermark: false,\r\n  };\r\n\r\n  // \u5904\u7406\u56FE\u751F\u56FE\u53C2\u8003\r\n  const imageRefs = config.referenceList || [];\r\n  if (imageRefs.length > 0) {\r\n    const refBase64 = extractBase64WithHead(imageRefs[0]);\r\n    reqBody.subject_reference = [{ type: "character", image_file: refBase64 }];\r\n  }\r\n\r\n  logger("\u5F00\u59CB\u63D0\u4EA4MiniMax\u56FE\u50CF\u751F\u6210\u4EFB\u52A1");\r\n  const resp = await axios.post(`${baseUrl}/v1/image_generation`, reqBody, { headers });\r\n  if (resp.data.base_resp.status_code !== 0) {\r\n    throw new Error(`\u56FE\u50CF\u751F\u6210\u5931\u8D25\uFF1A${resp.data.base_resp.status_msg}`);\r\n  }\r\n  if (resp.data.metadata.success_count === 0) {\r\n    throw new Error("\u56FE\u50CF\u751F\u6210\u88AB\u5B89\u5168\u7B56\u7565\u62E6\u622A\uFF0C\u8BF7\u8C03\u6574prompt\u6216\u53C2\u8003\u56FE");\r\n  }\r\n\r\n  const imgBase64 = resp.data.data.image_base64[0];\r\n  return imgBase64.startsWith("data:") ? imgBase64 : `data:image/png;base64,${imgBase64}`;\r\n};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const baseUrl = getBaseUrl();\r\n  const headers = getHeaders();\r\n\r\n  const reqBody: any = {\r\n    model: model.modelName,\r\n    prompt: config.prompt,\r\n    duration: config.duration,\r\n    resolution: config.resolution,\r\n    aigc_watermark: false,\r\n    prompt_optimizer: true,\r\n  };\r\n\r\n  // \u63D0\u53D6\u56FE\u7247\u7C7B\u578B\u7684\u5F15\u7528\r\n  const imageRefs = (config.referenceList || []).filter((r) => r.type === "image");\r\n\r\n  if (imageRefs.length > 0) {\r\n    // \u538B\u7F29\u56FE\u7247\u523020MB\u4EE5\u5185\r\n    const compressedImages: string[] = [];\r\n    for (const ref of imageRefs) {\r\n      const base64 = extractBase64WithHead(ref);\r\n      const compressed = await zipImage(base64, 20 * 1024);\r\n      compressedImages.push(compressed);\r\n    }\r\n\r\n    if (config.mode.includes("startEndRequired")) {\r\n      if (compressedImages.length < 2) throw new Error("\u9996\u5C3E\u5E27\u6A21\u5F0F\u9700\u8981\u4E0A\u4F20\u4E24\u5F20\u56FE\u7247");\r\n      reqBody.first_frame_image = compressedImages[0];\r\n      reqBody.last_frame_image = compressedImages[1];\r\n    } else if (config.mode.includes("singleImage")) {\r\n      reqBody.first_frame_image = compressedImages[0];\r\n    }\r\n  }\r\n\r\n  logger("\u5F00\u59CB\u63D0\u4EA4MiniMax\u89C6\u9891\u751F\u6210\u4EFB\u52A1");\r\n  const submitResp = await axios.post(`${baseUrl}/v1/video_generation`, reqBody, { headers });\r\n  if (submitResp.data.base_resp.status_code !== 0) {\r\n    throw new Error(`\u4EFB\u52A1\u63D0\u4EA4\u5931\u8D25\uFF1A${submitResp.data.base_resp.status_msg}`);\r\n  }\r\n  const taskId = submitResp.data.task_id;\r\n  logger(`\u89C6\u9891\u4EFB\u52A1\u63D0\u4EA4\u6210\u529F\uFF0C\u4EFB\u52A1ID: ${taskId}`);\r\n\r\n  // \u8F6E\u8BE2\u4EFB\u52A1\u72B6\u6001\r\n  const pollResult = await pollTask(\r\n    async () => {\r\n      const queryResp = await axios.get(`${baseUrl}/v1/query/video_generation`, {\r\n        headers: getHeaders(),\r\n        params: { task_id: taskId },\r\n      });\r\n      if (queryResp.data.base_resp.status_code !== 0) {\r\n        return { completed: true, error: queryResp.data.base_resp.status_msg };\r\n      }\r\n      const status = queryResp.data.status;\r\n      if (status === "Success") {\r\n        return { completed: true, data: queryResp.data.file_id };\r\n      }\r\n      if (status === "Fail") {\r\n        return { completed: true, error: "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n      }\r\n      logger(`\u89C6\u9891\u4EFB\u52A1\u751F\u6210\u4E2D\uFF0C\u5F53\u524D\u72B6\u6001\uFF1A${status}`);\r\n      return { completed: false };\r\n    },\r\n    5000,\r\n    600000,\r\n  );\r\n\r\n  if (pollResult.error) throw new Error(pollResult.error);\r\n  const fileId = pollResult.data!;\r\n  logger(`\u89C6\u9891\u4EFB\u52A1\u751F\u6210\u6210\u529F\uFF0C\u6587\u4EF6ID: ${fileId}`);\r\n\r\n  // \u83B7\u53D6\u4E0B\u8F7D\u5730\u5740\r\n  const fileResp = await axios.get(`${baseUrl}/v1/files/retrieve`, {\r\n    headers: getHeaders(),\r\n    params: { file_id: fileId },\r\n  });\r\n  if (fileResp.data.base_resp.status_code !== 0) {\r\n    throw new Error(`\u83B7\u53D6\u6587\u4EF6\u5730\u5740\u5931\u8D25\uFF1A${fileResp.data.base_resp.status_msg}`);\r\n  }\r\n  const downloadUrl = fileResp.data.file.download_url;\r\n  logger(`\u89C6\u9891\u4E0B\u8F7D\u5730\u5740\u83B7\u53D6\u6210\u529F\uFF0C\u5F00\u59CB\u8F6CBase64`);\r\n\r\n  return await urlToBase64(downloadUrl);\r\n};\r\n\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  return {\r\n    hasUpdate: false,\r\n    latestVersion: "2.0",\r\n    notice:\r\n      "## \u65B0\u7248\u672C\u66F4\u65B0\u516C\u544A\\n1. \u9002\u914D\u65B0\u7248\u6A21\u677F\u67B6\u6784\uFF0C\u652F\u6301 ReferenceList \u7EDF\u4E00\u5F15\u7528\u7C7B\u578B\\n2. \u65B0\u589E uploadReference \u524D\u7F6E\u5904\u7406\u5668\\n3. \u4F18\u5316\u56FE\u7247\u538B\u7F29\u548C\u5F15\u7528\u63D0\u53D6\u903B\u8F91",\r\n  };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.uploadReference = uploadReference;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\n// \u8FD9\u884C\u4EE3\u7801\u7528\u4E8E\u786E\u4FDD\u5F53\u524D\u6587\u4EF6\u88AB\u8BC6\u522B\u4E3A\u6A21\u5757\uFF0C\u907F\u514D\u5168\u5C40\u53D8\u91CF\u51B2\u7A81\r\nexport {};',
       "null.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F\r\n * @version 2.0\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage" //\u5355\u56FE\u53C2\u8003\r\n  | "startEndRequired" //\u9996\u5C3E\u5E27\uFF08\u4E24\u5F20\u90FD\u5F97\u6709\uFF09\r\n  | "endFrameOptional" //\u9996\u5C3E\u5E27\uFF08\u5C3E\u5E27\u53EF\u9009\uFF09\r\n  | "startFrameOptional" //\u9996\u5C3E\u5E27\uFF08\u9996\u5E27\u53EF\u9009\uFF09\r\n  | "text" //\u6587\u672C\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[]; //\u591A\u53C2\u8003\uFF08\u6570\u5B57\u4EE3\u8868\u9650\u5236\u6570\u91CF\uFF09\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string; //\u552F\u4E00ID\uFF0C\u4F5C\u4E3A\u6587\u4EF6\u540D\u5B58\u50A8\u7528\u6237\u78C1\u76D8\u4E0A\uFF0C\u7981\u6B62\u7B26\u53F7\r\n  version: string; //\u7248\u672C\u53F7\uFF0C\u683C\u5F0F\u4E3Ax.y\uFF0C\u9700\u9075\u5B88\u8BED\u4E49\u5316\u7248\u672C\u63A7\u5236\r\n  name: string; //\u4F9B\u5E94\u5546\u540D\u79F0\r\n  author: string; //\u4F5C\u8005\r\n  description?: string; //\u63CF\u8FF0\uFF0C\u652F\u6301Markdown\u683C\u5F0F\r\n  icon?: string; //\u56FE\u6807\uFF0C\u4EC5\u652F\u6301Base64\u683C\u5F0F\uFF0C\u5EFA\u8BAE\u5C3A\u5BF8\u4E3A128x128\u50CF\u7D20\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ntype ReferenceList =\r\n  | { type: "image"; sourceType: "base64"; base64: string }\r\n  | { type: "audio"; sourceType: "base64"; base64: string }\r\n  | { type: "video"; sourceType: "base64"; base64: string };\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  referenceList?: ReferenceList[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n  referenceList?: Extract<ReferenceList, { type: "audio" }>[];\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const axios: any; // HTTP\u8BF7\u6C42\u5E93\r\ndeclare const logger: (msg: string) => void; // \u65E5\u5FD7\u51FD\u6570\r\ndeclare const jsonwebtoken: any; // JWT\u5904\u7406\u5E93\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>; // \u56FE\u7247\u538B\u7F29\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>; // \u56FE\u7247\u5206\u8FA8\u7387\u8C03\u6574\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>; // \u56FE\u7247\u5408\u6210\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const urlToBase64: (url: string) => Promise<string>; // URL\u8F6CBase64\u51FD\u6570\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>; // \u8F6E\u8BE2\u51FD\u6570\uFF0Cfn\u4E3A\u5F02\u6B65\u51FD\u6570\uFF0Cinterval\u4E3A\u8F6E\u8BE2\u95F4\u9694\uFF0Ctimeout\u4E3A\u8D85\u65F6\u65F6\u95F4\uFF0C\u8FD4\u56DEfn\u7684\u7ED3\u679C\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any; //\u6587\u672C\u6A21\u578B\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>; //\u56FE\u7247\u6A21\u578B\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>; //\u89C6\u9891\u6A21\u578B\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>; //\uFF08\u6682\u672A\u5F00\u653E\uFF09\u8BED\u97F3\u6A21\u578B\uFF0C\u8FD4\u56DE\u6709\u5934base64\u5B57\u7B26\u4E32\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>; //\u68C0\u67E5\u66F4\u65B0\u51FD\u6570\uFF0C\u8FD4\u56DE\u662F\u5426\u6709\u66F4\u65B0\u548C\u6700\u65B0\u7248\u672C\u53F7\u548C\u66F4\u516C\u544A\uFF08\u652F\u6301Markdown\u683C\u5F0F\uFF09\r\n  updateVendor?: () => Promise<string>; //\u66F4\u65B0\u51FD\u6570\uFF0C\u8FD4\u56DE\u6700\u65B0\u7684\u4EE3\u7801\u6587\u672C\r\n};\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "null",\r\n  version: "2.0",\r\n  author: "Toonflow",\r\n  name: "\u7A7A\u6A21\u677F",\r\n  description: "## \u5F00\u53D1\u6A21\u677F\uFF0C\u60A8\u53EF\u4EE5\u4F7F\u7528\u6B64\u6A21\u677F\u8FDB\u884CVibe Coding",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true },\r\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u793A\u4F8B\uFF1Ahttps://api.openai.com/v1" },\r\n  ],\r\n  inputValues: { apiKey: "", baseUrl: "https://api.openai.com/v1" },\r\n  models: [{ name: "GPT-4o", modelName: "gpt-4o", type: "text", think: false }],\r\n};\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  return createOpenAI({ baseURL: vendor.inputValues.baseUrl, apiKey }).chat(model.modelName);\r\n};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  return { hasUpdate: false, latestVersion: "2.0", notice: "## \u65B0\u7248\u672C\u66F4\u65B0\u516C\u544A" };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\n// \u8FD9\u884C\u4EE3\u7801\u7528\u4E8E\u786E\u4FDD\u5F53\u524D\u6587\u4EF6\u88AB\u8BC6\u522B\u4E3A\u6A21\u5757\uFF0C\u907F\u514D\u5168\u5C40\u53D8\u91CF\u51B2\u7A81\r\nexport {};\r\n\r\n/**\r\n * ============================================================\r\n * AI \u4EE3\u7801\u751F\u6210\u6307\u5357\r\n * ============================================================\r\n *\r\n * \u3010\u6982\u8FF0\u3011\r\n * \u672C\u6587\u4EF6\u662F Toonflow AI \u4F9B\u5E94\u5546\u9002\u914D\u6A21\u677F\u3002AI \u5728\u751F\u6210\u65B0\u4F9B\u5E94\u5546\u9002\u914D\u4EE3\u7801\u65F6\uFF0C\r\n * \u5FC5\u987B\u4E25\u683C\u9075\u5B88\u4EE5\u4E0B\u89C4\u5219\uFF0C\u5E76\u8981\u6C42\u7528\u6237\u63D0\u4F9B\u76EE\u6807\u5E73\u53F0\u7684 curl \u8C03\u7528\u793A\u4F8B\u6216 API \u6587\u6863\u4FE1\u606F\u4F5C\u4E3A\u8F93\u5165\u4F9D\u636E\u3002\r\n *\r\n * \u3010\u524D\u7F6E\u8981\u6C42\u3011\r\n * \u5728\u751F\u6210\u4EE3\u7801\u524D\uFF0C\u8BF7\u5411\u7528\u6237\u7D22\u8981\u4EE5\u4E0B\u4FE1\u606F\uFF08\u81F3\u5C11\u5176\u4E00\uFF09\uFF1A\r\n *   1. \u76EE\u6807 API \u7684 curl \u8BF7\u6C42\u793A\u4F8B\uFF08\u5305\u542B\u8BF7\u6C42\u5730\u5740\u3001Headers\u3001Body \u7ED3\u6784\u3001\u54CD\u5E94\u7ED3\u6784\uFF09\r\n *   2. \u76EE\u6807 API \u7684\u5B98\u65B9\u6587\u6863\u94FE\u63A5\u6216\u6587\u6863\u622A\u56FE/\u6587\u672C\u5185\u5BB9\r\n *   3. \u9700\u8981\u9002\u914D\u7684\u6A21\u578B\u7C7B\u578B\uFF08text / image / video / tts\uFF09\u53CA\u5176\u80FD\u529B\u8BF4\u660E\r\n * \u6CA1\u6709\u8DB3\u591F\u4FE1\u606F\u65F6\uFF0C\u5E94\u4E3B\u52A8\u8FFD\u95EE\uFF0C\u4E0D\u8981\u51ED\u7A7A\u7F16\u9020 API \u7ED3\u6784\u3002\r\n *\r\n * \u3010\u4EE3\u7801\u89C4\u5219\u3011\r\n *\r\n * 1. \u7981\u6B62\u5F15\u5165\u4EFB\u4F55\u5916\u90E8\u5305\r\n *    \u4E0D\u53EF\u4F7F\u7528 import / require\uFF0C\u4EC5\u80FD\u4F7F\u7528\u672C\u6587\u4EF6\u300C\u5168\u5C40\u58F0\u660E\u300D\u533A\u57DF\u4E2D\u5DF2\u58F0\u660E\u7684\u65B9\u6CD5\u548C\u5BF9\u8C61\uFF0C\r\n *    \u5305\u62EC\uFF1Aaxios\u3001logger\u3001jsonwebtoken\u3001zipImage\u3001zipImageResolution\u3001mergeImages\u3001\r\n *    urlToBase64\u3001pollTask\uFF0C\u4EE5\u53CA createOpenAI\u3001createDeepSeek\u3001createZhipu\u3001createQwen\u3001\r\n *    createAnthropic\u3001createOpenAICompatible\u3001createXai\u3001createMinimax\u3001\r\n *    createGoogleGenerativeAI \u7B49 AI SDK \u5DE5\u5382\u51FD\u6570\u3002\r\n *\r\n * 2. \u7981\u6B62\u5728 exports.* \u51FD\u6570\u5916\u90E8\u58F0\u660E\u79BB\u6563\u7684\u5168\u5927\u5199\u5E38\u91CF\r\n *    \u9519\u8BEF\u793A\u4F8B\uFF1Aconst API_URL = "https://..."; const MAX_RETRY = 3;\r\n *    \u5982\u679C\u786E\u5B9E\u9700\u8981\u53EF\u914D\u7F6E\u7684\u5E38\u91CF\u503C\uFF0C\u5FC5\u987B\u5C06\u5176\u58F0\u660E\u5728 vendor.inputValues \u4E2D\uFF0C\r\n *    \u901A\u8FC7 vendor.inputValues.xxx \u8BBF\u95EE\uFF0C\u8BA9\u7528\u6237\u53EF\u5728\u754C\u9762\u4E0A\u914D\u7F6E\u3002\r\n *    \u5982\u679C\u662F\u7EAF\u903B\u8F91\u5185\u90E8\u4F7F\u7528\u7684\u4E34\u65F6\u53D8\u91CF\uFF0C\u5E94\u5185\u8054\u5728\u5BF9\u5E94\u7684 exports.* \u51FD\u6570\u4F53\u5185\u90E8\uFF0C\u4F7F\u7528\u5C0F\u9A7C\u5CF0\u547D\u540D\u3002\r\n *\r\n * 3. \u903B\u8F91\u5C3D\u91CF\u805A\u5408\u5728 exports.* \u5BF9\u5E94\u7684\u51FD\u6570\u5185\u90E8\r\n *    \u6BCF\u4E2A\u9002\u914D\u51FD\u6570\uFF08textRequest / imageRequest / videoRequest / ttsRequest\uFF09\r\n *    \u5E94\u81EA\u5305\u542B\uFF0C\u5C06\u8BF7\u6C42\u6784\u9020\u3001\u53D1\u9001\u3001\u8F6E\u8BE2\u3001\u7ED3\u679C\u89E3\u6790\u7B49\u903B\u8F91\u5199\u5728\u51FD\u6570\u4F53\u5185\uFF0C\u907F\u514D\u62C6\u5206\u51FA\u5927\u91CF\u5916\u90E8\u8F85\u52A9\u51FD\u6570\u3002\r\n *    \u5982\u679C\u591A\u4E2A\u51FD\u6570\u786E\u5B9E\u5B58\u5728\u516C\u5171\u903B\u8F91\uFF08\u5982\u7B7E\u540D\u8BA1\u7B97\u3001Token \u751F\u6210\u3001\u8BF7\u6C42\u5934\u6784\u9020\uFF09\uFF0C\r\n *    \u53EF\u63D0\u53D6\u4E3A\u6587\u4EF6\u5185\u7684\u5C0F\u9A7C\u5CF0\u547D\u540D\u51FD\u6570\uFF0C\u653E\u5728\u300C\u9002\u914D\u5668\u51FD\u6570\u300D\u533A\u5757\u4E4B\u524D\u7684\u300C\u8F85\u52A9\u5DE5\u5177\u300D\u533A\u5757\u4E2D\uFF0C\r\n *    \u4E14\u4E0D\u53EF\u4F7F\u7528\u5168\u5927\u5199\u547D\u540D\u3002\r\n *\r\n * 4. \u547D\u540D\u89C4\u8303\r\n *    \u6240\u6709\u53D8\u91CF\u3001\u51FD\u6570\u4E00\u5F8B\u4F7F\u7528\u5C0F\u9A7C\u5CF0\u547D\u540D\uFF08camelCase\uFF09\uFF0C\u7981\u6B62\u4F7F\u7528 UPPER_SNAKE_CASE\u3002\r\n *\r\n * 5. \u4E0D\u9700\u8981\u91CD\u65B0\u58F0\u660E\u7C7B\u578B\r\n *    \u672C\u6587\u4EF6\u9876\u90E8\u5DF2\u5B8C\u6574\u5B9A\u4E49\u4E86\u6240\u6709\u63A5\u53E3\u548C\u7C7B\u578B\uFF08VendorConfig\u3001ImageConfig\u3001VideoConfig\u3001\r\n *    TTSConfig\u3001TextModel\u3001ImageModel\u3001VideoModel\u3001TTSModel\u3001ReferenceList\u3001PollResult \u7B49\uFF09\uFF0C\r\n *    AI \u751F\u6210\u4EE3\u7801\u65F6\u76F4\u63A5\u4F7F\u7528\u5373\u53EF\uFF0C\u4E0D\u8981\u91CD\u590D\u58F0\u660E\u3002\r\n *\r\n * 6. \u8FD4\u56DE\u503C\u89C4\u8303\r\n *    - textRequest(model)\uFF1A\u8FD4\u56DE AI SDK \u7684 chat model \u5B9E\u4F8B\uFF08\u901A\u8FC7 createOpenAI \u7B49\u5DE5\u5382\u51FD\u6570\u521B\u5EFA\uFF09\u3002\r\n *    - imageRequest(config, model)\uFF1A\u8FD4\u56DE\u6709\u5934 base64 \u5B57\u7B26\u4E32\uFF08\u5982 "data:image/png;base64,..."\uFF09\u3002\r\n *      config.referenceList \u4E3A Extract<ReferenceList, { type: "image" }>[] \u7C7B\u578B\uFF0C\r\n *      \u6BCF\u4E2A\u5F15\u7528\u6761\u76EE\u5747\u4E3A base64 \u5F62\u5F0F\uFF08sourceType \u56FA\u5B9A\u4E3A "base64"\uFF09\u3002\r\n *    - videoRequest(config, model)\uFF1A\u8FD4\u56DE\u6709\u5934 base64 \u5B57\u7B26\u4E32\uFF08\u5982 "data:video/mp4;base64,..."\uFF09\u3002\r\n *      config.referenceList \u4E3A ReferenceList[] \u7C7B\u578B\uFF0C\u53EF\u5305\u542B image / video / audio \u4E09\u79CD\u5F15\u7528\uFF0C\r\n *      \u6BCF\u4E2A\u5F15\u7528\u6761\u76EE\u5747\u4E3A base64 \u5F62\u5F0F\uFF08sourceType \u56FA\u5B9A\u4E3A "base64"\uFF09\u3002\r\n *      config.mode \u4E3A\u5F53\u524D\u6FC0\u6D3B\u7684\u89C6\u9891\u6A21\u5F0F\u6570\u7EC4\uFF0C\u9700\u6839\u636E mode \u51B3\u5B9A\u5982\u4F55\u4F7F\u7528 referenceList\u3002\r\n *    - ttsRequest(config, model)\uFF1A\u8FD4\u56DE\u6709\u5934 base64 \u5B57\u7B26\u4E32\uFF08\u5982 "data:audio/mp3;base64,..."\uFF09\u3002\r\n *      config.referenceList \u4E3A Extract<ReferenceList, { type: "audio" }>[] \u7C7B\u578B\uFF08\u97F3\u9891\u53C2\u8003\uFF09\u3002\r\n *    \u5F53 API \u8FD4\u56DE\u7684\u662F URL \u800C\u975E\u4E8C\u8FDB\u5236\u6570\u636E\u65F6\uFF0C\u4F7F\u7528 urlToBase64(url) \u8F6C\u6362\u3002\r\n *\r\n * 7. ReferenceList \u4E0E VideoMode \u8BF4\u660E\r\n *    ReferenceList \u662F\u7EDF\u4E00\u7684\u591A\u5A92\u4F53\u5F15\u7528\u7C7B\u578B\uFF0C\u6BCF\u4E2A\u6761\u76EE\u5305\u542B\uFF1A\r\n *      - type: "image" | "audio" | "video"\uFF08\u5A92\u4F53\u7C7B\u578B\uFF09\r\n *      - sourceType: "base64"\uFF08\u5F53\u524D\u6A21\u677F\u56FA\u5B9A\u4E3A base64\uFF09\r\n *      - base64\uFF08\u5BF9\u5E94\u7684\u6570\u636E\uFF09\r\n *\r\n *    VideoMode \u5B9A\u4E49\u4E86\u89C6\u9891\u6A21\u578B\u652F\u6301\u7684\u8F93\u5165\u6A21\u5F0F\uFF1A\r\n *      - "text"\uFF1A\u7EAF\u6587\u672C\u751F\u6210\u89C6\u9891\r\n *      - "singleImage"\uFF1A\u5355\u5F20\u9996\u5E27\u56FE\u7247\r\n *      - "startEndRequired"\uFF1A\u9996\u5C3E\u5E27\uFF08\u4E24\u5F20\u90FD\u5FC5\u987B\u63D0\u4F9B\uFF09\r\n *      - "endFrameOptional"\uFF1A\u9996\u5C3E\u5E27\uFF08\u5C3E\u5E27\u53EF\u9009\uFF09\r\n *      - "startFrameOptional"\uFF1A\u9996\u5C3E\u5E27\uFF08\u9996\u5E27\u53EF\u9009\uFF09\r\n *      - \u6570\u7EC4\u5F62\u5F0F\u5982 ["imageReference:9", "videoReference:3", "audioReference:3"]\uFF1A\r\n *        \u591A\u6A21\u6001\u53C2\u8003\u6A21\u5F0F\uFF0C\u6570\u5B57\u8868\u793A\u8BE5\u7C7B\u578B\u7684\u6700\u5927\u6570\u91CF\u9650\u5236\u3002\r\n *\r\n *    \u5728 videoRequest \u4E2D\uFF0Cconfig.mode \u8868\u793A\u5F53\u524D\u9009\u62E9\u7684\u6A21\u5F0F\uFF0C\u9700\u6839\u636E\u5176\u503C\u51B3\u5B9A\uFF1A\r\n *      - \u5982\u4F55\u4ECE config.referenceList \u4E2D\u63D0\u53D6\u5BF9\u5E94\u7C7B\u578B\u7684\u5F15\u7528\r\n *      - \u5982\u4F55\u6784\u9020 API \u8BF7\u6C42\u4F53\u4E2D\u7684\u56FE\u7247/\u89C6\u9891/\u97F3\u9891\u53C2\u6570\r\n *\r\n * 8. \u5F02\u6B65\u4EFB\u52A1\u5904\u7406\r\n *    \u5BF9\u4E8E\u89C6\u9891\u751F\u6210\u7B49\u9700\u8981\u8F6E\u8BE2\u7684\u5F02\u6B65\u4EFB\u52A1\uFF0C\u4F7F\u7528\u5168\u5C40\u7684 pollTask \u51FD\u6570\uFF1A\r\n *    const result = await pollTask(async () => {\r\n *      const resp = await axios.get(...);\r\n *      if (resp.data.status === "SUCCESS") return { completed: true, data: resp.data.url };\r\n *      if (resp.data.status === "FAILED") return { completed: true, error: resp.data.message };\r\n *      return { completed: false };\r\n *    }, 5000, 600000); // \u6BCF5\u79D2\u8F6E\u8BE2\uFF0C10\u5206\u949F\u8D85\u65F6\r\n *    if (result.error) throw new Error(result.error);\r\n *    return await urlToBase64(result.data!);\r\n *\r\n * 9. \u9519\u8BEF\u5904\u7406\r\n *    \u5728\u6BCF\u4E2A\u51FD\u6570\u5F00\u5934\u6821\u9A8C\u5FC5\u9700\u53C2\u6570\uFF08\u5982 API Key\uFF09\uFF0C\u7F3A\u5931\u65F6\u4F7F\u7528 throw new Error("...") \u629B\u51FA\u3002\r\n *    API \u8BF7\u6C42\u5931\u8D25\u65F6\uFF0C\u4ECE\u54CD\u5E94\u4E2D\u63D0\u53D6\u6709\u610F\u4E49\u7684\u9519\u8BEF\u4FE1\u606F\u629B\u51FA\uFF0C\u4E0D\u8981\u541E\u6389\u5F02\u5E38\u3002\r\n *\r\n * 10. \u65E5\u5FD7\u8F93\u51FA\r\n *     \u5728\u5173\u952E\u6B65\u9AA4\u4F7F\u7528 logger("...") \u8F93\u51FA\u65E5\u5FD7\uFF08\u5982"\u5F00\u59CB\u63D0\u4EA4\u4EFB\u52A1"\u3001"\u4EFB\u52A1ID: xxx"\u3001"\u8F6E\u8BE2\u4E2D..."\uFF09\uFF0C\r\n *     \u4FBF\u4E8E\u8C03\u8BD5\u3002\r\n *\r\n * 11. vendor \u914D\u7F6E\u586B\u5199\r\n *     - id\uFF1A\u7EAF\u82F1\u6587\u5C0F\u5199\uFF0C\u4F5C\u4E3A\u6587\u4EF6\u540D\u4F7F\u7528\uFF0C\u7981\u6B62\u7279\u6B8A\u7B26\u53F7\u548C\u7A7A\u683C\u3002\r\n *     - version\uFF1A\u8BED\u4E49\u5316\u7248\u672C\u683C\u5F0F "x.y"\u3002\r\n *     - inputs\uFF1A\u6839\u636E\u76EE\u6807 API \u6240\u9700\u7684\u8BA4\u8BC1\u4FE1\u606F\u914D\u7F6E\uFF08API Key\u3001Secret\u3001\u8BF7\u6C42\u5730\u5740\u7B49\uFF09\u3002\r\n *     - models\uFF1A\u6839\u636E\u76EE\u6807\u5E73\u53F0\u652F\u6301\u7684\u6A21\u578B\u5217\u8868\u586B\u5199\uFF0C\u6CE8\u610F\u6B63\u786E\u8BBE\u7F6E type \u548C\u5404\u6A21\u578B\u7279\u6709\u5B57\u6BB5\u3002\r\n *       - VideoModel \u7684 mode \u5BF9\u5E94 API \u652F\u6301\u7684\u8F93\u5165\u6A21\u5F0F\uFF08\u53C2\u89C1\u89C4\u5219 7 \u7684 VideoMode \u8BF4\u660E\uFF09\u3002\r\n *       - VideoModel \u7684 audio \u5B57\u6BB5\uFF1Atrue\uFF08\u59CB\u7EC8\u751F\u6210\u97F3\u9891\uFF09\u3001false\uFF08\u4E0D\u751F\u6210\uFF09\u3001"optional"\uFF08\u7528\u6237\u53EF\u9009\uFF09\u3002\r\n *       - VideoModel \u7684 durationResolutionMap \u5BF9\u5E94\u5404\u65F6\u957F\u4E0B\u53EF\u9009\u7684\u5206\u8FA8\u7387\u3002\r\n *       - VideoModel \u7684 associationSkills \u53EF\u9009\uFF0C\u7528\u4E8E\u63CF\u8FF0\u6A21\u578B\u7684\u7279\u6B8A\u80FD\u529B\u3002\r\n *       - ImageModel \u7684 mode \u5BF9\u5E94 API \u652F\u6301\u7684\u751F\u56FE\u6A21\u5F0F\uFF08"text" \u7EAF\u6587\u672C\u3001"singleImage" \u5355\u56FE\u53C2\u8003\u3001"multiReference" \u591A\u56FE\u53C2\u8003\uFF09\u3002\r\n *       - TTSModel \u7684 voices \u5BF9\u5E94\u53EF\u9009\u7684\u97F3\u8272\u5217\u8868\u3002\r\n *\r\n * 12. \u56FE\u7247\u5904\u7406\r\n *     - \u9700\u8981\u538B\u7F29\u56FE\u7247\u4F53\u79EF\u65F6\u4F7F\u7528 zipImage(base64, maxSizeKB)\u3002\r\n *     - \u9700\u8981\u8C03\u6574\u56FE\u7247\u5206\u8FA8\u7387\u65F6\u4F7F\u7528 zipImageResolution(base64, width, height)\u3002\r\n *     - \u9700\u8981\u5C06\u591A\u5F20\u56FE\u7247\u62FC\u5408\u4E3A\u4E00\u5F20\u65F6\u4F7F\u7528 mergeImages(base64Arr, maxSize)\u3002\r\n *     - \u4EE5\u4E0A\u51FD\u6570\u5747\u63A5\u6536\u548C\u8FD4\u56DE\u6709\u5934 base64 \u5B57\u7B26\u4E32\u3002\r\n *\r\n * 13. \u6587\u4EF6\u7ED3\u6784\r\n *     \u751F\u6210\u7684\u4EE3\u7801\u5FC5\u987B\u4FDD\u6301\u672C\u6A21\u677F\u7684\u6574\u4F53\u7ED3\u6784\uFF1A\r\n *     \u7C7B\u578B\u5B9A\u4E49\u533A \u2192 \u5168\u5C40\u58F0\u660E\u533A \u2192 \u4F9B\u5E94\u5546\u914D\u7F6E\u533A \u2192 [\u8F85\u52A9\u5DE5\u5177\u533A\uFF08\u53EF\u9009\uFF09] \u2192 \u9002\u914D\u5668\u51FD\u6570\u533A \u2192 \u5BFC\u51FA\u533A\r\n *     \u4E0D\u8981\u6253\u4E71\u987A\u5E8F\uFF0C\u4E0D\u8981\u5220\u9664\u5DF2\u6709\u7684\u7ED3\u6784\u6CE8\u91CA\u5206\u9694\u7EBF\u3002\r\n *     \u8F85\u52A9\u5DE5\u5177\u533A\u7528\u4E8E\u653E\u7F6E\u591A\u4E2A\u9002\u914D\u5668\u51FD\u6570\u5171\u4EAB\u7684\u5C0F\u9A7C\u5CF0\u547D\u540D\u8F85\u52A9\u51FD\u6570\uFF08\u5982 getHeaders\u3001getBaseUrl\uFF09\u3002\r\n *\r\n * 14. \u5BFC\u51FA\u89C4\u8303\r\n *     \u5FC5\u987B\u5BFC\u51FA\u4EE5\u4E0B\u5B57\u6BB5\uFF08\u901A\u8FC7 exports.xxx = xxx \u8D4B\u503C\uFF09\uFF1A\r\n *       - exports.vendor\uFF08\u5FC5\u987B\uFF09\r\n *       - exports.textRequest\uFF08\u5FC5\u987B\uFF09\r\n *       - exports.imageRequest\uFF08\u5FC5\u987B\uFF09\r\n *       - exports.videoRequest\uFF08\u5FC5\u987B\uFF09\r\n *       - exports.ttsRequest\uFF08\u5FC5\u987B\uFF09\r\n *       - exports.checkForUpdates\uFF08\u53EF\u9009\uFF09\r\n *       - exports.updateVendor\uFF08\u53EF\u9009\uFF09\r\n *     \u672A\u5B9E\u73B0\u7684\u9002\u914D\u5668\u51FD\u6570\u4FDD\u7559\u7A7A\u5B9E\u73B0\uFF08return ""\uFF09\uFF0C\u4E0D\u53EF\u7701\u7565\u5BFC\u51FA\u3002\r\n *     \u6587\u4EF6\u672B\u5C3E\u5FC5\u987B\u5305\u542B export {}; \u4EE5\u786E\u4FDD\u6587\u4EF6\u88AB\u8BC6\u522B\u4E3A\u6A21\u5757\u3002\r\n *\r\n * \u3010\u751F\u6210\u6D41\u7A0B\u3011\r\n * \u5F53\u7528\u6237\u8BF7\u6C42\u751F\u6210\u65B0\u7684\u4F9B\u5E94\u5546\u9002\u914D\u65F6\uFF1A\r\n *   1. \u786E\u8BA4\u7528\u6237\u5DF2\u63D0\u4F9B curl \u793A\u4F8B\u6216 API \u6587\u6863\u3002\r\n *   2. \u5206\u6790 API \u7684\u8BA4\u8BC1\u65B9\u5F0F\u3001\u7AEF\u70B9\u5730\u5740\u3001\u8BF7\u6C42/\u54CD\u5E94\u7ED3\u6784\u3002\r\n *   3. \u57FA\u4E8E\u672C\u6A21\u677F\u7ED3\u6784\uFF0C\u586B\u5145 vendor \u914D\u7F6E\u548C\u5BF9\u5E94\u7684\u9002\u914D\u5668\u51FD\u6570\u3002\r\n *   4. \u6839\u636E\u5F53\u524D\u6A21\u677F\u7684 ReferenceList \u5B9A\u4E49\uFF0C\u6309 base64 \u5F62\u5F0F\u6784\u9020\u548C\u6D88\u8D39 referenceList\u3002\r\n *   5. \u4EC5\u5B9E\u73B0\u7528\u6237\u9700\u8981\u7684\u6A21\u578B\u7C7B\u578B\uFF0C\u672A\u7528\u5230\u7684\u51FD\u6570\u4FDD\u7559\u7A7A\u5B9E\u73B0\uFF08return ""\uFF09\u3002\r\n *   6. \u751F\u6210\u5B8C\u6574\u53EF\u7528\u7684\u4EE3\u7801\uFF0C\u786E\u4FDD\u65E0\u8BED\u6CD5\u9519\u8BEF\u3001\u65E0\u9057\u6F0F\u5BFC\u51FA\u3002\r\n */\r\n',
       "openai.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F\r\n * @version 2.0\r\n */\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\ntype VideoMode =\r\n  | "singleImage"\r\n  | "startEndRequired"\r\n  | "endFrameOptional"\r\n  | "startFrameOptional"\r\n  | "text"\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\ninterface VendorConfig {\r\n  id: string;\r\n  version: string;\r\n  name: string;\r\n  author: string;\r\n  description?: string;\r\n  icon?: string;\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  imageBase64: string[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  imageBase64?: string[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n}\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\ndeclare const axios: any;\r\ndeclare const logger: (msg: string) => void;\r\ndeclare const jsonwebtoken: any;\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\r\n  updateVendor?: () => Promise<string>;\r\n};\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\nconst vendor: VendorConfig = {\r\n  id: "openai",\r\n  version: "2.0",\r\n  author: "Toonflow",\r\n  name: "OpenAI\u6807\u51C6\u63A5\u53E3",\r\n  description: "OpenAI\u6807\u51C6\u683C\u5F0F\u63A5\u53E3\uFF0C\u53EF\u4FEE\u6539\u8BF7\u6C42\u5730\u5740\u5E76\u624B\u52A8\u6DFB\u52A0\u6A21\u578B\u3002",\r\n  icon: "",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true },\r\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u4EE5v1\u7ED3\u675F\uFF0C\u793A\u4F8B\uFF1Ahttps://api.openai.com/v1" },\r\n  ],\r\n  inputValues: {\r\n    apiKey: "",\r\n    baseUrl: "https://api.openai.com/v1",\r\n  },\r\n  models: [\r\n    { name: "GPT-4o", modelName: "gpt-4o", type: "text", think: false },\r\n    { name: "GPT-4.1", modelName: "gpt-4.1", type: "text", think: false },\r\n    { name: "GPT-5.1", modelName: "gpt-5.1", type: "text", think: false },\r\n    { name: "GPT-5.2", modelName: "gpt-5.2", type: "text", think: false },\r\n    { name: "GPT-5.4", modelName: "gpt-5.4", type: "text", think: false },\r\n  ],\r\n};\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  return createOpenAI({ baseURL: vendor.inputValues.baseUrl, apiKey }).chat(model.modelName);\r\n};\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  return "";\r\n};\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  return "";\r\n};\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  return { hasUpdate: false, latestVersion: "2.0", notice: "" };\r\n};\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\nexport {};',
+      "openlux.ts": '/**\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - OpenLux\n * @version 2.5\n *\n * \u8BF4\u660E\uFF1A\n * 1) OpenLux \u4E3A AI \u6A21\u578B\u805A\u5408\u4E2D\u8F6C\u5E73\u53F0\uFF0COpenAI \u517C\u5BB9\u683C\u5F0F\n * 2) \u6587\u672C\u63A5\u53E3\uFF1Ahttps://api.openlux.ai/v1\uFF08OpenAI \u517C\u5BB9\uFF09\uFF0C\u652F\u6301 GPT/Claude/DeepSeek/Gemini \u7B49\u6A21\u578B\n * 3) \u56FE\u7247\u63A5\u53E3\uFF1A\n *    - \u6587\u751F\u56FE\uFF1APOST /images/generations\uFF08JSON\uFF09\n *    - \u56FE\u751F\u56FE\uFF1APOST /images/edits\uFF08multipart\uFF0C\u53C2\u8003\u56FE\u968F form-data \u4E0A\u4F20\uFF09\n *    \u652F\u6301 gpt-image-2\u3001gemini-3.1-flash-image\uFF08Nano Banana 2\uFF09\u7B49\n * 4) TTS \u63A5\u53E3\uFF1A\n *    - OpenAI \u517C\u5BB9\uFF1APOST /v1/audio/speech\uFF08tts-1\u3001gpt-4o-mini-tts \u7B49\uFF09\n *    - MiniMax \u5F02\u6B65\uFF1APOST /minimax/v1/t2a_async_v2\uFF08MiniMax-Voice-Design \u6D77\u87BA\u97F3\u8272\u8BBE\u8BA1\uFF09\n *    \u652F\u6301 tts-1\u3001tts-1-hd\u3001gpt-4o-mini-tts\u3001MiniMax-Voice-Design \u7B49\n * 5) \u6A21\u578B\u5217\u8868\u53EF\u5728 OpenLux \u63A7\u5236\u53F0\u67E5\u770B\uFF08Console \u2192 supported models\uFF09\u6216 GET /v1/models\n */\n\n// ============================================================\n// \u7C7B\u578B\u5B9A\u4E49\n// ============================================================\ntype VideoMode =\n  | "singleImage"\n  | "startEndRequired"\n  | "endFrameOptional"\n  | "startFrameOptional"\n  | "text"\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\ninterface TextModel {\n  name: string;\n  modelName: string;\n  type: "text";\n  think: boolean;\n}\ninterface ImageModel {\n  name: string;\n  modelName: string;\n  type: "image";\n  mode: ("text" | "singleImage" | "multiReference")[];\n  associationSkills?: string;\n}\ninterface VideoModel {\n  name: string;\n  modelName: string;\n  type: "video";\n  mode: VideoMode[];\n  associationSkills?: string;\n  audio: "optional" | false | true;\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\n}\ninterface TTSModel {\n  name: string;\n  modelName: string;\n  type: "tts";\n  voices: { title: string; voice: string }[];\n}\ninterface VendorConfig {\n  id: string;\n  version: string;\n  name: string;\n  author: string;\n  description?: string;\n  icon?: string;\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\n  inputValues: Record<string, string>;\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\n}\ntype ReferenceList =\n  | { type: "image"; sourceType: "base64"; base64: string }\n  | { type: "audio"; sourceType: "base64"; base64: string }\n  | { type: "video"; sourceType: "base64"; base64: string };\ninterface ImageConfig {\n  prompt: string;\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\n  size: "1K" | "2K" | "4K";\n  aspectRatio: `${number}:${number}`;\n}\ninterface VideoConfig {\n  duration: number;\n  resolution: string;\n  aspectRatio: "16:9" | "9:16";\n  prompt: string;\n  referenceList?: ReferenceList[];\n  audio?: boolean;\n  mode: VideoMode[];\n}\ninterface TTSConfig {\n  text: string;\n  voice: string;\n  speechRate: number;\n  pitchRate: number;\n  volume: number;\n}\ninterface PollResult {\n  completed: boolean;\n  data?: string;\n  error?: string;\n}\n// ============================================================\n// \u5168\u5C40\u58F0\u660E\n// ============================================================\ndeclare const axios: any;\ndeclare const logger: (msg: string) => void;\ndeclare const jsonwebtoken: any;\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\ndeclare const urlToBase64: (url: string) => Promise<string>;\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\ndeclare const createOpenAI: any;\ndeclare const createDeepSeek: any;\ndeclare const createZhipu: any;\ndeclare const createQwen: any;\ndeclare const createAnthropic: any;\ndeclare const createOpenAICompatible: any;\ndeclare const createXai: any;\ndeclare const createMinimax: any;\ndeclare const createGoogleGenerativeAI: any;\ndeclare const Buffer: any;\ndeclare const FormData: any;\ndeclare const TextDecoder: any;\ndeclare const TextEncoder: any;\ndeclare const TransformStream: any;\ndeclare const Response: any;\ndeclare const exports: {\n  vendor: VendorConfig;\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\n  updateVendor?: () => Promise<string>;\n};\n// ============================================================\n// \u4F9B\u5E94\u5546\u914D\u7F6E\n// ============================================================\nconst vendor: VendorConfig = {\n  id: "openlux",\n  version: "2.4",\n  author: "Toonflow",\n  name: "OpenLux",\n  description:\n    "OpenLux AI \u805A\u5408\u4E2D\u8F6C\u5E73\u53F0\uFF08OpenAI \u517C\u5BB9\uFF09\uFF0C\u652F\u6301 GPT / Claude / DeepSeek / Gemini \u6587\u672C\u5BF9\u8BDD\u53CA\u56FE\u7247\u751F\u6210/\u56FE\u751F\u56FE\u3002\\n[\u5B98\u65B9\u6587\u6863](https://doc.openlux.ai) \uFF5C [\u63A7\u5236\u53F0](https://console.openlux.ai)\\n\\n\u53EF\u7528\u6A21\u578B\u8BF7\u5728 OpenLux \u63A7\u5236\u53F0\u300Csupported models\u300D\u67E5\u770B\uFF0C\u6216\u586B\u5165\u5BC6\u94A5\u540E\u8BBF\u95EE `GET /v1/models`\uFF1B\u4E5F\u53EF\u5728\u4E0B\u65B9\u624B\u52A8\u6DFB\u52A0/\u4FEE\u6539\u6A21\u578B\u3002",\n  icon: "",\n  inputs: [\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "Console \u2192 API tokens \u521B\u5EFA\uFF0C\u683C\u5F0F sk-xxx" },\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u4EE5v1\u7ED3\u675F\uFF0C\u793A\u4F8B\uFF1Ahttps://api.openlux.ai/v1" },\n  ],\n  inputValues: {\n    apiKey: "",\n    baseUrl: "https://api.openlux.ai/v1",\n  },\n  models: [\n    // ---- \u6587\u672C\u5BF9\u8BDD ----\n    { name: "GPT-5.6 Sol", modelName: "gpt-5.6-sol", type: "text", think: false },\n    { name: "Claude Opus 5", modelName: "claude-opus-5", type: "text", think: false },\n    { name: "Claude Fable 5", modelName: "claude-fable-5", type: "text", think: false },\n    { name: "Claude Opus 4.8", modelName: "claude-opus-4-8", type: "text", think: false },\n    { name: "DeepSeek V4 Flash", modelName: "deepseek-v4-flash", type: "text", think: false },\n    { name: "DeepSeek V4 Pro", modelName: "deepseek-v4-pro", type: "text", think: false },\n    { name: "Gemini 3.7 Flash", modelName: "gemini-3.7-flash", type: "text", think: false },\n    // ---- \u9AD8\u6027\u4EF7\u6BD4\u591A\u6A21\u6001\uFF08\u652F\u6301\u56FE\u7247\u5206\u6790/\u89C6\u89C9\u6253\u6807\uFF09----\n    { name: "Gemini 3.5 Flash-Lite\uFF08\u4FBF\u5B9C\xB7\u89C6\u89C9\uFF09", modelName: "gemini-3.5-flash-lite", type: "text", think: false },\n    { name: "Gemini 3.1 Flash-Lite\uFF08\u66F4\u7701\xB7\u89C6\u89C9\uFF09", modelName: "gemini-3.1-flash-lite", type: "text", think: false },\n    { name: "Gemini 2.5 Flash-Lite\uFF08\u6781\u81F4\u7701\u94B1\xB7\u89C6\u89C9\uFF09", modelName: "gemini-2.5-flash-lite", type: "text", think: false },\n    // ---- \u56FE\u7247\u751F\u6210\uFF08\u6587\u751F\u56FE + \u56FE\u751F\u56FE\uFF09----\n    { name: "GPT Image 2", modelName: "gpt-image-2", type: "image", mode: ["text", "singleImage", "multiReference"] },\n    { name: "Nano Banana 2", modelName: "gemini-3.1-flash-image", type: "image", mode: ["text", "singleImage", "multiReference"] },\n    // ---- TTS \u8BED\u97F3\u5408\u6210 ----\n    {\n      name: "GPT-4o Mini TTS",\n      modelName: "gpt-4o-mini-tts",\n      type: "tts",\n      voices: [\n        { title: "Alloy\uFF08\u5747\u8861\uFF09", voice: "alloy" },\n        { title: "Echo\uFF08\u6E29\u6696\uFF09", voice: "echo" },\n        { title: "Fable\uFF08\u660E\u4EAE\uFF09", voice: "fable" },\n        { title: "Onyx\uFF08\u4F4E\u6C89\uFF09", voice: "onyx" },\n        { title: "Nova\uFF08\u67D4\u548C\uFF09", voice: "nova" },\n        { title: "Shimmer\uFF08\u6E05\u4EAE\uFF09", voice: "shimmer" },\n      ],\n    },\n    {\n      name: "TTS-1",\n      modelName: "tts-1",\n      type: "tts",\n      voices: [\n        { title: "Alloy\uFF08\u5747\u8861\uFF09", voice: "alloy" },\n        { title: "Echo\uFF08\u6E29\u6696\uFF09", voice: "echo" },\n        { title: "Fable\uFF08\u660E\u4EAE\uFF09", voice: "fable" },\n        { title: "Onyx\uFF08\u4F4E\u6C89\uFF09", voice: "onyx" },\n        { title: "Nova\uFF08\u67D4\u548C\uFF09", voice: "nova" },\n        { title: "Shimmer\uFF08\u6E05\u4EAE\uFF09", voice: "shimmer" },\n      ],\n    },\n    {\n      name: "MiniMax-Voice-Design\uFF08\u6D77\u87BA\u97F3\u8272\u8BBE\u8BA1\uFF09",\n      modelName: "MiniMax-Voice-Design",\n      type: "tts",\n      voices: [\n        { title: "\u6E29\u67D4\u5973\u58F0-\u8F7B\u6E05", voice: "female-qn-qingse" },\n        { title: "\u6D3B\u6CFC\u5973\u58F0-\u751C\u751C", voice: "female-tianmei" },\n        { title: "\u78C1\u6027\u7537\u58F0-\u6C89\u7A33", voice: "male-qn-jingying" },\n        { title: "\u9752\u5E74\u7537\u58F0-\u9633\u5149", voice: "male-calm" },\n        { title: "\u9ED8\u8BA4\u97F3\u8272", voice: "male-qn-qingse" },\n      ],\n    },\n  ],\n};\n// ============================================================\n// \u8F85\u52A9\u51FD\u6570\n// ============================================================\nconst getHeaders = () => {\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  return {\n    "Content-Type": "application/json",\n    Authorization: `Bearer ${apiKey}`,\n  };\n};\n\n// ============================================================\n// SSE \u6D41\u6E05\u6D17\uFF1A\u90E8\u5206\u4E2D\u8F6C\u6A21\u578B\uFF08\u5982 deepseek-v4-flash\uFF09\u5728 tool_calls \u5206\u7247\u91CC\u53D1\u9001\n// "type":""/"id":""/"name":""\uFF08\u6807\u51C6\u5E94\u4E3A "type":"function" \u6216\u7701\u7565\u5B57\u6BB5\uFF09\uFF0C\n// AI SDK \u4E25\u683C\u6821\u9A8C\u4F1A\u6574\u5757\u4E22\u5F03\u5206\u7247\uFF0C\u5BFC\u81F4\u5DE5\u5177\u8C03\u7528\u53C2\u6570\u4E22\u5931\u2014\u2014\u8868\u73B0\u4E3A\u51B3\u7B56\u5C42\n// \u6D3E\u53D1\u5B50\u4EFB\u52A1\u540E\u65E0\u54CD\u5E94\u3002\u8FD9\u91CC\u5728\u6D41\u4E0A\u539F\u4F4D\u4FEE\u6B63\u4E3A\u6807\u51C6\u683C\u5F0F\u3002\n// ============================================================\nconst sanitizeSseLine = (line: string): string => {\n  if (!line.includes(\'"tool_calls"\')) return line;\n  const prefixMatch = line.match(/^(\\s*data:\\s?)(.*)$/);\n  if (!prefixMatch) return line;\n  const dataRaw = prefixMatch[2];\n  if (!dataRaw || dataRaw === "[DONE]") return line;\n  try {\n    const obj = JSON.parse(dataRaw);\n    let changed = false;\n    for (const choice of obj.choices ?? []) {\n      const tcs = choice?.delta?.tool_calls;\n      if (!Array.isArray(tcs)) continue;\n      for (const tc of tcs) {\n        if (!tc || typeof tc !== "object") continue;\n        if (tc.type === "" || tc.type == null) {\n          tc.type = "function";\n          changed = true;\n        }\n        if (tc.id === "") {\n          delete tc.id;\n          changed = true;\n        }\n        if (tc.function && tc.function.name === "") {\n          delete tc.function.name;\n          changed = true;\n        }\n      }\n    }\n    if (!changed) return line;\n    return `${prefixMatch[1]}${JSON.stringify(obj)}`;\n  } catch {\n    return line;\n  }\n};\n\nconst makeSanitizedFetch = () => async (url: any, init?: any) => {\n  const res = await fetch(url, init);\n  const contentType = String(res.headers?.get?.("content-type") ?? "");\n  if (!res.ok || !res.body || !contentType.includes("text/event-stream")) return res;\n  const decoder = new TextDecoder();\n  const encoder = new TextEncoder();\n  let buffer = "";\n  const fixStream = new TransformStream({\n    transform(chunk: any, controller: any) {\n      buffer += decoder.decode(chunk, { stream: true });\n      const lines = buffer.split(/\\r?\\n/);\n      buffer = lines.pop() ?? "";\n      for (const line of lines) controller.enqueue(encoder.encode(`${sanitizeSseLine(line)}\\n`));\n    },\n    flush(controller: any) {\n      buffer += decoder.decode();\n      if (buffer.trim()) controller.enqueue(encoder.encode(sanitizeSseLine(buffer)));\n    },\n  });\n  return new Response(res.body.pipeThrough(fixStream), { status: res.status, statusText: res.statusText, headers: res.headers });\n};\n// \u89E3\u6790 OpenAI \u517C\u5BB9\u56FE\u7247\u54CD\u5E94\uFF08url \u6216 b64_json\uFF09\nconst parseImageResponse = async (data: any): Promise<string> => {\n  const result = data?.data?.[0];\n  if (!result) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u672A\u8FD4\u56DE\u7ED3\u679C ${JSON.stringify(data).slice(0, 200)}`);\n  const image = result.b64_json || result.url;\n  if (!image) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u65E0\u56FE\u7247\u6570\u636E ${JSON.stringify(data).slice(0, 200)}`);\n  if (image.startsWith("data:") || image.length > 300) return image;\n  return await urlToBase64(image);\n};\n// ============================================================\n// \u9002\u914D\u5668\u51FD\u6570\n// ============================================================\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  return createOpenAI({ baseURL: vendor.inputValues.baseUrl, apiKey, fetch: makeSanitizedFetch() }).chat(model.modelName);\n};\n\n// ============================================================\n// \u5206\u8FA8\u7387\u6863\u4F4D + \u6BD4\u4F8B \u2192 OpenAI Images \u534F\u8BAE\u8981\u6C42\u7684 "\u5BBDx\u9AD8" \u50CF\u7D20\u5C3A\u5BF8\n// \u8BF4\u660E\uFF1AOpenAI Images \u534F\u8BAE\u5BF9 gpt-image \u7CFB\u5217\u53EA\u8BA4 size="WxH"\uFF08\u5BBD\u9AD8\u5747\u80FD\u88AB16\u6574\u9664\uFF0C\n// \u6BD4\u4F8B\u9700\u5728 1:3 ~ 3:1 \u4E4B\u95F4\uFF09\uFF1Baspect_ratio \u662F OpenRouter \u7B49\u9002\u914D\u5668\u5C42\u7684\u79C1\u6709\u6269\u5C55\uFF0C\n// OpenLux \u900F\u4F20\u4E0A\u6E38\u65F6\u4F1A\u88AB\u5FFD\u7565\uFF08\u5B9E\u6D4B gpt-image-2 \u8F93\u51FA\u6B63\u65B9\u5F62\uFF09\uFF0C\u56E0\u6B64\u5FC5\u987B\u6362\u7B97\u6210\u50CF\u7D20\u5C3A\u5BF8\u3002\n// ============================================================\nconst PIXEL_SIZE_MAP: Record<string, Record<string, string>> = {\n  "1K": { "16:9": "1280x720", "9:16": "720x1280", "1:1": "1024x1024", "4:3": "1152x864", "3:4": "864x1152" },\n  "2K": { "16:9": "2048x1152", "9:16": "1152x2048", "1:1": "2048x2048", "4:3": "2048x1536", "3:4": "1536x2048" },\n  "4K": { "16:9": "4096x2304", "9:16": "2304x4096", "1:1": "4096x4096", "4:3": "3840x2880", "3:4": "2880x3840" },\n};\nconst toPixelSize = (tier: string, ratio: string): string => {\n  const hit = PIXEL_SIZE_MAP[tier]?.[ratio];\n  if (hit) return hit;\n  // \u672A\u77E5\u6BD4\u4F8B\u515C\u5E95\uFF1A\u957F\u8FB9\u6309\u6863\u4F4D\u56FA\u5B9A\uFF0C\u77ED\u8FB9\u6309\u6BD4\u4F8B\u6362\u7B97\u5E76\u53D616\u7684\u500D\u6570\uFF08\u4E0D\u5C0F\u4E8E256\uFF09\n  const [w, h] = String(ratio || "16:9").split(":").map(Number);\n  const long = tier === "4K" ? 4096 : tier === "2K" ? 2048 : 1280;\n  if (!w || !h) return `${long}x${Math.round(((long * 9) / 16) / 16) * 16}`;\n  const short = Math.max(256, Math.round(((long * Math.min(w, h)) / Math.max(w, h)) / 16) * 16);\n  return w >= h ? `${long}x${short}` : `${short}x${long}`;\n};\n\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const baseUrl = vendor.inputValues.baseUrl.replace(/\\/+$/, "");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n\n  const refs = config.referenceList || [];\n  const pixelSize = toPixelSize(config.size || "1K", config.aspectRatio || "16:9");\n  // \u65E0\u53C2\u8003\u56FE \u2192 \u6587\u751F\u56FE\uFF08JSON\uFF09\n  if (refs.length === 0) {\n    const requestBody: any = {\n      model: model.modelName,\n      prompt: config.prompt,\n      size: pixelSize,\n      aspect_ratio: config.aspectRatio || "16:9", // \u4FDD\u7559\u7ED9\u652F\u6301\u8BE5\u6269\u5C55\u5B57\u6BB5\u7684\u6A21\u578B\uFF08\u5982 gemini \u7CFB\uFF09\n    };\n    logger(`OpenLux \u6587\u751F\u56FE\uFF0C\u6A21\u578B\uFF1A${model.modelName}\uFF0C\u6BD4\u4F8B\uFF1A${config.aspectRatio || "16:9"}\uFF0C\u50CF\u7D20\uFF1A${pixelSize}`);\n    const resp = await fetch(`${baseUrl}/images/generations`, {\n      method: "POST",\n      headers: getHeaders(),\n      body: JSON.stringify(requestBody),\n    });\n    if (!resp.ok) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A${await resp.text()}`);\n    return await parseImageResponse(await resp.json());\n  }\n\n  // \u6709\u53C2\u8003\u56FE \u2192 \u56FE\u751F\u56FE\uFF08multipart /images/edits\uFF09\n  const fd = new FormData();\n  fd.append("model", model.modelName);\n  fd.append("prompt", config.prompt);\n  fd.append("size", pixelSize);\n  fd.append("aspect_ratio", config.aspectRatio || "16:9"); // \u4FDD\u7559\u7ED9\u652F\u6301\u8BE5\u6269\u5C55\u5B57\u6BB5\u7684\u6A21\u578B\n  refs.forEach((img, i) => {\n    const b64 = String(img.base64).replace(/^data:image\\/\\w+;base64,/, "");\n    fd.append(`image`, Buffer.from(b64, "base64"), `ref_${i}.png`);\n  });\n  logger(`OpenLux \u56FE\u751F\u56FE\uFF0C\u6A21\u578B\uFF1A${model.modelName}\uFF0C\u53C2\u8003\u56FE ${refs.length} \u5F20\uFF0C\u6BD4\u4F8B\uFF1A${config.aspectRatio || "16:9"}\uFF0C\u50CF\u7D20\uFF1A${pixelSize}`);\n  const resp = await fetch(`${baseUrl}/images/edits`, {\n    method: "POST",\n    headers: { Authorization: `Bearer ${apiKey}`, ...fd.getHeaders() },\n    body: fd.getBuffer(),\n  });\n  if (!resp.ok) throw new Error(`\u56FE\u751F\u56FE\u5931\u8D25\uFF1A${await resp.text()}`);\n  return await parseImageResponse(await resp.json());\n};\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\n  return "";\n};\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const baseUrl = vendor.inputValues.baseUrl.replace(/\\/+$/, "");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  const modelName = model.modelName;\n  const headers = getHeaders();\n\n  // ---- MiniMax \u7CFB\u6A21\u578B\uFF1A\u8D70\u5F02\u6B65 TTS\uFF08t2a_async_v2\uFF09----\n  if (/minimax/i.test(modelName)) {\n    const apiRoot = baseUrl.replace(/\\/v1$/, ""); // https://api.openlux.ai\n    logger(`MiniMax TTS \u63D0\u4EA4\u4EFB\u52A1\uFF0C\u6A21\u578B\uFF1A${modelName}\uFF0C\u97F3\u8272\uFF1A${config.voice}`);\n    const submitResp = await fetch(`${apiRoot}/minimax/v1/t2a_async_v2`, {\n      method: "POST",\n      headers,\n      body: JSON.stringify({\n        model: modelName,\n        text: config.text,\n        voice_setting: {\n          voice_id: config.voice || "female-qn-qingse",\n          speed: config.speechRate || 1,\n          vol: config.volume || 1,\n          pitch: config.pitchRate || 0,\n        },\n        audio_setting: { sample_rate: 32000, bitrate: 128000, format: "mp3", channel: 1 },\n      }),\n    });\n    const submitData = await submitResp.json();\n    if (submitData?.base_resp?.status_code !== 0) {\n      throw new Error(`MiniMax TTS \u63D0\u4EA4\u5931\u8D25\uFF1A${submitData?.base_resp?.status_msg || JSON.stringify(submitData).slice(0, 200)}`);\n    }\n    const taskId = submitData?.data?.task_id;\n    if (!taskId) throw new Error(`MiniMax TTS \u63D0\u4EA4\u5931\u8D25\uFF1A\u65E0 task_id ${JSON.stringify(submitData).slice(0, 200)}`);\n    logger(`MiniMax TTS \u4EFB\u52A1\u63D0\u4EA4\u6210\u529F\uFF0Ctask_id: ${taskId}`);\n\n    // \u8F6E\u8BE2\u4EFB\u52A1\u7ED3\u679C\n    const pollResult = await pollTask(\n      async () => {\n        const queryResp = await fetch(`${apiRoot}/minimax/v1/query_async_t2a_v2`, {\n          method: "POST",\n          headers,\n          body: JSON.stringify({ task_id: taskId }),\n        });\n        const queryData = await queryResp.json();\n        if (queryData?.base_resp?.status_code !== 0) {\n          return { completed: true, error: queryData?.base_resp?.status_msg || "\u67E5\u8BE2\u5931\u8D25" };\n        }\n        const status = queryData?.data?.status;\n        if (status === "Success") {\n          const audioFile = queryData?.data?.audio_file;\n          return { completed: true, data: audioFile };\n        }\n        if (status === "Fail") {\n          return { completed: true, error: queryData?.data?.fail_reason || "\u8BED\u97F3\u751F\u6210\u5931\u8D25" };\n        }\n        return { completed: false };\n      },\n      3000,\n      120000,\n    );\n    if (pollResult.error) throw new Error(pollResult.error);\n    logger(`MiniMax TTS \u751F\u6210\u6210\u529F\uFF0C\u4E0B\u8F7D\u97F3\u9891`);\n    return await urlToBase64(pollResult.data!);\n  }\n\n  // ---- \u5176\u4ED6\u6A21\u578B\uFF1AOpenAI \u517C\u5BB9 /audio/speech ----\n  logger(`OpenLux TTS \u5408\u6210\uFF0C\u6A21\u578B\uFF1A${modelName}\uFF0C\u97F3\u8272\uFF1A${config.voice}`);\n  const resp = await fetch(`${baseUrl}/audio/speech`, {\n    method: "POST",\n    headers,\n    body: JSON.stringify({\n      model: modelName,\n      input: config.text,\n      voice: config.voice || "alloy",\n      response_format: "mp3",\n      speed: config.speechRate || 1,\n    }),\n  });\n  if (!resp.ok) throw new Error(`TTS \u751F\u6210\u5931\u8D25\uFF1A${await resp.text()}`);\n  const audioBuffer = await resp.arrayBuffer();\n  return `data:audio/mp3;base64,${Buffer.from(audioBuffer).toString("base64")}`;\n};\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\n  return { hasUpdate: false, latestVersion: "2.3", notice: "" };\n};\nconst updateVendor = async (): Promise<string> => {\n  return "";\n};\n// ============================================================\n// \u5BFC\u51FA\n// ============================================================\nexports.vendor = vendor;\nexports.textRequest = textRequest;\nexports.imageRequest = imageRequest;\nexports.videoRequest = videoRequest;\nexports.ttsRequest = ttsRequest;\nexports.checkForUpdates = checkForUpdates;\nexports.updateVendor = updateVendor;\nexport {};\n',
       "toonflow.ts": '/**\r\n * Toonflow\u5B98\u65B9\u4E2D\u8F6C\u5E73\u53F0 \u4F9B\u5E94\u5546\u9002\u914D\r\n * @version 3.0\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage"\r\n  | "startEndRequired"\r\n  | "endFrameOptional"\r\n  | "startFrameOptional"\r\n  | "text"\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string;\r\n  version: string;\r\n  name: string;\r\n  author: string;\r\n  description?: string;\r\n  icon?: string;\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ntype ReferenceList =\r\n  | { type: "image"; sourceType: "base64"; base64: string }\r\n  | { type: "audio"; sourceType: "base64"; base64: string }\r\n  | { type: "video"; sourceType: "base64"; base64: string };\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  referenceList?: ReferenceList[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n  referenceList?: Extract<ReferenceList, { type: "audio" }>[];\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const axios: any;\r\ndeclare const logger: (msg: string) => void;\r\ndeclare const jsonwebtoken: any;\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\r\n  updateVendor?: () => Promise<string>;\r\n};\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "toonflow",\r\n  version: "3.2",\r\n  author: "Toonflow",\r\n  name: "Toonflow\u5B98\u65B9\u4E2D\u8F6C\u5E73\u53F0",\r\n  description:\r\n    "## Toonflow\u5B98\u65B9\u4E2D\u8F6C\u5E73\u53F0\\n\\nToonflow\u5B98\u65B9\u4E2D\u8F6C\u5E73\u53F0\uFF0C\u63D0\u4F9B**\u6587\u672C\u3001\u56FE\u50CF\u3001\u89C6\u9891\u3001\u97F3\u9891**\u7B49\u591A\u6A21\u6001\u751F\u6210\u80FD\u529B\u7684\u4E2D\u8F6C\u670D\u52A1\uFF0C\u652F\u6301\u63A5\u5165\u591A\u4E2A\u5927\u6A21\u578B\u4F9B\u5E94\u5546\uFF0C\u65B9\u4FBF\u7528\u6237\u7EDF\u4E00\u7BA1\u7406\u548C\u8C03\u7528\u4E0D\u540C\u4F9B\u5E94\u5546\u7684\u751F\u6210\u80FD\u529B\u3002\\n\\n\u{1F517} [\u524D\u5F80\u4E2D\u8F6C\u5E73\u53F0](https://api.toonflow.net/)\\n\\n\u5982\u679C\u8FD9\u4E2A\u9879\u76EE\u5BF9\u4F60\u6709\u5E2E\u52A9\uFF0C\u53EF\u4EE5\u8003\u8651\u652F\u6301\u4E00\u4E0B\u6211\u4EEC\u7684\u5F00\u53D1\u5DE5\u4F5C \u2615",\r\n  icon: "",\r\n  inputs: [{ key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true }],\r\n  inputValues: {\r\n    apiKey: "",\r\n    baseUrl: "https://api.toonflow.net/v1",\r\n  },\r\n  models: [\r\n    {\r\n      name: "Seedance-2.0 (\u652F\u6301\u771F\u4EBA)",\r\n      modelName: "Seedance 2.0",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Seedance 2.0 fast (\u652F\u6301\u771F\u4EBA)",\r\n      modelName: "Seedance 2.0 fast",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Wan2.6",\r\n      type: "video",\r\n      modelName: "wan2.6",\r\n      mode: ["singleImage"],\r\n      durationResolutionMap: [{ duration: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["720p", "1080p"] }],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "Seedance 1.5 Pro",\r\n      type: "video",\r\n      modelName: "doubao-seedance-1-5-pro",\r\n      mode: ["text", "endFrameOptional"],\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["480p", "720p", "1080p"] }],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "ViduQ3 pro",\r\n      type: "video",\r\n      modelName: "ViduQ3-pro",\r\n      mode: ["singleImage", "startEndRequired"],\r\n      durationResolutionMap: [{ duration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], resolution: ["540p", "720p", "1080p"] }],\r\n      audio: false,\r\n    },\r\n    {\r\n      name: "Kling-Video-O1",\r\n      modelName: "Kling-Video-O1",\r\n      type: "video",\r\n      mode: ["startFrameOptional", ["imageReference:7", "videoReference:1"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [5, 10, 15], resolution: ["720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Kling-V3-Omni",\r\n      modelName: "Kling-V3-Omni",\r\n      type: "video",\r\n      mode: ["startFrameOptional", ["imageReference:7", "videoReference:1"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [5, 10, 15], resolution: ["720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Doubao Seedream 5.0 Lite",\r\n      type: "image",\r\n      modelName: "doubao-seedream-5.0-Lite",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Doubao Seedream 4.5",\r\n      type: "image",\r\n      modelName: "doubao-seedream-4-5",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "\u5168\u80FD\u56FE\u7247G-2.0",\r\n      type: "image",\r\n      modelName: "\u5168\u80FD\u56FE\u7247G-2.0",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    // { name: "DeepSeek v4 pro", modelName: "deepseek-v4-pro", type: "text", think: false },\r\n  ],\r\n};\r\n\r\n// ============================================================\r\n// \u8F85\u52A9\u5DE5\u5177\r\n// ============================================================\r\n\r\n// \u4ECE markdown \u5185\u5BB9\u4E2D\u63D0\u53D6\u7B2C\u4E00\u5F20\u56FE\u7247\r\nfunction extractFirstImageFromMd(content: string) {\r\n  const regex = /!\\[([^\\]]*)\\]\\((data:image\\/[^;]+;base64,[A-Za-z0-9+/=]+|https?:\\/\\/[^\\s)]+|\\/\\/[^\\s)]+|[^\\s)]+)\\)/;\r\n  const match = content.match(regex);\r\n  if (!match) return null;\r\n  const raw = match[2].trim();\r\n  const url = raw.startsWith("data:") ? raw : raw.split(/\\s+/)[0];\r\n  return { alt: match[1], url, type: url.startsWith("data:image") ? "base64" : "url" };\r\n}\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  const lowerName = model.modelName.toLowerCase();\r\n  if (lowerName.includes("deepseek")) {\r\n    logger("\u4F7F\u7528deepseek");\r\n    // DeepSeek \u601D\u8003\u5F3A\u5EA6\u4EC5\u652F\u6301 high / max\uFF08low\u3001medium \u4F1A\u88AB\u6620\u5C04\u4E3A high\uFF0Cxhigh \u4F1A\u88AB\u6620\u5C04\u4E3A max\uFF09\r\n    // thinkLevel: 0/1/2 \u2192 high, 3 \u2192 max\r\n    const effortMap: Record<0 | 1 | 2 | 3, "high" | "max"> = {\r\n      0: "high",\r\n      1: "high",\r\n      2: "high",\r\n      3: "max",\r\n    };\r\n\r\n    const enableThinking = model.think && think;\r\n    const extraBody: Record<string, any> = {\r\n      thinking: { type: enableThinking ? "enabled" : "disabled" },\r\n    };\r\n    if (enableThinking) {\r\n      extraBody.reasoning_effort = effortMap[thinkLevel];\r\n    }\r\n\r\n    return createDeepSeek({\r\n      baseURL: vendor.inputValues.baseUrl,\r\n      apiKey,\r\n      extraBody,\r\n    }).chat(model.modelName);\r\n  }\r\n  return createOpenAI({ baseURL: vendor.inputValues.baseUrl, apiKey }).chat(model.modelName);\r\n};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  const baseUrl = vendor.inputValues.baseUrl;\r\n  const lowerName = model.modelName.toLowerCase();\r\n  const imageBase64List = (config.referenceList ?? []).map((r) => r.base64).filter(Boolean);\r\n\r\n  // Gemini / nano \u7CFB\u6A21\u578B\uFF1A\u8D70 chat/completions \u63A5\u53E3\uFF0C\u4ECE\u8FD4\u56DE\u7684 markdown \u4E2D\u63D0\u53D6\u56FE\u7247\r\n  if (lowerName.includes("gemini") || lowerName.includes("nano")) {\r\n    const imageConfigGoogle: Record<string, string> = {\r\n      aspect_ratio: config.aspectRatio,\r\n      image_size: config.size,\r\n    };\r\n    const messages: any[] = [];\r\n    if (imageBase64List.length) {\r\n      messages.push({\r\n        role: "user",\r\n        content: imageBase64List.map((b) => ({ type: "image_url", image_url: { url: b } })),\r\n      });\r\n    }\r\n    messages.push({ role: "user", content: config.prompt + "\u8BF7\u76F4\u63A5\u8F93\u51FA\u56FE\u7247" });\r\n    const body = {\r\n      model: model.modelName,\r\n      messages,\r\n      extra_body: { google: { image_config: imageConfigGoogle } },\r\n    };\r\n    logger(`[imageRequest] \u4F7F\u7528 gemini \u9002\u914D\u5668\uFF0C\u6A21\u578B: ${model.modelName}`);\r\n    const response = await fetch(`${baseUrl}/chat/completions`, {\r\n      method: "POST",\r\n      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n      body: JSON.stringify(body),\r\n    });\r\n    if (!response.ok) {\r\n      const errorText = await response.text();\r\n      throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${response.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n    }\r\n    const data = await response.json();\r\n    const imageResult = extractFirstImageFromMd(data.choices[0].message.content);\r\n    if (!imageResult) throw new Error("\u672A\u80FD\u4ECE\u54CD\u5E94\u4E2D\u63D0\u53D6\u56FE\u7247");\r\n    if (imageResult.type === "base64") return imageResult.url;\r\n    return await urlToBase64(imageResult.url);\r\n  }\r\n\r\n  // \u8C46\u5305 / seedream \u7CFB\u6A21\u578B\uFF1A\u8D70 images/generations \u63A5\u53E3\r\n  if (lowerName.includes("doubao") || lowerName.includes("seedream")) {\r\n    const effectiveSize = config.size === "1K" ? "2K" : config.size;\r\n    const sizeMap: Record<string, Record<string, string>> = {\r\n      "16:9": { "2K": "2848x1600", "4K": "4096x2304" },\r\n      "9:16": { "2K": "1600x2848", "4K": "2304x4096" },\r\n    };\r\n    const resolvedSize = sizeMap[config.aspectRatio]?.[effectiveSize];\r\n    const body: Record<string, any> = {\r\n      model: model.modelName,\r\n      prompt: config.prompt,\r\n      size: resolvedSize,\r\n      metadata: {\r\n        response_format: "url",\r\n        sequential_image_generation: "disabled",\r\n        stream: false,\r\n        watermark: false,\r\n      },\r\n      ...(imageBase64List.length && { images: imageBase64List }),\r\n    };\r\n    logger(`[imageRequest] \u4F7F\u7528 doubao \u9002\u914D\u5668\uFF0C\u6A21\u578B: ${model.modelName}`);\r\n    const response = await fetch(`${baseUrl}/image/generateImage`, {\r\n      method: "POST",\r\n      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n      body: JSON.stringify(body),\r\n    });\r\n    if (!response.ok) {\r\n      const errorText = await response.text();\r\n      throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${response.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n    }\r\n    const data = await response.json();\r\n    const taskId = data.data;\r\n    logger(`[imageRequest] \u4EFB\u52A1ID: ${taskId}`);\r\n    const res = await pollTask(async () => {\r\n      const queryResponse = await fetch(`${baseUrl}/image/getImageStatus`, {\r\n        method: "POST",\r\n        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n        body: JSON.stringify({\r\n          taskICode: taskId,\r\n        }),\r\n      });\r\n      if (!queryResponse.ok) {\r\n        const errorText = await queryResponse.text();\r\n        throw new Error(`\u8F6E\u8BE2\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${queryResponse.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n      }\r\n      const queryData = await queryResponse.json();\r\n      logger(queryData);\r\n      const status = queryData?.status ?? queryData?.data?.status;\r\n      logger(status);\r\n      switch (status) {\r\n        case "success":\r\n          return { completed: true, data: queryData.data.data };\r\n        case "failed":\r\n          return { completed: true, error: queryData?.data?.failReason ?? "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n        default:\r\n          return { completed: false };\r\n      }\r\n    });\r\n    return res.data!;\r\n  }\r\n  if (lowerName.includes("gpt") || lowerName.includes("\u5168\u80FD\u56FE\u7247")) {\r\n    const normalizedSize = config.size === "1K" ? "1k" : config.size === "2K" ? "2k" : config.size === "4K" ? "4k" : config.size;\r\n    const body: Record<string, any> = {\r\n      model: model.modelName,\r\n      prompt: config.prompt,\r\n      size: normalizedSize,\r\n      ...(imageBase64List.length && { images: imageBase64List }),\r\n      metadata: {\r\n        aspectRatio: config.aspectRatio,\r\n      },\r\n    };\r\n    logger(`[imageRequest] \u4F7F\u7528 doubao \u9002\u914D\u5668\uFF0C\u6A21\u578B: ${model.modelName}`);\r\n    const response = await fetch(`${baseUrl}/image/generateImage`, {\r\n      method: "POST",\r\n      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n      body: JSON.stringify(body),\r\n    });\r\n    if (!response.ok) {\r\n      const errorText = await response.text();\r\n      throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${response.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n    }\r\n    const data = await response.json();\r\n    const taskId = data.data;\r\n    logger(`[imageRequest] \u4EFB\u52A1ID: ${taskId}`);\r\n    const res = await pollTask(async () => {\r\n      const queryResponse = await fetch(`${baseUrl}/image/getImageStatus`, {\r\n        method: "POST",\r\n        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n        body: JSON.stringify({\r\n          taskICode: taskId,\r\n        }),\r\n      });\r\n      if (!queryResponse.ok) {\r\n        const errorText = await queryResponse.text();\r\n        throw new Error(`\u8F6E\u8BE2\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${queryResponse.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n      }\r\n      const queryData = await queryResponse.json();\r\n      logger(queryData);\r\n      const status = queryData?.status ?? queryData?.data?.status;\r\n      logger(status);\r\n      switch (status) {\r\n        case "success":\r\n          return { completed: true, data: queryData.data.data };\r\n        case "failed":\r\n          return { completed: true, error: queryData?.data?.failReason ?? "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n        default:\r\n          return { completed: false };\r\n      }\r\n    });\r\n    return res.data!;\r\n  }\r\n\r\n  throw new Error(`\u4E0D\u652F\u6301\u7684\u56FE\u50CF\u6A21\u578B: ${model.modelName}`);\r\n};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  const baseUrl = vendor.inputValues.baseUrl;\r\n  const lowerName = model.modelName.toLowerCase();\r\n\r\n  // \u5F53\u524D\u6FC0\u6D3B\u7684\u5355\u4E00 VideoMode\uFF08\u53D6\u7B2C\u4E00\u4E2A\u975E\u6570\u7EC4\u6A21\u5F0F\uFF0C\u6216\u6570\u7EC4\u6A21\u5F0F\uFF09\r\n  const activeMode = config.mode as string | string[];\r\n  const imageRefs = (config.referenceList ?? []).filter((r) => r.type === "image").map((r) => r.base64);\r\n  const videoRefs = (config.referenceList ?? []).filter((r) => r.type === "video").map((r) => r.base64);\r\n  const audioRefs = (config.referenceList ?? []).filter((r) => r.type === "audio").map((r) => r.base64);\r\n  if (imageRefs && imageRefs.length) {\r\n    for (const item of imageRefs) {\r\n      await zipImage(item, 3 * 1024 * 104);\r\n    }\r\n  }\r\n  // \u6784\u5EFA\u6A21\u578B\u4E13\u5C5E metadata\r\n  let metadata: Record<string, any> = {};\r\n\r\n  if (lowerName.includes("wan")) {\r\n    // \u4E07\u8C61\u7CFB\u5217\r\n    if ((activeMode === "startEndRequired" || activeMode === "endFrameOptional" || activeMode === "startFrameOptional") && imageRefs.length >= 2) {\r\n      if (imageRefs[0]) metadata.first_frame_url = imageRefs[0];\r\n      if (imageRefs[1]) metadata.last_frame_url = imageRefs[1];\r\n    } else if (imageRefs.length) {\r\n      metadata.img_url = imageRefs[0];\r\n    }\r\n    if (typeof config.audio === "boolean") metadata.audio = config.audio;\r\n\r\n    const body: Record<string, any> = {\r\n      model: model.modelName,\r\n      prompt: config.prompt,\r\n      duration: config.duration,\r\n      resolution: config.resolution,\r\n      images: imageRefs,\r\n      metadata,\r\n    };\r\n    logger(`[videoRequest] \u63D0\u4EA4\u4E07\u8C61\u89C6\u9891\u4EFB\u52A1\uFF0C\u6A21\u578B: ${model.modelName}`);\r\n    const response = await fetch(`${baseUrl}/video/generateVideo`, {\r\n      method: "POST",\r\n      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n      body: JSON.stringify(body),\r\n    });\r\n    if (!response.ok) {\r\n      const errorText = await response.text();\r\n      throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${response.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n    }\r\n    const data = await response.json();\r\n    const taskId = data.data;\r\n    logger(`[videoRequest] \u4E07\u8C61\u4EFB\u52A1ID: ${taskId}`);\r\n    const res = await pollTask(async () => {\r\n      const queryResponse = await fetch(`${baseUrl}/video/getVideoStatus`, {\r\n        method: "POST",\r\n        headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n        body: JSON.stringify({\r\n          taskICode: taskId,\r\n        }),\r\n      });\r\n      if (!queryResponse.ok) {\r\n        const errorText = await queryResponse.text();\r\n        throw new Error(`\u8F6E\u8BE2\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${queryResponse.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n      }\r\n      const queryData = await queryResponse.json();\r\n      logger(queryData);\r\n      const status = queryData?.status ?? queryData?.data?.status;\r\n      logger(status);\r\n      switch (status) {\r\n        case "completed":\r\n        case "SUCCESS":\r\n        case "success":\r\n          return { completed: true, data: queryData.data.data };\r\n        case "FAILURE":\r\n        case "failed":\r\n          return { completed: true, error: queryData?.data?.failReason ?? "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n        default:\r\n          return { completed: false };\r\n      }\r\n    });\r\n    if (res.error) throw new Error(res.error);\r\n    return res.data!;\r\n  }\r\n\r\n  if (lowerName.includes("doubao") || lowerName.includes("seedance")) {\r\n    // \u8C46\u5305/Seedance \u7CFB\u5217\r\n    metadata = {\r\n      ...(typeof config.audio === "boolean" && { generate_audio: config.audio }),\r\n      ratio: config.aspectRatio,\r\n      references: [],\r\n      resolution: config.resolution,\r\n    };\r\n    if (Array.isArray(activeMode)) {\r\n      // \u591A\u53C2\u8003\u6A21\u5F0F\r\n      imageRefs.forEach((item) => {\r\n        metadata.references.push({\r\n          role: "reference_image",\r\n          type: "image_url",\r\n          image_url: {\r\n            url: item,\r\n          },\r\n        });\r\n      });\r\n      videoRefs.forEach((item) => {\r\n        metadata.references.push({\r\n          role: "reference_video",\r\n          type: "video_url",\r\n          video_url: {\r\n            url: item,\r\n          },\r\n        });\r\n      });\r\n      audioRefs.forEach((item) => {\r\n        metadata.references.push({\r\n          role: "reference_audio",\r\n          type: "audio_url",\r\n          audio_url: {\r\n            url: item,\r\n          },\r\n        });\r\n      });\r\n    } else if (activeMode === "startEndRequired" || activeMode === "endFrameOptional" || activeMode === "startFrameOptional") {\r\n      imageRefs.forEach((item, i) => {\r\n        metadata.references.push({\r\n          type: "image_url",\r\n          image_url: {\r\n            url: item,\r\n          },\r\n          role: i == 0 ? "first_frame" : "last_frame",\r\n        });\r\n      });\r\n    } else if (activeMode === "singleImage") {\r\n      imageRefs.forEach((item, i) => {\r\n        metadata.references.push({\r\n          role: "reference_image",\r\n          type: "image_url",\r\n          image_url: {\r\n            url: item,\r\n          },\r\n        });\r\n      });\r\n    }\r\n  } else if (lowerName.includes("vidu")) {\r\n    // Vidu \u7CFB\u5217\r\n    metadata = {\r\n      aspect_ratio: config.aspectRatio,\r\n      audio: config.audio ?? false,\r\n      off_peak: false,\r\n    };\r\n  } else if (lowerName.includes("kling")) {\r\n    const videoRefs = (config.referenceList ?? []).filter((r) => r.type === "video").map((r) => ({ video_url: r.base64 }));\r\n\r\n    metadata = {\r\n      aspect_ratio: config.aspectRatio,\r\n      sound: typeof config?.audio == "boolean" ? (config?.audio ? "on" : "off") : "off",\r\n      video_list: videoRefs,\r\n      image_list: [],\r\n    };\r\n\r\n    // \u56FE\u7247\u6709\u6548\u6027\u68C0\u67E5\u51FD\u6570\r\n    const isValidImage = (imageUrl: any) => {\r\n      return imageUrl && typeof imageUrl === "string" && imageUrl.trim().length > 0;\r\n    };\r\n\r\n    if (activeMode === "singleImage") {\r\n      if (lowerName.includes("omni") || lowerName.includes("o1")) {\r\n        // \u53EA\u5728\u56FE\u7247\u6709\u6548\u65F6\u624D\u6DFB\u52A0\r\n        if (isValidImage(imageRefs[0])) {\r\n          metadata.image_list = [{ image_url: imageRefs[0] }];\r\n        }\r\n      } else {\r\n        if (isValidImage(imageRefs[0])) {\r\n          metadata.image = imageRefs[0];\r\n        }\r\n      }\r\n    } else if (activeMode === "startEndRequired" || activeMode === "endFrameOptional" || activeMode === "startFrameOptional") {\r\n      if (lowerName.includes("omni") || lowerName.includes("o1")) {\r\n        imageRefs.forEach((item, index) => {\r\n          if (isValidImage(item)) {\r\n            if (!metadata.image_list || !Array.isArray(metadata.image_list)) metadata.image_list = [];\r\n            metadata.image_list.push({\r\n              image_url: item,\r\n              type: index == 0 ? "first_frame" : "end_frame",\r\n            });\r\n          }\r\n        });\r\n      } else {\r\n        if (isValidImage(imageRefs[0])) {\r\n          metadata.image_tail = imageRefs[0];\r\n        }\r\n      }\r\n    } else if (Array.isArray(activeMode)) {\r\n      imageRefs.forEach((item) => {\r\n        if (isValidImage(item)) {\r\n          if (!metadata.image_list || !Array.isArray(metadata.image_list)) metadata.image_list = [];\r\n          metadata.image_list.push({\r\n            image_url: item,\r\n          });\r\n        }\r\n      });\r\n    }\r\n  } else if (lowerName.includes("grok")) {\r\n    metadata = {\r\n      aspectRatio: config.aspectRatio,\r\n    };\r\n  }\r\n\r\n  // \u516C\u5171\u8BF7\u6C42\u4F53\uFF08\u975E\u4E07\u8C61\u901A\u7528\u8DEF\u5F84\uFF09\r\n  const publicBody: Record<string, any> = {\r\n    model: model.modelName,\r\n    ...(imageRefs.length && lowerName.includes("vidu") ? { images: imageRefs } : {}),\r\n    prompt: config.prompt,\r\n    duration: config.duration,\r\n    resolution: config.resolution,\r\n    metadata,\r\n  };\r\n\r\n  logger(`[videoRequest] \u63D0\u4EA4\u89C6\u9891\u4EFB\u52A1\uFF0C\u6A21\u578B: ${model.modelName}`);\r\n  const response = await fetch(`${baseUrl}/video/generateVideo`, {\r\n    method: "POST",\r\n    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n    body: JSON.stringify(publicBody),\r\n  });\r\n  if (!response.ok) {\r\n    const errorText = await response.text();\r\n    throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${response.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n  }\r\n  const data = await response.json();\r\n  const taskId = data.data;\r\n  logger(`[videoRequest] \u4EFB\u52A1ID: ${taskId}`);\r\n\r\n  const res = await pollTask(async () => {\r\n    const queryResponse = await fetch(`${baseUrl}/video/getVideoStatus`, {\r\n      method: "POST",\r\n      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n      body: JSON.stringify({\r\n        taskICode: taskId,\r\n      }),\r\n    });\r\n    if (!queryResponse.ok) {\r\n      const errorText = await queryResponse.text();\r\n      throw new Error(`\u8F6E\u8BE2\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${queryResponse.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n    }\r\n    const queryData = await queryResponse.json();\r\n    logger(queryData);\r\n    const status = queryData?.status ?? queryData?.data?.status;\r\n    switch (status) {\r\n      case "completed":\r\n      case "SUCCESS":\r\n      case "success":\r\n        return { completed: true, data: queryData.data.data };\r\n      case "FAILURE":\r\n      case "failed":\r\n        return { completed: true, error: queryData?.data?.failReason ?? "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n      default:\r\n        return { completed: false };\r\n    }\r\n  });\r\n\r\n  if (res.error) throw new Error(res.error);\r\n  return await urlToBase64(res.data!);\r\n};\r\n\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  const baseUrl = vendor.inputValues.baseUrl;\r\n  const res = await fetch(`${baseUrl}/vendor/vendorCheck`, {\r\n    method: "POST",\r\n    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n    body: JSON.stringify({\r\n      version: vendor.version,\r\n    }),\r\n  });\r\n  if (!res.ok) {\r\n    const errorReason = await res.text();\r\n    throw new Error(`\u68C0\u67E5\u66F4\u65B0\u5931\u8D25\uFF0C${errorReason}`);\r\n  }\r\n  const { data } = await res.json();\r\n  if (data?.hasUpdate && data?.latestVersion) {\r\n    return {\r\n      hasUpdate: data?.hasUpdate ?? false,\r\n      latestVersion: data?.latestVersion ?? null,\r\n      notice: data?.notice ? data?.notice : "\u4F5C\u8005\u6709\u70B9\u61D2\uFF0C\u6CA1\u6709\u586B\u5199\u66F4\u65B0\u5185\u5BB9",\r\n    };\r\n  }\r\n  return { hasUpdate: false, latestVersion: "", notice: "" };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n  const baseUrl = vendor.inputValues.baseUrl;\r\n  const response = await fetch(`${baseUrl}/vendor/downloadVendor`, {\r\n    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },\r\n  });\r\n  if (!response.ok) {\r\n    const errorReason = await response.text();\r\n    throw new Error(`\u8BF7\u6C42\u5931\u8D25: ${response.status} ${errorReason}`);\r\n  }\r\n  const { data } = await response.json();\r\n  logger(data);\r\n  return data;\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\nexport {};\r\n',
       "vidu.ts": '//\u5982\u9700\u9065\u6D4BAI\u8BF7\u4F7F\u7528\u5728toonflow\u5B89\u88C5\u76EE\u5F55\u8FD0\u884Cnpx @ai-sdk/devtools \uFF08\u8981\u6C42\u5728\u5176\u4ED6\u8BBE\u7F6E\u4E2D\u6253\u5F00\u9065\u6D4B\u529F\u80FD\uFF0C\u4E14toonflow\u6709\u6743\u9650\u5728\u5B89\u88C5\u76EE\u5F55\u521B\u5EFA.devtools\u6587\u4EF6\u5939\uFF09\r\n// ==================== \u7C7B\u578B\u5B9A\u4E49 ====================\r\n// \u6587\u672C\u6A21\u578B\r\ninterface TextModel {\r\n  name: string; // \u663E\u793A\u540D\u79F0\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean; // \u524D\u7AEF\u663E\u793A\u7528\r\n}\r\n\r\n// \u56FE\u50CF\u6A21\u578B\r\ninterface ImageModel {\r\n  name: string; // \u663E\u793A\u540D\u79F0\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string; // \u5173\u8054\u6280\u80FD\uFF0C\u591A\u4E2A\u6280\u80FD\u7528\u9017\u53F7\u5206\u9694\r\n}\r\n// \u89C6\u9891\u6A21\u578B\r\ninterface VideoModel {\r\n  name: string; // \u663E\u793A\u540D\u79F0\r\n  modelName: string; //\u5168\u5C40\u552F\u4E00\r\n  type: "video";\r\n  mode: (\r\n    | "singleImage" // \u5355\u56FE\r\n    | "startEndRequired" // \u9996\u5C3E\u5E27\uFF08\u4E24\u5F20\u90FD\u5F97\u6709\uFF09\r\n    | "endFrameOptional" // \u9996\u5C3E\u5E27\uFF08\u5C3E\u5E27\u53EF\u9009\uFF09\r\n    | "startFrameOptional" // \u9996\u5C3E\u5E27\uFF08\u9996\u5E27\u53EF\u9009\uFF09\r\n    | "text" // \u6587\u672C\u751F\u89C6\u9891\r\n    | ("videoReference" | "imageReference" | "audioReference" | "textReference")[] // \u6DF7\u5408\u53C2\u8003\r\n  )[];\r\n  associationSkills?: string; // \u5173\u8054\u6280\u80FD\uFF0C\u591A\u4E2A\u6280\u80FD\u7528\u9017\u53F7\u5206\u9694\r\n  audio: "optional" | false | true; // \u97F3\u9891\u914D\u7F6E\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string; // \u663E\u793A\u540D\u79F0\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: {\r\n    title: string; //\u663E\u793A\u540D\u79F0\r\n    voice: string; //\u8BF4\u8BDD\u4EBA\r\n  }[];\r\n}\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\ninterface VendorConfig {\r\n  id: string; //\u4F9B\u5E94\u5546\u552F\u4E00\u6807\u8BC6\uFF0C\u5FC5\u987B\u5168\u5C40\u552F\u4E00\r\n  author: string;\r\n  description?: string; //md5\u683C\u5F0F\r\n  name: string;\r\n  icon?: string; //\u4EC5\u652F\u6301base64\u683C\u5F0F\r\n  inputs: {\r\n    key: string;\r\n    label: string;\r\n    type: "text" | "password" | "url";\r\n    required: boolean;\r\n    placeholder?: string;\r\n  }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel)[];\r\n}\r\n// ==================== \u5168\u5C40\u5DE5\u5177\u51FD\u6570 ====================\r\n//Axios\u5B9E\u4F8B\r\n//\u538B\u7F29\u56FE\u7247\u5927\u5C0F(1MB = 1 * 1024 * 1024)\r\ndeclare const zipImage: (completeBase64: string, size: number) => Promise<string>;\r\n//\u538B\u7F29\u56FE\u7247\u5206\u8FA8\u7387\r\ndeclare const zipImageResolution: (completeBase64: string, width: number, height: number) => Promise<string>;\r\n//\u591A\u56FE\u62FC\u63A5\u4E58\u5355\u56FE maxSize  \u6700\u5927\u8F93\u51FA\u5927\u5C0F\uFF0C\u9ED8\u8BA4\u4E3A 10mb\r\ndeclare const mergeImages: (completeBase64: string[], maxSize?: string) => Promise<string>;\r\n//Url\u8F6CBase64\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\n//\u8F6E\u8BE2\u51FD\u6570\r\ndeclare const pollTask: (\r\n  fn: () => Promise<{ completed: boolean; data?: string; error?: string }>,\r\n  interval?: number,\r\n  timeout?: number,\r\n) => Promise<{ completed: boolean; data?: string; error?: string }>;\r\ndeclare const axios: any;\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const logger: (logstring: string) => void;\r\ndeclare const jsonwebtoken: any;\r\n// ==================== \u4F9B\u5E94\u5546\u6570\u636E ====================\r\nconst vendor: VendorConfig = {\r\n  id: "vidu",\r\n  author: "\u642C\u7816\u7684Coder",\r\n  description:\r\n    "Vidu \u5B98\u65B9\u89C6\u9891\u751F\u6210\u5E73\u53F0\u3002 [\u524D\u5F80\u5E73\u53F0](https://platform.vidu.cn/login/)",\r\n  name: "Vidu \u5F00\u653E\u5E73\u53F0",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "\u8BF7\u5230Vidu\u5B98\u65B9\u7533\u8BF7" },\r\n    { key: "baseUrl", label: "\u63A5\u53E3\u8DEF\u5F84", type: "url", required: true, placeholder: "https://api.vidu.cn/ent/v2" },\r\n  ],\r\n  inputValues: {\r\n    apiKey: "",\r\n    baseUrl: "https://api.vidu.cn/ent/v2",\r\n  },\r\n  models: [\r\n    {\r\n      name: "ViduQ3 turbo",\r\n      type: "video",\r\n      modelName: "ViduQ3-turbo",\r\n      durationResolutionMap: [{ duration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], resolution: ["540p", "720p", "1080p"] }],\r\n      mode: ["singleImage", "startEndRequired", "text"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "ViduQ3 pro",\r\n      type: "video",\r\n      modelName: "ViduQ3-pro",\r\n      durationResolutionMap: [{ duration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], resolution: ["540p", "720p", "1080p"] }],\r\n      mode: ["singleImage", "startEndRequired", "text"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "ViduQ2 pro fast",\r\n      type: "video",\r\n      modelName: "ViduQ2-pro-fast",\r\n      durationResolutionMap: [{ duration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], resolution: ["720p", "1080p"] }],\r\n      mode: ["singleImage", "startEndRequired"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "viduQ2 turbo",\r\n      type: "video",\r\n      modelName: "ViduQ2-turbo",\r\n      durationResolutionMap: [{ duration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], resolution: ["540p", "720p", "1080p"] }],\r\n      mode: ["singleImage", "startEndRequired"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "ViduQ2 pro",\r\n      type: "video",\r\n      modelName: "ViduQ2-pro",\r\n      durationResolutionMap: [{ duration: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], resolution: ["540p", "720p", "1080p"] }],\r\n      mode: ["singleImage", "startEndRequired"], //\u53C2\u8003\u751F\u89C6\u9891\u65E0\u6709\u6548\u8BBE\u7F6E\u503C\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "ViduQ2",\r\n      type: "video",\r\n      modelName: "ViduQ2",\r\n      durationResolutionMap: [{ duration: [5], resolution: ["1080p"] }],\r\n      mode: ["text"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "ViduQ1",\r\n      type: "video",\r\n      modelName: "ViduQ1",\r\n      durationResolutionMap: [{ duration: [5], resolution: ["1080p"] }],\r\n      mode: ["singleImage", "startEndRequired", "text"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "ViduQ1 classic",\r\n      type: "video",\r\n      modelName: "viduQ1-classic",\r\n      durationResolutionMap: [{ duration: [5], resolution: ["1080p"] }],\r\n      mode: ["singleImage", "startEndRequired"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "Vidu2.0",\r\n      type: "video",\r\n      modelName: "vidu2.0",\r\n      durationResolutionMap: [{ duration: [4, 8], resolution: ["360p", "720p", "1080p"] }],\r\n      mode: ["singleImage", "startEndRequired"],\r\n      audio: true,\r\n    },\r\n    {\r\n      name: "viduq1 for image",\r\n      type: "image",\r\n      modelName: "viduq1",\r\n      mode: ["text"],\r\n    },\r\n    {\r\n      name: "viduq2 for image",\r\n      type: "image",\r\n      modelName: "viduq2",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n  ],\r\n};\r\nexports.vendor = vendor;\r\n\r\n// ==================== \u9002\u914D\u5668\u51FD\u6570 ====================\r\n\r\n// \u6587\u672C\u8BF7\u6C42\u51FD\u6570\r\nconst textRequest: (textModel: TextModel) => { url: string; model: string } = (textModel) => {\r\n  throw new Error("\u5F53\u524D\u4F9B\u5E94\u5546\u4EC5\u652F\u6301\u89C6\u9891\u5927\u6A21\u578B\uFF0C\u8C22\u8C22\uFF01");\r\n};\r\nexports.textRequest = textRequest;\r\n\r\n//\u56FE\u7247\u8BF7\u6C42\u51FD\u6570\r\ninterface ImageConfig {\r\n  prompt: string; //\u56FE\u7247\u63D0\u793A\u8BCD\r\n  imageBase64: string[]; //\u8F93\u5165\u7684\u56FE\u7247\u63D0\u793A\u8BCD\r\n  size: "1K" | "2K" | "4K"; // \u56FE\u7247\u5C3A\u5BF8\r\n  aspectRatio: `${number}:${number}`; // \u957F\u5BBD\u6BD4\r\n}\r\nconst imageRequest = async (imageConfig: ImageConfig, imageModel: ImageModel) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace("Token ", "");\r\n\r\n  const size = imageConfig.size === "1K" ? "2K" : imageConfig.size;\r\n  const sizeMap: Record<string, Record<string, string>> = {\r\n    "16:9": {\r\n      "1k": "1920x1080",\r\n      "2K": "2848x1600",\r\n      "4K": "4096x2304",\r\n    },\r\n    "9:16": {\r\n      "1k": "1920x1080",\r\n      "2K": "1600x2848",\r\n      "4K": "2304x4096",\r\n    },\r\n  };\r\n\r\n  const body: Record<string, any> = {\r\n    model: imageModel.modelName,\r\n    prompt: imageConfig.prompt,\r\n    aspect_ratio: sizeMap[imageConfig.aspectRatio][size],\r\n    seed: 0,\r\n    resolution: size,\r\n    ...(imageConfig.imageBase64 && { image: imageConfig.imageBase64 }),\r\n  };\r\n\r\n  const createImageUrl = vendor.inputValues.baseUrl + "/reference2image";\r\n  const response = await fetch(createImageUrl, {\r\n    method: "POST",\r\n    headers: { Authorization: `Token ${apiKey}`, "Content-Type": "application/json" },\r\n    body: JSON.stringify(body),\r\n  });\r\n  if (!response.ok) {\r\n    const errorText = await response.text(); // \u83B7\u53D6\u9519\u8BEF\u4FE1\u606F\r\n    console.error("\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801:", response.status, ", \u9519\u8BEF\u4FE1\u606F:", errorText);\r\n    throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${response.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n  }\r\n  const data = await response.json();\r\n  const res = await checkTaskResult(data.task_id);\r\n  if (!res.data) {\r\n    throw new Error("\u56FE\u7247\u672A\u80FD\u751F\u6210");\r\n  }\r\n  const list = JSON.parse(JSON.stringify(res.data));\r\n  return list[0].url;\r\n};\r\nexports.imageRequest = imageRequest;\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  imageBase64?: string[];\r\n  audio?: boolean;\r\n  mode:\r\n    | "singleImage" // \u5355\u56FE\r\n    | "multiImage" // \u591A\u56FE\u6A21\u5F0F\r\n    | "gridImage" // \u7F51\u683C\u5355\u56FE\uFF08\u4F20\u5165\u4E00\u5F20\u56FE\u7247\uFF0C\u4F46\u8BE5\u56FE\u7247\u662F\u7F51\u683C\u56FE\uFF09\r\n    | "startEndRequired" // \u9996\u5C3E\u5E27\uFF08\u4E24\u5F20\u90FD\u5F97\u6709\uFF09\r\n    | "endFrameOptional" // \u9996\u5C3E\u5E27\uFF08\u5C3E\u5E27\u53EF\u9009\uFF09\r\n    | "startFrameOptional" // \u9996\u5C3E\u5E27\uFF08\u9996\u5E27\u53EF\u9009\uFF09\r\n    | "text" // \u6587\u672C\u751F\u89C6\u9891\r\n    | ("video" | "image" | "audio" | "text")[]; // \u6DF7\u5408\u53C2\u8003\r\n}\r\n\r\n// \u6784\u5EFA \u5404\u4E2A\u5E73\u53F0\u7684metadata\u53C2\u6570\r\n\r\nconst buildViduMetadata = (videoConfig: VideoConfig) => ({\r\n  aspect_ratio: videoConfig.aspectRatio,\r\n  audio: videoConfig.audio ?? false,\r\n  off_peak: false,\r\n});\r\n\r\ntype MetadataBuilder = (config: VideoConfig) => Record<string, any>;\r\nconst METADATA_BUILDERS: Array<[string, MetadataBuilder]> = [["vidu", buildViduMetadata]];\r\nconst buildModelMetadata = (modelName: string, videoConfig: VideoConfig) => {\r\n  const lowerName = modelName.toLowerCase();\r\n  const match = METADATA_BUILDERS.find(([key]) => lowerName.includes(key));\r\n  return match ? match[1](videoConfig) : {};\r\n};\r\n// \u68C0\u67E5\u751F\u6210\u7269\u7ED3\u679C\r\nconst checkTaskResult = async (taskId: string) => {\r\n  const queryUrl = vendor.inputValues.baseUrl + "/tasks/{id}/creations";\r\n  const apiKey = vendor.inputValues.apiKey;\r\n  const res = await pollTask(async () => {\r\n    const queryResponse = await fetch(queryUrl.replace("{id}", taskId), {\r\n      method: "GET",\r\n      headers: { Authorization: `Token ${apiKey}`, "Content-Type": "application/json" },\r\n    });\r\n    if (!queryResponse.ok) {\r\n      const errorText = await queryResponse.text(); // \u83B7\u53D6\u9519\u8BEF\u4FE1\u606F\r\n      console.error("\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801:", queryResponse.status, ", \u9519\u8BEF\u4FE1\u606F:", errorText);\r\n      throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${queryResponse.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n    }\r\n    const queryData = await queryResponse.json();\r\n    const status = queryData?.state ?? queryData?.data?.state;\r\n    const fail_reason = queryData?.data?.err_code ?? queryData?.data;\r\n    switch (status) {\r\n      case "completed":\r\n      case "SUCCESS":\r\n      case "success":\r\n        return { completed: true, data: queryData.creations };\r\n      case "FAILURE":\r\n      case "failed":\r\n        return { completed: false, error: fail_reason || "\u751F\u6210\u5931\u8D25" };\r\n      default:\r\n        return { completed: false };\r\n    }\r\n  });\r\n  if (res.error) throw new Error(res.error);\r\n  return res;\r\n};\r\n\r\nconst videoRequest = async (videoConfig: VideoConfig, videoModel: VideoModel) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace("Token ", "");\r\n\r\n  // \u6784\u5EFA\u6BCF\u4E2A\u6A21\u578B\u5BF9\u5E94\u7684\u9644\u52A0\u53C2\u6570\r\n  const metadata = buildModelMetadata(videoModel.modelName, videoConfig);\r\n\r\n  //\u516C\u5171\u8BF7\u6C42\u53C2\u6570\r\n  const publicBody = {\r\n    model: videoModel.modelName,\r\n    ...(videoConfig.imageBase64 && videoConfig.imageBase64.length ? { images: videoConfig.imageBase64 } : {}),\r\n    prompt: videoConfig.prompt,\r\n    size: videoConfig.resolution,\r\n    duration: videoConfig.duration,\r\n    metadata: metadata,\r\n  };\r\n\r\n  const requestUrl = vendor.inputValues.baseUrl + "/start-end2video";\r\n  const response = await fetch(requestUrl, {\r\n    method: "POST",\r\n    headers: { Authorization: `Token ${apiKey}`, "Content-Type": "application/json" },\r\n    body: JSON.stringify(publicBody),\r\n  });\r\n  if (!response.ok) {\r\n    const errorText = await response.text(); // \u83B7\u53D6\u9519\u8BEF\u4FE1\u606F\r\n    console.error("\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801:", response.status, ", \u9519\u8BEF\u4FE1\u606F:", errorText);\r\n    throw new Error(`\u8BF7\u6C42\u5931\u8D25\uFF0C\u72B6\u6001\u7801: ${response.status}, \u9519\u8BEF\u4FE1\u606F: ${errorText}`);\r\n  }\r\n  const data = await response.json();\r\n  const taskId = data.id;\r\n  const result = await checkTaskResult(taskId);\r\n  return result.data;\r\n};\r\nexports.videoRequest = videoRequest;\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n}\r\nconst ttsRequest = async (ttsConfig: TTSConfig, ttsModel: TTSModel) => {\r\n  throw new Error("Vidu \u6682\u4E0D\u652F\u6301\u8BED\u97F3\u5408\u6210\uFF08TTS\uFF09");\r\n};\r\n',
       "volcengine.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - \u706B\u5C71\u5F15\u64CE(\u8C46\u5305)\r\n * @version 2.0\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage"\r\n  | "startEndRequired"\r\n  | "endFrameOptional"\r\n  | "startFrameOptional"\r\n  | "text"\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string;\r\n  version: string;\r\n  name: string;\r\n  author: string;\r\n  description?: string;\r\n  icon?: string;\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ntype ReferenceList =\r\n  | { type: "image"; sourceType: "base64"; base64: string }\r\n  | { type: "audio"; sourceType: "base64"; base64: string }\r\n  | { type: "video"; sourceType: "base64"; base64: string };\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  referenceList?: ReferenceList[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n  referenceList?: Extract<ReferenceList, { type: "audio" }>[];\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const axios: any;\r\ndeclare const logger: (msg: string) => void;\r\ndeclare const jsonwebtoken: any;\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\r\n  updateVendor?: () => Promise<string>;\r\n};\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "volcengine",\r\n  version: "2.4",\r\n  author: "leeqi",\r\n  name: "\u706B\u5C71\u5F15\u64CE(\u8C46\u5305)",\r\n  description: "\u706B\u5C71\u5F15\u64CE\u8C46\u5305\u5927\u6A21\u578B\uFF0C\u652F\u6301\u6587\u672C\u3001\u56FE\u7247\u751F\u6210\u3001\u89C6\u9891\u751F\u6210\u7B49\u80FD\u529B\u3002\\n\\n\u9700\u8981\u5728[\u706B\u5C71\u5F15\u64CE\u63A7\u5236\u53F0](https://console.volcengine.com/ark)\u83B7\u53D6API\u5BC6\u94A5\u3002",\r\n  icon: "",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "\u706B\u5C71\u5F15\u64CEAPI Key" },\r\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u4EE5v3\u7ED3\u675F\uFF0C\u793A\u4F8B\uFF1Ahttps://ark.cn-beijing.volces.com/api/v3" },\r\n  ],\r\n  inputValues: {\r\n    apiKey: "",\r\n    baseUrl: "https://ark.cn-beijing.volces.com/api/v3",\r\n  },\r\n  models: [\r\n    // ===================== \u6587\u672C\u6A21\u578B - \u63A8\u8350 =====================\r\n    { name: "Doubao-Seed-2.0-Pro", modelName: "doubao-seed-2-0-pro-260215", type: "text", think: true },\r\n    { name: "Doubao-Seed-2.0-Lite", modelName: "doubao-seed-2-0-lite-260215", type: "text", think: true },\r\n    { name: "Doubao-Seed-2.0-Mini", modelName: "doubao-seed-2-0-mini-260215", type: "text", think: true },\r\n    { name: "Doubao-Seed-2.0-Code-Preview", modelName: "doubao-seed-2-0-code-preview-260215", type: "text", think: true },\r\n    { name: "Doubao-Seed-Character", modelName: "doubao-seed-character-251128", type: "text", think: false },\r\n    // ===================== \u6587\u672C\u6A21\u578B - \u5F80\u671F =====================\r\n    { name: "Doubao-Seed-1.8", modelName: "doubao-seed-1-8-251228", type: "text", think: true },\r\n    { name: "Doubao-Seed-Code-Preview", modelName: "doubao-seed-code-preview-251028", type: "text", think: true },\r\n    { name: "Doubao-Seed-1.6-Lite", modelName: "doubao-seed-1-6-lite-251015", type: "text", think: true },\r\n    { name: "Doubao-Seed-1.6-Flash(0828)", modelName: "doubao-seed-1-6-flash-250828", type: "text", think: true },\r\n    { name: "Doubao-Seed-1.6-Vision", modelName: "doubao-seed-1-6-vision-250815", type: "text", think: true },\r\n    { name: "Doubao-Seed-1.6(1015)", modelName: "doubao-seed-1-6-251015", type: "text", think: true },\r\n    { name: "Doubao-Seed-1.6(0615)", modelName: "doubao-seed-1-6-250615", type: "text", think: true },\r\n    { name: "Doubao-Seed-1.6-Flash(0615)", modelName: "doubao-seed-1-6-flash-250615", type: "text", think: true },\r\n    { name: "Doubao-Seed-Translation", modelName: "doubao-seed-translation-250915", type: "text", think: false },\r\n    { name: "Doubao-1.5-Pro-32K", modelName: "doubao-1-5-pro-32k-250115", type: "text", think: false },\r\n    { name: "Doubao-1.5-Pro-32K-Character(0715)", modelName: "doubao-1-5-pro-32k-character-250715", type: "text", think: false },\r\n    { name: "Doubao-1.5-Pro-32K-Character(0228)", modelName: "doubao-1-5-pro-32k-character-250228", type: "text", think: false },\r\n    { name: "Doubao-1.5-Lite-32K", modelName: "doubao-1-5-lite-32k-250115", type: "text", think: false },\r\n    { name: "Doubao-1.5-Vision-Pro-32K", modelName: "doubao-1-5-vision-pro-32k-250115", type: "text", think: false },\r\n    // ===================== \u6587\u672C\u6A21\u578B - \u7B2C\u4E09\u65B9(\u706B\u5C71\u5F15\u64CE\u6258\u7BA1) =====================\r\n    { name: "GLM-4-7", modelName: "glm-4-7-251222", type: "text", think: true },\r\n    { name: "DeepSeek-V3-2", modelName: "deepseek-v3-2-251201", type: "text", think: true },\r\n    { name: "DeepSeek-V3-1-Terminus", modelName: "deepseek-v3-1-terminus", type: "text", think: true },\r\n    { name: "DeepSeek-V3(0324)", modelName: "deepseek-v3-250324", type: "text", think: false },\r\n    { name: "DeepSeek-R1(0528)", modelName: "deepseek-r1-250528", type: "text", think: true },\r\n    { name: "Qwen3-32B", modelName: "qwen3-32b-20250429", type: "text", think: false },\r\n    { name: "Qwen3-14B", modelName: "qwen3-14b-20250429", type: "text", think: false },\r\n    { name: "Qwen3-8B", modelName: "qwen3-8b-20250429", type: "text", think: false },\r\n    { name: "Qwen3-0.6B", modelName: "qwen3-0-6b-20250429", type: "text", think: false },\r\n    { name: "Qwen2.5-72B", modelName: "qwen2-5-72b-20240919", type: "text", think: false },\r\n    { name: "GLM-4.5-Air", modelName: "glm-4-5-air", type: "text", think: false },\r\n    // ===================== \u56FE\u7247\u751F\u6210\u6A21\u578B =====================\r\n    {\r\n      name: "Seedream-5.0",\r\n      modelName: "doubao-seedream-5-0-260128",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Seedream-5.0-Lite",\r\n      modelName: "doubao-seedream-5-0-lite-260128",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Seedream-4.5",\r\n      modelName: "doubao-seedream-4-5-251128",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Seedream-4.0",\r\n      modelName: "doubao-seedream-4-0-250828",\r\n      type: "image",\r\n      mode: ["text", "singleImage", "multiReference"],\r\n    },\r\n    {\r\n      name: "Seedream-3.0-T2I",\r\n      modelName: "doubao-seedream-3-0-t2i-250415",\r\n      type: "image",\r\n      mode: ["text"],\r\n    },\r\n    // ===================== \u89C6\u9891\u751F\u6210\u6A21\u578B =====================\r\n    {\r\n      name: "Seedance-2.0(\u97F3\u753B\u540C\u751F)",\r\n      modelName: "doubao-seedance-2-0-260128",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-2.0-Fast(\u97F3\u753B\u540C\u751F)",\r\n      modelName: "doubao-seedance-2-0-fast-260128",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-1.5-Pro(\u97F3\u753B\u540C\u751F)",\r\n      modelName: "doubao-seedance-1-5-pro-251215",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional"],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-1.0-Pro",\r\n      modelName: "doubao-seedance-1-0-pro-250528",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional"],\r\n      audio: false,\r\n      durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-1.0-Pro-Fast",\r\n      modelName: "doubao-seedance-1-0-pro-fast-251015",\r\n      type: "video",\r\n      mode: ["text", "singleImage"],\r\n      audio: false,\r\n      durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-1.0-Lite-T2V",\r\n      modelName: "doubao-seedance-1-0-lite-t2v-250428",\r\n      type: "video",\r\n      mode: ["text"],\r\n      audio: false,\r\n      durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-1.0-Lite-I2V",\r\n      modelName: "doubao-seedance-1-0-lite-i2v-250428",\r\n      type: "video",\r\n      mode: ["startFrameOptional", ["imageReference:4"]],\r\n      audio: false,\r\n      durationResolutionMap: [{ duration: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n  ],\r\n};\r\n\r\n// ============================================================\r\n// \u8F85\u52A9\u5DE5\u5177\r\n// ============================================================\r\n\r\nconst getHeaders = () => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  return {\r\n    "Content-Type": "application/json",\r\n    Authorization: `Bearer ${vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "")}`,\r\n  };\r\n};\r\n\r\nconst getBaseUrl = () => vendor.inputValues.baseUrl.replace(/\\/+$/, "");\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\r\n\r\n  const effortMap: Record<number, string> = {\r\n    0: "minimal",\r\n    1: "low",\r\n    2: "medium",\r\n    3: "high",\r\n  };\r\n\r\n  return createOpenAICompatible({\r\n    name: "volcengine",\r\n    baseURL: getBaseUrl(),\r\n    apiKey,\r\n    fetch: async (url: string, options?: RequestInit) => {\r\n      const rawBody = JSON.parse((options?.body as string) ?? "{}");\r\n      const modifiedBody = {\r\n        ...rawBody,\r\n        thinking: {\r\n          type: "enabled",\r\n        },\r\n        reasoning_effort: effortMap[thinkLevel],\r\n      };\r\n      return await fetch(url, {\r\n        ...options,\r\n        body: JSON.stringify(modifiedBody),\r\n      });\r\n    },\r\n  }).chatModel(model.modelName);\r\n};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\r\n  const baseUrl = getBaseUrl();\r\n  const headers = getHeaders();\r\n\r\n  const body: any = {\r\n    model: model.modelName,\r\n    prompt: config.prompt || "",\r\n    response_format: "url",\r\n    watermark: false,\r\n  };\r\n\r\n  const isOldModel = model.modelName.includes("seedream-3-0");\r\n  const is5Lite = model.modelName.includes("seedream-5-0-lite");\r\n\r\n  // sequential_image_generation \u4EC5 seedream 5.0-lite/4.5/4.0 \u652F\u6301\r\n  if (!isOldModel) {\r\n    body.sequential_image_generation = "disabled";\r\n  }\r\n\r\n  // \u53C2\u8003\u56FE\u7247\uFF1A\u5355\u56FE\u4E3A string\uFF0C\u591A\u56FE\u4E3A array\uFF08seedream-3.0-t2i \u4E0D\u652F\u6301 image \u53C2\u6570\uFF09\r\n  if (!isOldModel && config.referenceList && config.referenceList.length > 0) {\r\n    const images = config.referenceList.map((ref) => ref.base64);\r\n    body.image = images.length === 1 ? images[0] : images;\r\n  }\r\n\r\n  // \u5C3A\u5BF8\u5904\u7406\uFF1A\u4F18\u5148\u4F7F\u7528\u63A8\u8350\u50CF\u7D20\u503C\uFF0C\u672A\u5339\u914D\u5219\u76F4\u63A5\u4F20\u5206\u8FA8\u7387\u5B57\u7B26\u4E32\u8BA9\u6A21\u578B\u81EA\u884C\u51B3\u5B9A\r\n  const [w, h] = config.aspectRatio.split(":").map(Number);\r\n  const sizeTable: Record<string, Record<string, string>> = {\r\n    "1K": {\r\n      "1:1": "1024x1024",\r\n      "4:3": "1152x864",\r\n      "3:4": "864x1152",\r\n      "16:9": "1280x720",\r\n      "9:16": "720x1280",\r\n      "3:2": "1248x832",\r\n      "2:3": "832x1248",\r\n      "21:9": "1512x648",\r\n    },\r\n    "2K": {\r\n      "1:1": "2048x2048",\r\n      "4:3": "2304x1728",\r\n      "3:4": "1728x2304",\r\n      "16:9": "2848x1600",\r\n      "9:16": "1600x2848",\r\n      "3:2": "2496x1664",\r\n      "2:3": "1664x2496",\r\n      "21:9": "3136x1344",\r\n    },\r\n    "4K": {\r\n      "1:1": "4096x4096",\r\n      "4:3": "4704x3520",\r\n      "3:4": "3520x4704",\r\n      "16:9": "5504x3040",\r\n      "9:16": "3040x5504",\r\n      "3:2": "4992x3328",\r\n      "2:3": "3328x4992",\r\n      "21:9": "6240x2656",\r\n    },\r\n  };\r\n\r\n  const sizeKey = config.size || "2K";\r\n  const ratioKey = config.aspectRatio;\r\n  const table = sizeTable[sizeKey];\r\n\r\n  if (table && table[ratioKey]) {\r\n    // \u63A8\u8350\u50CF\u7D20\u503C\u5339\u914D\u5230\u4E86\uFF0C\u4F46\u9700\u8981\u68C0\u67E5\u662F\u5426\u6EE1\u8DB3\u6A21\u578B\u6700\u4F4E\u50CF\u7D20\u8981\u6C42\r\n    const [pw, ph] = table[ratioKey].split("x").map(Number);\r\n    const totalPixels = pw * ph;\r\n    if (isOldModel) {\r\n      // seedream-3.0-t2i: \u50CF\u7D20\u8303\u56F4 [512x512, 2048x2048]\r\n      body.size = table[ratioKey];\r\n    } else if (totalPixels < 3686400) {\r\n      // 1K \u50CF\u7D20\u503C\u4E0D\u6EE1\u8DB3\u65B0\u6A21\u578B\u6700\u4F4E\u8981\u6C42\uFF0C\u76F4\u63A5\u4F20 "2K" \u8BA9\u6A21\u578B\u81EA\u884C\u51B3\u5B9A\r\n      body.size = "2K";\r\n    } else if (is5Lite && totalPixels > 10404496) {\r\n      // seedream-5.0-lite \u6700\u9AD8 10404496\uFF0C4K \u8D85\u9650\uFF0C\u56DE\u9000\u4F20 "2K"\r\n      body.size = "2K";\r\n    } else {\r\n      body.size = table[ratioKey];\r\n    }\r\n  } else if (isOldModel) {\r\n    // seedream-3.0-t2i: \u50CF\u7D20\u8303\u56F4 [512x512, 2048x2048]\uFF0C\u76F4\u63A5\u6309\u6BD4\u4F8B\u8BA1\u7B97\r\n    const base = sizeKey === "1K" ? 1024 : 2048;\r\n    const calcW = Math.min(2048, Math.round(base * Math.sqrt(w / h)));\r\n    const calcH = Math.min(2048, Math.round(base * Math.sqrt(h / w)));\r\n    body.size = `${Math.max(512, calcW)}x${Math.max(512, calcH)}`;\r\n  } else {\r\n    // \u65B0\u6A21\u578B\u672A\u5339\u914D\u63A8\u8350\u503C\u65F6\uFF0C\u76F4\u63A5\u4F20\u5206\u8FA8\u7387\u5B57\u7B26\u4E32\uFF08\u65B9\u5F0F1\uFF09\uFF0C\u7531\u6A21\u578B\u6839\u636E prompt \u81EA\u884C\u51B3\u5B9A\u5C3A\u5BF8\r\n    // seedream 5.0-lite \u652F\u6301 "2K"/"3K"\uFF0Cseedream 4.5 \u652F\u6301 "2K"/"4K"\uFF0Cseedream 4.0 \u652F\u6301 "1K"/"2K"/"4K"\r\n    if (is5Lite) {\r\n      body.size = sizeKey === "4K" ? "3K" : sizeKey === "1K" ? "2K" : sizeKey;\r\n    } else {\r\n      body.size = sizeKey === "1K" ? "2K" : sizeKey;\r\n    }\r\n  }\r\n\r\n  logger(`[\u56FE\u7247\u751F\u6210] \u8BF7\u6C42\u6A21\u578B: ${model.modelName}, \u5C3A\u5BF8: ${body.size}`);\r\n  const res = await fetch(`${baseUrl}/images/generations`, {\r\n    method: "POST",\r\n    headers,\r\n    body: JSON.stringify(body),\r\n  });\r\n  if (!res.ok) {\r\n    const errorText = await res.text();\r\n    throw new Error(`\u56FE\u7247\u751F\u6210\u8BF7\u6C42\u5931\u8D25: ${errorText}`);\r\n  }\r\n  const response = await res.json();\r\n  logger(response);\r\n\r\n  if (response?.error) {\r\n    throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A${response.error.message || response.error.code}`);\r\n  }\r\n\r\n  // \u4ECE data \u6570\u7EC4\u4E2D\u63D0\u53D6\u7B2C\u4E00\u5F20\u6210\u529F\u7684\u56FE\u7247\r\n  if (response?.data && response.data.length > 0) {\r\n    for (const item of response.data) {\r\n      if (item.url) {\r\n        return await urlToBase64(item.url);\r\n      }\r\n      if (item.b64_json) {\r\n        return item.b64_json;\r\n      }\r\n      if (item.error) {\r\n        throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A${item.error.message || item.error.code}`);\r\n      }\r\n    }\r\n  }\r\n\r\n  throw new Error("\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u672A\u8FD4\u56DE\u6709\u6548\u7ED3\u679C");\r\n};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  const baseUrl = getBaseUrl();\r\n  const headers = getHeaders();\r\n\r\n  const content: any[] = [];\r\n\r\n  if (config.prompt) {\r\n    content.push({ type: "text", text: config.prompt });\r\n  }\r\n\r\n  if (typeof config.mode === "string") {\r\n    switch (config.mode) {\r\n      case "singleImage": {\r\n        const firstImage = config.referenceList?.find((r) => r.type === "image");\r\n        if (firstImage) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: firstImage.base64 },\r\n            role: "first_frame",\r\n          });\r\n        }\r\n        break;\r\n      }\r\n      case "startFrameOptional": {\r\n        const images = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n        if (images.length > 0) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[0].base64 },\r\n            role: "first_frame",\r\n          });\r\n          if (images.length > 1) {\r\n            content.push({\r\n              type: "image_url",\r\n              image_url: { url: images[1].base64 },\r\n              role: "last_frame",\r\n            });\r\n          }\r\n        }\r\n        break;\r\n      }\r\n      case "startEndRequired": {\r\n        const images = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n        if (images.length >= 2) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[0].base64 },\r\n            role: "first_frame",\r\n          });\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[1].base64 },\r\n            role: "last_frame",\r\n          });\r\n        }\r\n        break;\r\n      }\r\n      case "endFrameOptional": {\r\n        const images = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n        if (images.length > 0) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[0].base64 },\r\n            role: "first_frame",\r\n          });\r\n          if (images.length > 1) {\r\n            content.push({\r\n              type: "image_url",\r\n              image_url: { url: images[1].base64 },\r\n              role: "last_frame",\r\n            });\r\n          }\r\n        }\r\n        break;\r\n      }\r\n      case "text":\r\n      default:\r\n        break;\r\n    }\r\n  } else if (Array.isArray(config.mode)) {\r\n    // \u591A\u6A21\u6001\u53C2\u8003\u6A21\u5F0F\uFF1A\u6309\u7C7B\u578B\u5206\u522B\u63D0\u53D6\u5E76\u6DFB\u52A0\r\n    const imageRefs = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n    const videoRefs = config.referenceList?.filter((r) => r.type === "video") ?? [];\r\n    const audioRefs = config.referenceList?.filter((r) => r.type === "audio") ?? [];\r\n\r\n    for (const refDef of config.mode) {\r\n      if (typeof refDef === "string") {\r\n        if (refDef.startsWith("imageReference:")) {\r\n          const maxCount = parseInt(refDef.split(":")[1], 10);\r\n          for (const ref of imageRefs.slice(0, maxCount)) {\r\n            content.push({\r\n              type: "image_url",\r\n              image_url: { url: ref.base64 },\r\n              role: "reference_image",\r\n            });\r\n          }\r\n        } else if (refDef.startsWith("videoReference:")) {\r\n          const maxCount = parseInt(refDef.split(":")[1], 10);\r\n          for (const ref of videoRefs.slice(0, maxCount)) {\r\n            content.push({\r\n              type: "video_url",\r\n              video_url: { url: ref.base64 },\r\n              role: "reference_video",\r\n            });\r\n          }\r\n        } else if (refDef.startsWith("audioReference:")) {\r\n          const maxCount = parseInt(refDef.split(":")[1], 10);\r\n          for (const ref of audioRefs.slice(0, maxCount)) {\r\n            content.push({\r\n              type: "audio_url",\r\n              audio_url: { url: ref.base64 },\r\n              role: "reference_audio",\r\n            });\r\n          }\r\n        }\r\n      }\r\n    }\r\n  }\r\n\r\n  const body: any = {\r\n    model: model.modelName,\r\n    content,\r\n    ratio: config.aspectRatio,\r\n    duration: config.duration,\r\n    resolution: config.resolution || "720p",\r\n    watermark: false,\r\n  };\r\n\r\n  if (model.audio === "optional") {\r\n    body.generate_audio = config.audio !== false;\r\n  } else if (model.audio === true) {\r\n    body.generate_audio = true;\r\n  } else {\r\n    body.generate_audio = false;\r\n  }\r\n\r\n  logger(`[\u89C6\u9891\u751F\u6210] \u63D0\u4EA4\u4EFB\u52A1, \u6A21\u578B: ${model.modelName}, \u65F6\u957F: ${config.duration}s, \u5206\u8FA8\u7387: ${config.resolution}`);\r\n  const res = await fetch(`${baseUrl}/contents/generations/tasks`, {\r\n    method: "POST",\r\n    headers,\r\n    body: JSON.stringify(body),\r\n  });\r\n\r\n  if (!res.ok) {\r\n    const errorText = await res.text();\r\n    throw new Error(`\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u521B\u5EFA\u5931\u8D25: ${errorText}`);\r\n  }\r\n  const createResponse = await res.json();\r\n  logger(createResponse);\r\n  const taskId = createResponse?.id;\r\n\r\n  if (!taskId) {\r\n    throw new Error("\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u521B\u5EFA\u5931\u8D25\uFF1A\u672A\u8FD4\u56DE\u4EFB\u52A1ID");\r\n  }\r\n\r\n  logger(`[\u89C6\u9891\u751F\u6210] \u4EFB\u52A1\u5DF2\u521B\u5EFA, ID: ${taskId}`);\r\n\r\n  const result = await pollTask(\r\n    async (): Promise<PollResult> => {\r\n      const queryRes = await fetch(`${baseUrl}/contents/generations/tasks/${taskId}`, {\r\n        method: "GET",\r\n        headers,\r\n      });\r\n      if (!queryRes.ok) {\r\n        const errorText = await queryRes.text();\r\n        throw new Error(`\u67E5\u8BE2\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u72B6\u6001\u5931\u8D25: ${errorText}`);\r\n      }\r\n      const task = await queryRes.json();\r\n\r\n      logger(`[\u89C6\u9891\u751F\u6210] \u4EFB\u52A1\u72B6\u6001: ${JSON.stringify(task)}`);\r\n\r\n      switch (task.status) {\r\n        case "succeeded":\r\n          if (task.content?.video_url) {\r\n            return { completed: true, data: task.content.video_url };\r\n          }\r\n          return { completed: true, error: "\u4EFB\u52A1\u6210\u529F\u4F46\u672A\u8FD4\u56DE\u89C6\u9891URL" };\r\n        case "failed":\r\n          return { completed: true, error: task.error?.message || "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n        case "expired":\r\n          return { completed: true, error: "\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u8D85\u65F6" };\r\n        case "cancelled":\r\n          return { completed: true, error: "\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u5DF2\u53D6\u6D88" };\r\n        default:\r\n          return { completed: false };\r\n      }\r\n    },\r\n    10000,\r\n    600000 * 3,\r\n  );\r\n\r\n  if (result.error) {\r\n    throw new Error(result.error);\r\n  }\r\n\r\n  return result.data!;\r\n};\r\n\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  return { hasUpdate: false, latestVersion: "2.0", notice: "" };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\nexport {};\r\n',
       "volcengineSd2.ts": '/**\r\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - \u706B\u5C71\u5F15\u64CE(\u8C46\u5305)\r\n * @version 2.0\r\n */\r\n\r\n// ============================================================\r\n// \u7C7B\u578B\u5B9A\u4E49\r\n// ============================================================\r\n\r\ntype VideoMode =\r\n  | "singleImage"\r\n  | "startEndRequired"\r\n  | "endFrameOptional"\r\n  | "startFrameOptional"\r\n  | "text"\r\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\r\n\r\ninterface TextModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "text";\r\n  think: boolean;\r\n}\r\n\r\ninterface ImageModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "image";\r\n  mode: ("text" | "singleImage" | "multiReference")[];\r\n  associationSkills?: string;\r\n}\r\n\r\ninterface VideoModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "video";\r\n  mode: VideoMode[];\r\n  associationSkills?: string;\r\n  audio: "optional" | false | true;\r\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\r\n}\r\n\r\ninterface TTSModel {\r\n  name: string;\r\n  modelName: string;\r\n  type: "tts";\r\n  voices: { title: string; voice: string }[];\r\n}\r\n\r\ninterface VendorConfig {\r\n  id: string;\r\n  version: string;\r\n  name: string;\r\n  author: string;\r\n  description?: string;\r\n  icon?: string;\r\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\r\n  inputValues: Record<string, string>;\r\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\r\n}\r\n\r\ntype ReferenceList =\r\n  | { type: "image"; sourceType: "base64"; base64: string }\r\n  | { type: "audio"; sourceType: "base64"; base64: string }\r\n  | { type: "video"; sourceType: "base64"; base64: string };\r\n\r\ninterface ImageConfig {\r\n  prompt: string;\r\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\r\n  size: "1K" | "2K" | "4K";\r\n  aspectRatio: `${number}:${number}`;\r\n}\r\n\r\ninterface VideoConfig {\r\n  duration: number;\r\n  resolution: string;\r\n  aspectRatio: "16:9" | "9:16";\r\n  prompt: string;\r\n  referenceList?: ReferenceList[];\r\n  audio?: boolean;\r\n  mode: VideoMode[];\r\n}\r\n\r\ninterface TTSConfig {\r\n  text: string;\r\n  voice: string;\r\n  speechRate: number;\r\n  pitchRate: number;\r\n  volume: number;\r\n  referenceList?: Extract<ReferenceList, { type: "audio" }>[];\r\n}\r\n\r\ninterface PollResult {\r\n  completed: boolean;\r\n  data?: string;\r\n  error?: string;\r\n}\r\n\r\n// ============================================================\r\n// \u5168\u5C40\u58F0\u660E\r\n// ============================================================\r\n\r\ndeclare const axios: any;\r\ndeclare const logger: (msg: string) => void;\r\ndeclare const jsonwebtoken: any;\r\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\r\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\r\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\r\ndeclare const urlToBase64: (url: string) => Promise<string>;\r\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\r\ndeclare const createOpenAI: any;\r\ndeclare const createDeepSeek: any;\r\ndeclare const createZhipu: any;\r\ndeclare const createQwen: any;\r\ndeclare const createAnthropic: any;\r\ndeclare const createOpenAICompatible: any;\r\ndeclare const createXai: any;\r\ndeclare const createMinimax: any;\r\ndeclare const createGoogleGenerativeAI: any;\r\ndeclare const crypto: any;\r\ndeclare const exports: {\r\n  vendor: VendorConfig;\r\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\r\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\r\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\r\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\r\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\r\n  updateVendor?: () => Promise<string>;\r\n};\r\n\r\n// \u5E38\u91CF\u914D\u7F6E\r\nconst SERVICE = "ark";\r\nconst VERSION = "2024-01-01";\r\nconst REGION = "cn-beijing";\r\nconst HOST = "ark.cn-beijing.volcengineapi.com";\r\nconst CONTENT_TYPE = "application/json";\r\nconst SIGNED_HEADERS = "content-type;host;x-content-sha256;x-date";\r\nconst PATH = "/";\r\nconst TIMEOUT = 120_000;\r\n\r\n// ============================================================\r\n// \u4F9B\u5E94\u5546\u914D\u7F6E\r\n// ============================================================\r\n\r\nconst vendor: VendorConfig = {\r\n  id: "volcengineSd2",\r\n  version: "2.0",\r\n  author: "toonflow",\r\n  name: "\u706B\u5C71\u5F15\u64CEsd2.0\u771F\u4EBA",\r\n  description: "\u706B\u5C71\u5F15\u64CE\u8C46\u5305\u5927\u6A21\u578B\uFF0C\u652F\u6301\u6587\u672C\u3001\u56FE\u7247\u751F\u6210\u3001\u89C6\u9891\u751F\u6210\u7B49\u80FD\u529B\u3002\\n\\n\u9700\u8981\u5728[\u706B\u5C71\u5F15\u64CE\u63A7\u5236\u53F0](https://console.volcengine.com/ark)\u83B7\u53D6API\u5BC6\u94A5\u3002",\r\n  icon: "",\r\n  inputs: [\r\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "\u706B\u5C71\u5F15\u64CEAPI Key" },\r\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u4EE5v3\u7ED3\u675F\uFF0C\u793A\u4F8B\uFF1Ahttps://ark.cn-beijing.volces.com/api/v3" },\r\n    { key: "ak", label: "\u706B\u5C71 Access Key ID", type: "text", required: true, placeholder: "\u706B\u5C71\u5F15\u64CE/OSS API\u8BBF\u95EE\u5BC6\u94A5" },\r\n    { key: "sk", label: "\u706B\u5C71 Secret Access Key", type: "password", required: true, placeholder: "\u706B\u5C71\u5F15\u64CE/OSS Secret Access Key" },\r\n    { key: "groupId", label: "\u8D44\u4EA7\u7EC4ID", type: "text", required: true, placeholder: "\u706B\u5C71\u5F15\u64CE\u8D44\u4EA7\u7EC4ID" },\r\n    { key: "tosEndpoint", label: "\u706B\u5C71TOS Endpoint", type: "url", required: true, placeholder: "\u5982 tos-cn-beijing.volces.com" },\r\n    { key: "tosBucket", label: "\u706B\u5C71TOS Bucket", type: "text", required: true, placeholder: "Bucket \u540D\u79F0" },\r\n  ],\r\n  inputValues: {\r\n    apiKey: "",\r\n    baseUrl: "https://ark.cn-beijing.volces.com/api/v3",\r\n    ak: "",\r\n    sk: "",\r\n    groupId: "",\r\n    tosEndpoint: "",\r\n    tosBucket: "",\r\n  },\r\n  models: [\r\n    {\r\n      name: "Seedance-2.0(\u97F3\u753B\u540C\u751F)",\r\n      modelName: "doubao-seedance-2-0-260128",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-2.0-Fast(\u97F3\u753B\u540C\u751F)",\r\n      modelName: "doubao-seedance-2-0-fast-260128",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional", ["imageReference:9", "videoReference:3", "audioReference:3"]],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], resolution: ["480p", "720p"] }],\r\n    },\r\n    {\r\n      name: "Seedance-1.5-Pro(\u97F3\u753B\u540C\u751F)",\r\n      modelName: "doubao-seedance-1-5-pro-251215",\r\n      type: "video",\r\n      mode: ["text", "startFrameOptional"],\r\n      audio: "optional",\r\n      durationResolutionMap: [{ duration: [4, 5, 6, 7, 8, 9, 10, 11, 12], resolution: ["480p", "720p", "1080p"] }],\r\n    },\r\n  ],\r\n};\r\n/** \u7B7E\u540D\u5BC6\u94A5\u6D3E\u751F */\r\nfunction deriveSigningKey(shortDate: string) {\r\n  const kDate = crypto.createHmac("sha256", vendor.inputValues.sk).update(shortDate).digest();\r\n  const kRegion = crypto.createHmac("sha256", kDate).update(REGION).digest();\r\n  const kService = crypto.createHmac("sha256", kRegion).update(SERVICE).digest();\r\n  return crypto.createHmac("sha256", kService).update("request").digest();\r\n}\r\nfunction encodeQueryComponent(str: string): string {\r\n  return encodeURIComponent(str).replace(/!/g, "%21").replace(/\'/g, "%27").replace(/\\(/g, "%28").replace(/\\)/g, "%29").replace(/\\*/g, "%2A");\r\n}\r\nfunction buildQueryString(params: Record<string, string>): string {\r\n  return Object.keys(params)\r\n    .sort()\r\n    .map((key) => {\r\n      const value = params[key];\r\n      return value === "" ? encodeQueryComponent(key) : `${encodeQueryComponent(key)}=${encodeQueryComponent(value)}`;\r\n    })\r\n    .join("&");\r\n}\r\n/**\r\n * \u706B\u5C71\u5F15\u64CE HMAC-SHA256 \u7B7E\u540D\u8BF7\u6C42\r\n * @param action  API Action \u540D\u79F0\r\n * @param body    \u8BF7\u6C42\u4F53\u5BF9\u8C61\uFF08\u81EA\u52A8\u5E8F\u5217\u5316\u4E3A JSON\uFF09\r\n * @param method  HTTP \u65B9\u6CD5\uFF0C\u9ED8\u8BA4 POST\r\n * @param header  \u989D\u5916\u7684\u81EA\u5B9A\u4E49\u8BF7\u6C42\u5934\r\n */\r\nasync function request(\r\n  action: string,\r\n  body: Record<string, unknown>,\r\n  method: "GET" | "POST" = "POST",\r\n  header: Record<string, string> = {},\r\n): Promise<any> {\r\n  const bodyStr = JSON.stringify(body);\r\n\r\n  // \u67E5\u8BE2\u53C2\u6570\uFF08\u6309 key \u6392\u5E8F\uFF09\r\n  const sortedQuery = Object.fromEntries(Object.entries({ Action: action, Version: VERSION }).sort(([a], [b]) => a.localeCompare(b)));\r\n\r\n  // \u65F6\u95F4\u6233 & \u5185\u5BB9\u54C8\u5E0C\r\n  const date = new Date().toISOString().replace(/[-:]/g, "").replace(/\\..+/, "Z");\r\n  const shortDate = date.slice(0, 8);\r\n  const xContentSha256 = crypto.createHash("sha256").update(bodyStr).digest("hex");\r\n\r\n  // \u89C4\u8303\u5316\u8BF7\u6C42\u5B57\u7B26\u4E32\r\n  const queryString = buildQueryString(sortedQuery as Record<string, string>);\r\n  const canonicalRequest = [\r\n    method,\r\n    PATH,\r\n    queryString,\r\n    `content-type:${CONTENT_TYPE}`,\r\n    `host:${HOST}`,\r\n    `x-content-sha256:${xContentSha256}`,\r\n    `x-date:${date}`,\r\n    "",\r\n    SIGNED_HEADERS,\r\n    xContentSha256,\r\n  ].join("\\n");\r\n\r\n  const hashedCanonicalRequest = crypto.createHash("sha256").update(canonicalRequest).digest("hex");\r\n  const credentialScope = `${shortDate}/${REGION}/${SERVICE}/request`;\r\n  const stringToSign = `HMAC-SHA256\\n${date}\\n${credentialScope}\\n${hashedCanonicalRequest}`;\r\n\r\n  // \u8BA1\u7B97\u7B7E\u540D\r\n  const signingKey = deriveSigningKey(shortDate);\r\n  const signature = crypto.createHmac("sha256", signingKey).update(stringToSign).digest("hex");\r\n\r\n  // \u7EC4\u88C5\u8BF7\u6C42\u5934\r\n  const authorization = `HMAC-SHA256 Credential=${vendor.inputValues.ak}/${credentialScope}, SignedHeaders=${SIGNED_HEADERS}, Signature=${signature}`;\r\n  const headers: Record<string, string> = {\r\n    Host: HOST,\r\n    "X-Content-Sha256": xContentSha256,\r\n    "X-Date": date,\r\n    "Content-Type": CONTENT_TYPE,\r\n    Authorization: authorization,\r\n    ...header,\r\n  };\r\n  return fetch(`https://${HOST}${PATH}?${queryString}`, {\r\n    method,\r\n    headers,\r\n    body: bodyStr,\r\n  });\r\n}\r\n\r\n// ============================================================\r\n// \u706B\u5C71\u5F15\u64CE TOS V4 \u7B7E\u540D\u5DE5\u5177\u51FD\u6570\r\n// ============================================================\r\nconst TOS_SIGNING_ALGORITHM = "TOS4-HMAC-SHA256";\r\nfunction getTosRegion(): string {\r\n  const ep = (vendor.inputValues.tosEndpoint || "").trim();\r\n  const match = ep.match(/tos-([^.]+)\\.volces\\.com/);\r\n  return match ? match[1] : "cn-beijing";\r\n}\r\nfunction tosTimestamp(): string {\r\n  return new Date()\r\n    .toISOString()\r\n    .replace(/[-:]/g, "")\r\n    .replace(/\\.\\d{3}Z$/, "Z");\r\n}\r\nfunction tosDateFromTimestamp(ts: string): string {\r\n  return ts.slice(0, 8);\r\n}\r\nfunction tosBucket(): string {\r\n  return (vendor.inputValues.tosBucket || "").trim();\r\n}\r\nfunction tosEndpoint(): string {\r\n  return (vendor.inputValues.tosEndpoint || "").trim();\r\n}\r\nfunction tosAk(): string {\r\n  logger(vendor.inputValues.ak);\r\n\r\n  return (vendor.inputValues.ak || "").trim();\r\n}\r\nfunction tosSk(): string {\r\n  logger(vendor.inputValues.sk);\r\n  return (vendor.inputValues.sk || "").trim();\r\n}\r\nfunction hasCompleteTosConfig(): boolean {\r\n  return Boolean(tosEndpoint() && tosBucket() && tosAk() && tosSk());\r\n}\r\nfunction tosSecurityToken(): string {\r\n  return (vendor.inputValues.securityToken || vendor.inputValues.sessionToken || "").trim();\r\n}\r\nfunction getStorageProvider(): "tos" | "oss" {\r\n  if (hasCompleteTosConfig()) return "tos";\r\n  throw new Error("\u672A\u68C0\u6D4B\u5230\u53EF\u7528\u5BF9\u8C61\u5B58\u50A8\u914D\u7F6E\uFF0C\u8BF7\u586B\u5199\u5B8C\u6574\u7684 TOS \u6216 OSS \u914D\u7F6E");\r\n}\r\nfunction tosUriEncode(str: string, encodeSlash: boolean = false): string {\r\n  const encoded = encodeURIComponent(str).replace(/!/g, "%21").replace(/\'/g, "%27").replace(/\\(/g, "%28").replace(/\\)/g, "%29").replace(/\\*/g, "%2A");\r\n  return encodeSlash ? encoded : encoded.replace(/%2F/gi, "/");\r\n}\r\nfunction tosCanonicalQueryString(params: Record<string, string>): string {\r\n  if (!Object.keys(params).length) return "";\r\n  return Object.keys(params)\r\n    .sort()\r\n    .map((k) => `${tosUriEncode(k, true)}=${tosUriEncode(params[k], true)}`)\r\n    .join("&");\r\n}\r\nfunction tosSigningKey(date: string, region: string, sk: string): Buffer {\r\n  const kDate = crypto.createHmac("sha256", Buffer.from(sk, "utf8")).update(date, "utf8").digest();\r\n\r\n  const kRegion = crypto.createHmac("sha256", kDate).update(region, "utf8").digest();\r\n\r\n  const kService = crypto.createHmac("sha256", kRegion).update("tos", "utf8").digest();\r\n\r\n  return crypto.createHmac("sha256", kService).update("request", "utf8").digest();\r\n}\r\nfunction tosSign(\r\n  method: string,\r\n  objectKey: string,\r\n  queryParams: Record<string, string>,\r\n  headers: Record<string, string>,\r\n  payloadHash: string,\r\n  timestamp: string,\r\n): { authorization: string; canonicalRequest: string; stringToSign: string } {\r\n  const region = getTosRegion();\r\n  const date = tosDateFromTimestamp(timestamp);\r\n  const scope = `${date}/${region}/tos/request`;\r\n  const normalizedHeaders: Record<string, string> = {};\r\n  for (const [k, v] of Object.entries(headers)) {\r\n    normalizedHeaders[k.toLowerCase()] = v.trim();\r\n  }\r\n  const signedHeaderKeys = Object.keys(normalizedHeaders).sort();\r\n  const canonicalHeaders = signedHeaderKeys.map((k) => `${k}:${normalizedHeaders[k]}\\n`).join("");\r\n  const signedHeaders = signedHeaderKeys.join(";");\r\n  const canonicalRequest = [\r\n    method,\r\n    `/${tosUriEncode(objectKey)}`,\r\n    tosCanonicalQueryString(queryParams),\r\n    canonicalHeaders,\r\n    signedHeaders,\r\n    payloadHash,\r\n  ].join("\\n");\r\n  const hashedCanonicalRequest = crypto.createHash("sha256").update(canonicalRequest).digest("hex");\r\n  const stringToSign = [TOS_SIGNING_ALGORITHM, timestamp, scope, hashedCanonicalRequest].join("\\n");\r\n  const signingKey = tosSigningKey(date, region, tosSk());\r\n  const signature = crypto.createHmac("sha256", signingKey).update(stringToSign).digest("hex");\r\n  return {\r\n    authorization: `${TOS_SIGNING_ALGORITHM} Credential=${tosAk()}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,\r\n    canonicalRequest,\r\n    stringToSign,\r\n  };\r\n}\r\nasync function tosFileExists(objectKey: string): Promise<boolean> {\r\n  const bucket = tosBucket();\r\n  const endpoint = tosEndpoint();\r\n  if (!bucket || !endpoint || !tosAk() || !tosSk()) return false;\r\n\r\n  const host = `${bucket}.${endpoint}`;\r\n  const timestamp = tosTimestamp();\r\n  const payloadHash = "UNSIGNED-PAYLOAD";\r\n  const token = tosSecurityToken();\r\n\r\n  const headers: Record<string, string> = {\r\n    host,\r\n    "x-tos-content-sha256": payloadHash,\r\n    "x-tos-date": timestamp,\r\n  };\r\n  if (token) headers["x-tos-security-token"] = token;\r\n\r\n  const { authorization } = tosSign("HEAD", objectKey, {}, headers, payloadHash, timestamp);\r\n\r\n  const reqHeaders: Record<string, string> = {\r\n    host,\r\n    "x-tos-content-sha256": payloadHash,\r\n    "x-tos-date": timestamp,\r\n    Authorization: authorization,\r\n  };\r\n  if (token) reqHeaders["x-tos-security-token"] = token;\r\n\r\n  const res = await fetch(`https://${host}/${tosUriEncode(objectKey)}`, {\r\n    method: "HEAD",\r\n    headers: reqHeaders,\r\n  });\r\n\r\n  if (res.status === 404) return false;\r\n  return res.ok;\r\n}\r\nasync function tosUpload(objectKey: string, data: Buffer, contentType: string): Promise<void> {\r\n  const bucket = tosBucket();\r\n  const endpoint = tosEndpoint();\r\n  if (!bucket || !endpoint || !tosAk() || !tosSk()) {\r\n    throw new Error("TOS \u914D\u7F6E\u4E0D\u5B8C\u6574");\r\n  }\r\n\r\n  const host = `${bucket}.${endpoint}`;\r\n  const timestamp = tosTimestamp();\r\n  const payloadHash = crypto.createHash("sha256").update(data).digest("hex");\r\n  const token = tosSecurityToken();\r\n\r\n  const headers: Record<string, string> = {\r\n    "content-type": contentType,\r\n    host,\r\n    "x-tos-content-sha256": payloadHash,\r\n    "x-tos-date": timestamp,\r\n  };\r\n  if (token) headers["x-tos-security-token"] = token;\r\n\r\n  const { authorization, canonicalRequest, stringToSign } = tosSign("PUT", objectKey, {}, headers, payloadHash, timestamp);\r\n\r\n  logger(`[TOS Debug] CanonicalRequest:\\n${canonicalRequest}`);\r\n  logger(`[TOS Debug] StringToSign:\\n${stringToSign}`);\r\n  logger(`[TOS] PUT https://${host}/${objectKey}`);\r\n\r\n  const reqHeaders: Record<string, string> = {\r\n    "Content-Type": contentType,\r\n    host,\r\n    "x-tos-content-sha256": payloadHash,\r\n    "x-tos-date": timestamp,\r\n    Authorization: authorization,\r\n  };\r\n  if (token) reqHeaders["x-tos-security-token"] = token;\r\n\r\n  const res = await fetch(`https://${host}/${tosUriEncode(objectKey)}`, {\r\n    method: "PUT",\r\n    headers: reqHeaders,\r\n    body: data,\r\n  });\r\n\r\n  if (!res.ok) {\r\n    const errText = await res.text().catch(() => `${res.status} ${res.statusText}`);\r\n    throw new Error(`TOS \u4E0A\u4F20\u5931\u8D25: ${errText}`);\r\n  }\r\n}\r\nfunction tosGetSignedUrl(objectKey: string, expiresIn: number = 7200): string {\r\n  const bucket = tosBucket();\r\n  const endpoint = tosEndpoint();\r\n  const host = `${bucket}.${endpoint}`;\r\n  const region = getTosRegion();\r\n  const timestamp = tosTimestamp();\r\n  const date = tosDateFromTimestamp(timestamp);\r\n  const scope = `${date}/${region}/tos/request`;\r\n  const token = tosSecurityToken();\r\n\r\n  const queryParams: Record<string, string> = {\r\n    "X-Tos-Algorithm": TOS_SIGNING_ALGORITHM,\r\n    "X-Tos-Credential": `${tosAk()}/${scope}`,\r\n    "X-Tos-Date": timestamp,\r\n    "X-Tos-Expires": String(expiresIn),\r\n    "X-Tos-SignedHeaders": "host",\r\n  };\r\n  if (token) queryParams["X-Tos-Security-Token"] = token;\r\n\r\n  const canonicalRequest = [\r\n    "GET",\r\n    `/${tosUriEncode(objectKey)}`,\r\n    tosCanonicalQueryString(queryParams),\r\n    `host:${host}\\n`,\r\n    "host",\r\n    "UNSIGNED-PAYLOAD",\r\n  ].join("\\n");\r\n\r\n  const hashedCanonicalRequest = crypto.createHash("sha256").update(canonicalRequest).digest("hex");\r\n  const stringToSign = [TOS_SIGNING_ALGORITHM, timestamp, scope, hashedCanonicalRequest].join("\\n");\r\n  const signingKey = tosSigningKey(date, region, tosSk());\r\n  const signature = crypto.createHmac("sha256", signingKey).update(stringToSign).digest("hex");\r\n\r\n  const finalQuery = tosCanonicalQueryString({\r\n    ...queryParams,\r\n    "X-Tos-Signature": signature,\r\n  });\r\n\r\n  return `https://${host}/${tosUriEncode(objectKey)}?${finalQuery}`;\r\n}\r\n/** \u4ECE base64 Data URL \u4E2D\u89E3\u6790 MIME \u7C7B\u578B\u548C\u6587\u4EF6\u6269\u5C55\u540D */\r\nfunction parseBase64(base64: string): { mimeType: string; ext: string; data: string } {\r\n  const match = base64.match(/^data:([^;]+);base64,(.+)$/);\r\n  if (!match) {\r\n    return { mimeType: "application/octet-stream", ext: "bin", data: base64 };\r\n  }\r\n  const mimeType = match[1];\r\n  const extMap: Record<string, string> = {\r\n    "image/png": "png",\r\n    "image/jpeg": "jpg",\r\n    "image/jpg": "jpg",\r\n    "image/webp": "webp",\r\n    "image/gif": "gif",\r\n    "image/bmp": "bmp",\r\n    "video/mp4": "mp4",\r\n    "video/quicktime": "mov",\r\n    "audio/mpeg": "mp3",\r\n    "audio/mp3": "mp3",\r\n    "audio/wav": "wav",\r\n    "audio/wave": "wav",\r\n    "audio/ogg": "ogg",\r\n    "audio/aac": "aac",\r\n  };\r\n  return { mimeType, ext: extMap[mimeType] || "bin", data: match[2] };\r\n}\r\n// source \uFF1Abase64\r\nasync function uploadAssets(source: string, type: "Image" | "Video" | "Audio"): Promise<string | null> {\r\n  try {\r\n    const { mimeType, ext, data: rawBase64 } = parseBase64(source);\r\n    const buffer = Buffer.from(rawBase64, "base64");\r\n    const hash = crypto.createHash("sha256").update(source).digest("hex");\r\n\r\n    const provider = getStorageProvider();\r\n    logger(provider);\r\n    const objectKey = `volcengine/${type.toLowerCase()}/${hash}.${ext}`;\r\n\r\n    let assetUrl: string;\r\n    const exists = await tosFileExists(objectKey);\r\n    if (!exists) {\r\n      logger(`[TOS] \u4E0A\u4F20\u6587\u4EF6: ${objectKey} (${mimeType})`);\r\n      await tosUpload(objectKey, buffer, mimeType);\r\n    } else {\r\n      logger(`[TOS] \u6587\u4EF6\u5DF2\u5B58\u5728\uFF0C\u8DF3\u8FC7\u4E0A\u4F20: ${objectKey}`);\r\n    }\r\n    assetUrl = tosGetSignedUrl(objectKey, 7200);\r\n\r\n    logger(`\u751F\u6210\u9884\u7B7E\u540DURL: ${assetUrl}`);\r\n\r\n    const res = await request("CreateAsset", {\r\n      GroupId: vendor.inputValues.groupId,\r\n      URL: assetUrl,\r\n      Name: hash,\r\n      AssetType: type,\r\n    });\r\n\r\n    if (!res.ok) {\r\n      const errorText = await res.text();\r\n      throw new Error(`\u521B\u5EFA\u8D44\u4EA7\u5931\u8D25: ${errorText}`);\r\n    }\r\n\r\n    const resData = await res.json();\r\n    const assetId: string = resData.Result.Id;\r\n    logger(`\u8D44\u4EA7\u5DF2\u521B\u5EFA: ${assetId}`);\r\n\r\n    const result = await pollTask(\r\n      async (): Promise<PollResult> => {\r\n        const queryRes = await request("GetAsset", { Id: assetId, AssetType: type });\r\n        if (!queryRes.ok) {\r\n          const errorText = await queryRes.text();\r\n          throw new Error(`\u67E5\u8BE2\u8D44\u4EA7\u72B6\u6001\u5931\u8D25: ${errorText}`);\r\n        }\r\n        const task = await queryRes.json();\r\n        const status: string = task.Result.Status;\r\n\r\n        logger(`[\u8D44\u4EA7\u8F6E\u8BE2] \u72B6\u6001: ${JSON.stringify(task, null, 2)}`);\r\n\r\n        switch (status) {\r\n          case "Active":\r\n            return { completed: true, data: assetId };\r\n          case "Failed":\r\n            return { completed: true, error: task.Result.Error?.Message || "\u8D44\u4EA7\u521B\u5EFA\u5931\u8D25" };\r\n          default:\r\n            return { completed: false };\r\n        }\r\n      },\r\n      10000,\r\n      600000 * 3,\r\n    );\r\n\r\n    if (result.error) {\r\n      throw new Error(result.error);\r\n    }\r\n\r\n    return `asset://${result.data}`;\r\n  } catch (err: any) {\r\n    const msg = typeof err?.message === "string" ? err.message : String(err);\r\n    logger(`[uploadAssets] \u4E0A\u4F20\u5931\u8D25: ${msg}`);\r\n    return source;\r\n  }\r\n}\r\n\r\n// ============================================================\r\n// \u8F85\u52A9\u5DE5\u5177\r\n// ============================================================\r\n\r\nconst getHeaders = () => {\r\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\r\n  return {\r\n    "Content-Type": "application/json",\r\n    Authorization: `Bearer ${vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "")}`,\r\n  };\r\n};\r\n\r\nconst getBaseUrl = () => vendor.inputValues.baseUrl.replace(/\\/+$/, "");\r\n\r\n// ============================================================\r\n// \u9002\u914D\u5668\u51FD\u6570\r\n// ============================================================\r\n\r\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {};\r\n\r\nconst imageRequest = async (config: ImageConfig, model: ImageModel) => {};\r\n\r\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\r\n  const baseUrl = getBaseUrl();\r\n  const headers = getHeaders();\r\n\r\n  const content: any[] = [];\r\n\r\n  if (config.prompt) {\r\n    content.push({ type: "text", text: config.prompt });\r\n  }\r\n\r\n  if (typeof config.mode === "string") {\r\n    switch (config.mode) {\r\n      case "singleImage": {\r\n        const firstImage = config.referenceList?.find((r) => r.type === "image");\r\n        if (firstImage) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: firstImage.base64 },\r\n            role: "first_frame",\r\n          });\r\n        }\r\n        break;\r\n      }\r\n      case "startFrameOptional": {\r\n        const images = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n        if (images.length > 0) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[0].base64 },\r\n            role: "first_frame",\r\n          });\r\n          if (images.length > 1) {\r\n            content.push({\r\n              type: "image_url",\r\n              image_url: { url: images[1].base64 },\r\n              role: "last_frame",\r\n            });\r\n          }\r\n        }\r\n        break;\r\n      }\r\n      case "startEndRequired": {\r\n        const images = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n        if (images.length >= 2) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[0].base64 },\r\n            role: "first_frame",\r\n          });\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[1].base64 },\r\n            role: "last_frame",\r\n          });\r\n        }\r\n        break;\r\n      }\r\n      case "endFrameOptional": {\r\n        const images = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n        if (images.length > 0) {\r\n          content.push({\r\n            type: "image_url",\r\n            image_url: { url: images[0].base64 },\r\n            role: "first_frame",\r\n          });\r\n          if (images.length > 1) {\r\n            content.push({\r\n              type: "image_url",\r\n              image_url: { url: images[1].base64 },\r\n              role: "last_frame",\r\n            });\r\n          }\r\n        }\r\n        break;\r\n      }\r\n      case "text":\r\n      default:\r\n        break;\r\n    }\r\n  } else if (Array.isArray(config.mode)) {\r\n    // \u591A\u6A21\u6001\u53C2\u8003\u6A21\u5F0F\uFF1A\u6309\u7C7B\u578B\u5206\u522B\u63D0\u53D6\u5E76\u6DFB\u52A0\r\n    const imageRefs = config.referenceList?.filter((r) => r.type === "image") ?? [];\r\n    const videoRefs = config.referenceList?.filter((r) => r.type === "video") ?? [];\r\n    const audioRefs = config.referenceList?.filter((r) => r.type === "audio") ?? [];\r\n\r\n    for (const refDef of config.mode) {\r\n      if (typeof refDef === "string") {\r\n        if (refDef.startsWith("imageReference:")) {\r\n          const maxCount = parseInt(refDef.split(":")[1], 10);\r\n\r\n          for (const ref of imageRefs.slice(0, maxCount)) {\r\n            content.push({\r\n              type: "image_url",\r\n              image_url: { url: await uploadAssets(ref.base64, "Image") },\r\n              role: "reference_image",\r\n            });\r\n          }\r\n        } else if (refDef.startsWith("videoReference:")) {\r\n          const maxCount = parseInt(refDef.split(":")[1], 10);\r\n          for (const ref of videoRefs.slice(0, maxCount)) {\r\n            content.push({\r\n              type: "video_url",\r\n              video_url: { url: await uploadAssets(ref.base64, "Video") },\r\n              role: "reference_video",\r\n            });\r\n          }\r\n        } else if (refDef.startsWith("audioReference:")) {\r\n          const maxCount = parseInt(refDef.split(":")[1], 10);\r\n          for (const ref of audioRefs.slice(0, maxCount)) {\r\n            content.push({\r\n              type: "audio_url",\r\n              audio_url: { url: await uploadAssets(ref.base64, "Audio") },\r\n              role: "reference_audio",\r\n            });\r\n          }\r\n        }\r\n      }\r\n    }\r\n  }\r\n  const body: any = {\r\n    model: model.modelName,\r\n    content,\r\n    ratio: config.aspectRatio,\r\n    duration: config.duration,\r\n    resolution: config.resolution || "720p",\r\n    watermark: false,\r\n  };\r\n\r\n  if (model.audio === "optional") {\r\n    body.generate_audio = config.audio !== false;\r\n  } else if (model.audio === true) {\r\n    body.generate_audio = true;\r\n  } else {\r\n    body.generate_audio = false;\r\n  }\r\n  logger(`[\u89C6\u9891\u751F\u6210] \u63D0\u4EA4\u4EFB\u52A1, \u6A21\u578B: ${model.modelName}, \u65F6\u957F: ${config.duration}s, \u5206\u8FA8\u7387: ${config.resolution}`);\r\n  const res = await fetch(`${baseUrl}/contents/generations/tasks`, {\r\n    method: "POST",\r\n    headers,\r\n    body: JSON.stringify(body),\r\n  });\r\n\r\n  if (!res.ok) {\r\n    const errorText = await res.text();\r\n    throw new Error(`\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u521B\u5EFA\u5931\u8D25: ${errorText}`);\r\n  }\r\n  const createResponse = await res.json();\r\n  logger(createResponse);\r\n  const taskId = createResponse?.id;\r\n\r\n  if (!taskId) {\r\n    throw new Error("\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u521B\u5EFA\u5931\u8D25\uFF1A\u672A\u8FD4\u56DE\u4EFB\u52A1ID");\r\n  }\r\n\r\n  logger(`[\u89C6\u9891\u751F\u6210] \u4EFB\u52A1\u5DF2\u521B\u5EFA, ID: ${taskId}`);\r\n\r\n  const result = await pollTask(\r\n    async (): Promise<PollResult> => {\r\n      const queryRes = await fetch(`${baseUrl}/contents/generations/tasks/${taskId}`, {\r\n        method: "GET",\r\n        headers,\r\n      });\r\n      if (!queryRes.ok) {\r\n        const errorText = await queryRes.text();\r\n        throw new Error(`\u67E5\u8BE2\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u72B6\u6001\u5931\u8D25: ${errorText}`);\r\n      }\r\n      const task = await queryRes.json();\r\n\r\n      logger(`[\u89C6\u9891\u751F\u6210] \u4EFB\u52A1\u72B6\u6001: ${JSON.stringify(task)}`);\r\n\r\n      switch (task.status) {\r\n        case "succeeded":\r\n          if (task.content?.video_url) {\r\n            return { completed: true, data: task.content.video_url };\r\n          }\r\n          return { completed: true, error: "\u4EFB\u52A1\u6210\u529F\u4F46\u672A\u8FD4\u56DE\u89C6\u9891URL" };\r\n        case "failed":\r\n          return { completed: true, error: task.error?.message || "\u89C6\u9891\u751F\u6210\u5931\u8D25" };\r\n        case "expired":\r\n          return { completed: true, error: "\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u8D85\u65F6" };\r\n        case "cancelled":\r\n          return { completed: true, error: "\u89C6\u9891\u751F\u6210\u4EFB\u52A1\u5DF2\u53D6\u6D88" };\r\n        default:\r\n          return { completed: false };\r\n      }\r\n    },\r\n    10000,\r\n    600000 * 3,\r\n  );\r\n\r\n  if (result.error) {\r\n    throw new Error(result.error);\r\n  }\r\n\r\n  return result.data!;\r\n};\r\n\r\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\r\n  return "";\r\n};\r\n\r\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\r\n  return { hasUpdate: false, latestVersion: "2.0", notice: "" };\r\n};\r\n\r\nconst updateVendor = async (): Promise<string> => {\r\n  return "";\r\n};\r\n\r\n// ============================================================\r\n// \u5BFC\u51FA\r\n// ============================================================\r\n\r\nexports.vendor = vendor;\r\nexports.textRequest = textRequest;\r\nexports.imageRequest = imageRequest;\r\nexports.videoRequest = videoRequest;\r\nexports.ttsRequest = ttsRequest;\r\nexports.checkForUpdates = checkForUpdates;\r\nexports.updateVendor = updateVendor;\r\n\r\nexport {};\r\n',
-      "openlux.ts": '/**\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - OpenLux\n * @version 2.4\n *\n * \u8BF4\u660E\uFF1A\n * 1) OpenLux \u4E3A AI \u6A21\u578B\u805A\u5408\u4E2D\u8F6C\u5E73\u53F0\uFF0COpenAI \u517C\u5BB9\u683C\u5F0F\n * 2) \u6587\u672C\u63A5\u53E3\uFF1Ahttps://api.openlux.ai/v1\uFF08OpenAI \u517C\u5BB9\uFF09\uFF0C\u652F\u6301 GPT/Claude/DeepSeek/Gemini \u7B49\u6A21\u578B\n * 3) \u56FE\u7247\u63A5\u53E3\uFF1A\n *    - \u6587\u751F\u56FE\uFF1APOST /images/generations\uFF08JSON\uFF09\n *    - \u56FE\u751F\u56FE\uFF1APOST /images/edits\uFF08multipart\uFF0C\u53C2\u8003\u56FE\u968F form-data \u4E0A\u4F20\uFF09\n *    \u652F\u6301 gpt-image-2\u3001gemini-3.1-flash-image\uFF08Nano Banana 2\uFF09\u7B49\n * 4) TTS \u63A5\u53E3\uFF1A\n *    - OpenAI \u517C\u5BB9\uFF1APOST /v1/audio/speech\uFF08tts-1\u3001gpt-4o-mini-tts \u7B49\uFF09\n *    - MiniMax \u5F02\u6B65\uFF1APOST /minimax/v1/t2a_async_v2\uFF08MiniMax-Voice-Design \u6D77\u87BA\u97F3\u8272\u8BBE\u8BA1\uFF09\n *    \u652F\u6301 tts-1\u3001tts-1-hd\u3001gpt-4o-mini-tts\u3001MiniMax-Voice-Design \u7B49\n * 5) \u6A21\u578B\u5217\u8868\u53EF\u5728 OpenLux \u63A7\u5236\u53F0\u67E5\u770B\uFF08Console \u2192 supported models\uFF09\u6216 GET /v1/models\n */\n\n// ============================================================\n// \u7C7B\u578B\u5B9A\u4E49\n// ============================================================\ntype VideoMode =\n  | "singleImage"\n  | "startEndRequired"\n  | "endFrameOptional"\n  | "startFrameOptional"\n  | "text"\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\ninterface TextModel {\n  name: string;\n  modelName: string;\n  type: "text";\n  think: boolean;\n}\ninterface ImageModel {\n  name: string;\n  modelName: string;\n  type: "image";\n  mode: ("text" | "singleImage" | "multiReference")[];\n  associationSkills?: string;\n}\ninterface VideoModel {\n  name: string;\n  modelName: string;\n  type: "video";\n  mode: VideoMode[];\n  associationSkills?: string;\n  audio: "optional" | false | true;\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\n}\ninterface TTSModel {\n  name: string;\n  modelName: string;\n  type: "tts";\n  voices: { title: string; voice: string }[];\n}\ninterface VendorConfig {\n  id: string;\n  version: string;\n  name: string;\n  author: string;\n  description?: string;\n  icon?: string;\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\n  inputValues: Record<string, string>;\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\n}\ntype ReferenceList =\n  | { type: "image"; sourceType: "base64"; base64: string }\n  | { type: "audio"; sourceType: "base64"; base64: string }\n  | { type: "video"; sourceType: "base64"; base64: string };\ninterface ImageConfig {\n  prompt: string;\n  referenceList?: Extract<ReferenceList, { type: "image" }>[];\n  size: "1K" | "2K" | "4K";\n  aspectRatio: `${number}:${number}`;\n}\ninterface VideoConfig {\n  duration: number;\n  resolution: string;\n  aspectRatio: "16:9" | "9:16";\n  prompt: string;\n  referenceList?: ReferenceList[];\n  audio?: boolean;\n  mode: VideoMode[];\n}\ninterface TTSConfig {\n  text: string;\n  voice: string;\n  speechRate: number;\n  pitchRate: number;\n  volume: number;\n}\ninterface PollResult {\n  completed: boolean;\n  data?: string;\n  error?: string;\n}\n// ============================================================\n// \u5168\u5C40\u58F0\u660E\n// ============================================================\ndeclare const axios: any;\ndeclare const logger: (msg: string) => void;\ndeclare const jsonwebtoken: any;\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\ndeclare const urlToBase64: (url: string) => Promise<string>;\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\ndeclare const createOpenAI: any;\ndeclare const createDeepSeek: any;\ndeclare const createZhipu: any;\ndeclare const createQwen: any;\ndeclare const createAnthropic: any;\ndeclare const createOpenAICompatible: any;\ndeclare const createXai: any;\ndeclare const createMinimax: any;\ndeclare const createGoogleGenerativeAI: any;\ndeclare const Buffer: any;\ndeclare const FormData: any;\ndeclare const exports: {\n  vendor: VendorConfig;\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\n  updateVendor?: () => Promise<string>;\n};\n// ============================================================\n// \u4F9B\u5E94\u5546\u914D\u7F6E\n// ============================================================\nconst vendor: VendorConfig = {\n  id: "openlux",\n  version: "2.4",\n  author: "Toonflow",\n  name: "OpenLux",\n  description:\n    "OpenLux AI \u805A\u5408\u4E2D\u8F6C\u5E73\u53F0\uFF08OpenAI \u517C\u5BB9\uFF09\uFF0C\u652F\u6301 GPT / Claude / DeepSeek / Gemini \u6587\u672C\u5BF9\u8BDD\u53CA\u56FE\u7247\u751F\u6210/\u56FE\u751F\u56FE\u3002\\n[\u5B98\u65B9\u6587\u6863](https://doc.openlux.ai) \uFF5C [\u63A7\u5236\u53F0](https://console.openlux.ai)\\n\\n\u53EF\u7528\u6A21\u578B\u8BF7\u5728 OpenLux \u63A7\u5236\u53F0\u300Csupported models\u300D\u67E5\u770B\uFF0C\u6216\u586B\u5165\u5BC6\u94A5\u540E\u8BBF\u95EE `GET /v1/models`\uFF1B\u4E5F\u53EF\u5728\u4E0B\u65B9\u624B\u52A8\u6DFB\u52A0/\u4FEE\u6539\u6A21\u578B\u3002",\n  icon: "",\n  inputs: [\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "Console \u2192 API tokens \u521B\u5EFA\uFF0C\u683C\u5F0F sk-xxx" },\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u4EE5v1\u7ED3\u675F\uFF0C\u793A\u4F8B\uFF1Ahttps://api.openlux.ai/v1" },\n  ],\n  inputValues: {\n    apiKey: "",\n    baseUrl: "https://api.openlux.ai/v1",\n  },\n  models: [\n    // ---- \u6587\u672C\u5BF9\u8BDD ----\n    { name: "GPT-5.6 Sol", modelName: "gpt-5.6-sol", type: "text", think: false },\n    { name: "Claude Opus 5", modelName: "claude-opus-5", type: "text", think: false },\n    { name: "Claude Fable 5", modelName: "claude-fable-5", type: "text", think: false },\n    { name: "Claude Opus 4.8", modelName: "claude-opus-4-8", type: "text", think: false },\n    { name: "DeepSeek V4 Flash", modelName: "deepseek-v4-flash", type: "text", think: false },\n    { name: "DeepSeek V4 Pro", modelName: "deepseek-v4-pro", type: "text", think: false },\n    { name: "Gemini 3.7 Flash", modelName: "gemini-3.7-flash", type: "text", think: false },\n    // ---- \u56FE\u7247\u751F\u6210\uFF08\u6587\u751F\u56FE + \u56FE\u751F\u56FE\uFF09----\n    { name: "GPT Image 2", modelName: "gpt-image-2", type: "image", mode: ["text", "singleImage", "multiReference"] },\n    { name: "Nano Banana 2", modelName: "gemini-3.1-flash-image", type: "image", mode: ["text", "singleImage", "multiReference"] },\n    // ---- TTS \u8BED\u97F3\u5408\u6210 ----\n    {\n      name: "GPT-4o Mini TTS",\n      modelName: "gpt-4o-mini-tts",\n      type: "tts",\n      voices: [\n        { title: "Alloy\uFF08\u5747\u8861\uFF09", voice: "alloy" },\n        { title: "Echo\uFF08\u6E29\u6696\uFF09", voice: "echo" },\n        { title: "Fable\uFF08\u660E\u4EAE\uFF09", voice: "fable" },\n        { title: "Onyx\uFF08\u4F4E\u6C89\uFF09", voice: "onyx" },\n        { title: "Nova\uFF08\u67D4\u548C\uFF09", voice: "nova" },\n        { title: "Shimmer\uFF08\u6E05\u4EAE\uFF09", voice: "shimmer" },\n      ],\n    },\n    {\n      name: "TTS-1",\n      modelName: "tts-1",\n      type: "tts",\n      voices: [\n        { title: "Alloy\uFF08\u5747\u8861\uFF09", voice: "alloy" },\n        { title: "Echo\uFF08\u6E29\u6696\uFF09", voice: "echo" },\n        { title: "Fable\uFF08\u660E\u4EAE\uFF09", voice: "fable" },\n        { title: "Onyx\uFF08\u4F4E\u6C89\uFF09", voice: "onyx" },\n        { title: "Nova\uFF08\u67D4\u548C\uFF09", voice: "nova" },\n        { title: "Shimmer\uFF08\u6E05\u4EAE\uFF09", voice: "shimmer" },\n      ],\n    },\n    {\n      name: "MiniMax-Voice-Design\uFF08\u6D77\u87BA\u97F3\u8272\u8BBE\u8BA1\uFF09",\n      modelName: "MiniMax-Voice-Design",\n      type: "tts",\n      voices: [\n        { title: "\u6E29\u67D4\u5973\u58F0-\u8F7B\u6E05", voice: "female-qn-qingse" },\n        { title: "\u6D3B\u6CFC\u5973\u58F0-\u751C\u751C", voice: "female-tianmei" },\n        { title: "\u78C1\u6027\u7537\u58F0-\u6C89\u7A33", voice: "male-qn-jingying" },\n        { title: "\u9752\u5E74\u7537\u58F0-\u9633\u5149", voice: "male-calm" },\n        { title: "\u9ED8\u8BA4\u97F3\u8272", voice: "male-qn-qingse" },\n      ],\n    },\n  ],\n};\n// ============================================================\n// \u8F85\u52A9\u51FD\u6570\n// ============================================================\nconst getHeaders = () => {\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  return {\n    "Content-Type": "application/json",\n    Authorization: `Bearer ${apiKey}`,\n  };\n};\n// \u89E3\u6790 OpenAI \u517C\u5BB9\u56FE\u7247\u54CD\u5E94\uFF08url \u6216 b64_json\uFF09\nconst parseImageResponse = async (data: any): Promise<string> => {\n  const result = data?.data?.[0];\n  if (!result) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u672A\u8FD4\u56DE\u7ED3\u679C ${JSON.stringify(data).slice(0, 200)}`);\n  const image = result.b64_json || result.url;\n  if (!image) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A\u65E0\u56FE\u7247\u6570\u636E ${JSON.stringify(data).slice(0, 200)}`);\n  if (image.startsWith("data:") || image.length > 300) return image;\n  return await urlToBase64(image);\n};\n// ============================================================\n// \u9002\u914D\u5668\u51FD\u6570\n// ============================================================\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  return createOpenAI({ baseURL: vendor.inputValues.baseUrl, apiKey }).chat(model.modelName);\n};\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const baseUrl = vendor.inputValues.baseUrl.replace(/\\/+$/, "");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n\n  const refs = config.referenceList || [];\n  // \u65E0\u53C2\u8003\u56FE \u2192 \u6587\u751F\u56FE\uFF08JSON\uFF09\n  if (refs.length === 0) {\n    const requestBody: any = {\n      model: model.modelName,\n      prompt: config.prompt,\n      size: config.size || "1K",\n    };\n    logger(`OpenLux \u6587\u751F\u56FE\uFF0C\u6A21\u578B\uFF1A${model.modelName}`);\n    const resp = await fetch(`${baseUrl}/images/generations`, {\n      method: "POST",\n      headers: getHeaders(),\n      body: JSON.stringify(requestBody),\n    });\n    if (!resp.ok) throw new Error(`\u56FE\u7247\u751F\u6210\u5931\u8D25\uFF1A${await resp.text()}`);\n    return await parseImageResponse(await resp.json());\n  }\n\n  // \u6709\u53C2\u8003\u56FE \u2192 \u56FE\u751F\u56FE\uFF08multipart /images/edits\uFF09\n  const fd = new FormData();\n  fd.append("model", model.modelName);\n  fd.append("prompt", config.prompt);\n  fd.append("size", config.size || "1K");\n  refs.forEach((img, i) => {\n    const b64 = String(img.base64).replace(/^data:image\\/\\w+;base64,/, "");\n    fd.append(`image_${i}`, Buffer.from(b64, "base64"), `ref_${i}.png`);\n  });\n  logger(`OpenLux \u56FE\u751F\u56FE\uFF0C\u6A21\u578B\uFF1A${model.modelName}\uFF0C\u53C2\u8003\u56FE ${refs.length} \u5F20`);\n  const resp = await fetch(`${baseUrl}/images/edits`, {\n    method: "POST",\n    headers: { Authorization: `Bearer ${apiKey}`, ...fd.getHeaders() },\n    body: fd.getBuffer(),\n  });\n  if (!resp.ok) throw new Error(`\u56FE\u751F\u56FE\u5931\u8D25\uFF1A${await resp.text()}`);\n  return await parseImageResponse(await resp.json());\n};\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\n  return "";\n};\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const baseUrl = vendor.inputValues.baseUrl.replace(/\\/+$/, "");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  const modelName = model.modelName;\n  const headers = getHeaders();\n\n  // ---- MiniMax \u7CFB\u6A21\u578B\uFF1A\u8D70\u5F02\u6B65 TTS\uFF08t2a_async_v2\uFF09----\n  if (/minimax/i.test(modelName)) {\n    const apiRoot = baseUrl.replace(/\\/v1$/, ""); // https://api.openlux.ai\n    logger(`MiniMax TTS \u63D0\u4EA4\u4EFB\u52A1\uFF0C\u6A21\u578B\uFF1A${modelName}\uFF0C\u97F3\u8272\uFF1A${config.voice}`);\n    const submitResp = await fetch(`${apiRoot}/minimax/v1/t2a_async_v2`, {\n      method: "POST",\n      headers,\n      body: JSON.stringify({\n        model: modelName,\n        text: config.text,\n        voice_setting: {\n          voice_id: config.voice || "female-qn-qingse",\n          speed: config.speechRate || 1,\n          vol: config.volume || 1,\n          pitch: config.pitchRate || 0,\n        },\n        audio_setting: { sample_rate: 32000, bitrate: 128000, format: "mp3", channel: 1 },\n      }),\n    });\n    const submitData = await submitResp.json();\n    if (submitData?.base_resp?.status_code !== 0) {\n      throw new Error(`MiniMax TTS \u63D0\u4EA4\u5931\u8D25\uFF1A${submitData?.base_resp?.status_msg || JSON.stringify(submitData).slice(0, 200)}`);\n    }\n    const taskId = submitData?.data?.task_id;\n    if (!taskId) throw new Error(`MiniMax TTS \u63D0\u4EA4\u5931\u8D25\uFF1A\u65E0 task_id ${JSON.stringify(submitData).slice(0, 200)}`);\n    logger(`MiniMax TTS \u4EFB\u52A1\u63D0\u4EA4\u6210\u529F\uFF0Ctask_id: ${taskId}`);\n\n    // \u8F6E\u8BE2\u4EFB\u52A1\u7ED3\u679C\n    const pollResult = await pollTask(\n      async () => {\n        const queryResp = await fetch(`${apiRoot}/minimax/v1/query_async_t2a_v2`, {\n          method: "POST",\n          headers,\n          body: JSON.stringify({ task_id: taskId }),\n        });\n        const queryData = await queryResp.json();\n        if (queryData?.base_resp?.status_code !== 0) {\n          return { completed: true, error: queryData?.base_resp?.status_msg || "\u67E5\u8BE2\u5931\u8D25" };\n        }\n        const status = queryData?.data?.status;\n        if (status === "Success") {\n          const audioFile = queryData?.data?.audio_file;\n          return { completed: true, data: audioFile };\n        }\n        if (status === "Fail") {\n          return { completed: true, error: queryData?.data?.fail_reason || "\u8BED\u97F3\u751F\u6210\u5931\u8D25" };\n        }\n        return { completed: false };\n      },\n      3000,\n      120000,\n    );\n    if (pollResult.error) throw new Error(pollResult.error);\n    logger(`MiniMax TTS \u751F\u6210\u6210\u529F\uFF0C\u4E0B\u8F7D\u97F3\u9891`);\n    return await urlToBase64(pollResult.data!);\n  }\n\n  // ---- \u5176\u4ED6\u6A21\u578B\uFF1AOpenAI \u517C\u5BB9 /audio/speech ----\n  logger(`OpenLux TTS \u5408\u6210\uFF0C\u6A21\u578B\uFF1A${modelName}\uFF0C\u97F3\u8272\uFF1A${config.voice}`);\n  const resp = await fetch(`${baseUrl}/audio/speech`, {\n    method: "POST",\n    headers,\n    body: JSON.stringify({\n      model: modelName,\n      input: config.text,\n      voice: config.voice || "alloy",\n      response_format: "mp3",\n      speed: config.speechRate || 1,\n    }),\n  });\n  if (!resp.ok) throw new Error(`TTS \u751F\u6210\u5931\u8D25\uFF1A${await resp.text()}`);\n  const audioBuffer = await resp.arrayBuffer();\n  return `data:audio/mp3;base64,${Buffer.from(audioBuffer).toString("base64")}`;\n};\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\n  return { hasUpdate: false, latestVersion: "2.3", notice: "" };\n};\nconst updateVendor = async (): Promise<string> => {\n  return "";\n};\n// ============================================================\n// \u5BFC\u51FA\n// ============================================================\nexports.vendor = vendor;\nexports.textRequest = textRequest;\nexports.imageRequest = imageRequest;\nexports.videoRequest = videoRequest;\nexports.ttsRequest = ttsRequest;\nexports.checkForUpdates = checkForUpdates;\nexports.updateVendor = updateVendor;\nexport {};\n'
+      "zhipu.ts": '/**\n * Toonflow AI\u4F9B\u5E94\u5546\u6A21\u677F - \u667A\u8C31AI\n * @version 1.0\n */\n\n// ============================================================\n// \u7C7B\u578B\u5B9A\u4E49\n// ============================================================\n\ntype VideoMode =\n  | "singleImage"\n  | "startEndRequired"\n  | "endFrameOptional"\n  | "startFrameOptional"\n  | "text"\n  | (`videoReference:${number}` | `imageReference:${number}` | `audioReference:${number}`)[];\n\ninterface TextModel {\n  name: string;\n  modelName: string;\n  type: "text";\n  think: boolean;\n}\n\ninterface ImageModel {\n  name: string;\n  modelName: string;\n  type: "image";\n  mode: ("text" | "singleImage" | "multiReference")[];\n  associationSkills?: string;\n}\n\ninterface VideoModel {\n  name: string;\n  modelName: string;\n  type: "video";\n  mode: VideoMode[];\n  associationSkills?: string;\n  audio: "optional" | false | true;\n  durationResolutionMap: { duration: number[]; resolution: string[] }[];\n}\n\ninterface TTSModel {\n  name: string;\n  modelName: string;\n  type: "tts";\n  voices: { title: string; voice: string }[];\n}\n\ninterface VendorConfig {\n  id: string;\n  version: string;\n  name: string;\n  author: string;\n  description?: string;\n  icon?: string;\n  inputs: { key: string; label: string; type: "text" | "password" | "url"; required: boolean; placeholder?: string }[];\n  inputValues: Record<string, string>;\n  models: (TextModel | ImageModel | VideoModel | TTSModel)[];\n}\n\ninterface ImageConfig {\n  prompt: string;\n  imageBase64: string[];\n  size: "1K" | "2K" | "4K";\n  aspectRatio: `${number}:${number}`;\n}\n\ninterface VideoConfig {\n  duration: number;\n  resolution: string;\n  aspectRatio: "16:9" | "9:16";\n  prompt: string;\n  imageBase64?: string[];\n  audio?: boolean;\n  mode: VideoMode[];\n}\n\ninterface TTSConfig {\n  text: string;\n  voice: string;\n  speechRate: number;\n  pitchRate: number;\n  volume: number;\n}\n\ninterface PollResult {\n  completed: boolean;\n  data?: string;\n  error?: string;\n}\n\n// ============================================================\n// \u5168\u5C40\u58F0\u660E\n// ============================================================\n\ndeclare const axios: any;\ndeclare const logger: (msg: string) => void;\ndeclare const jsonwebtoken: any;\ndeclare const zipImage: (base64: string, size: number) => Promise<string>;\ndeclare const zipImageResolution: (base64: string, w: number, h: number) => Promise<string>;\ndeclare const mergeImages: (base64Arr: string[], maxSize?: string) => Promise<string>;\ndeclare const urlToBase64: (url: string) => Promise<string>;\ndeclare const pollTask: (fn: () => Promise<PollResult>, interval?: number, timeout?: number) => Promise<PollResult>;\ndeclare const createOpenAI: any;\ndeclare const createDeepSeek: any;\ndeclare const createZhipu: any;\ndeclare const createQwen: any;\ndeclare const createAnthropic: any;\ndeclare const createOpenAICompatible: any;\ndeclare const createXai: any;\ndeclare const createMinimax: any;\ndeclare const createGoogleGenerativeAI: any;\ndeclare const exports: {\n  vendor: VendorConfig;\n  textRequest: (m: TextModel, t: boolean, tl: 0 | 1 | 2 | 3) => any;\n  imageRequest: (c: ImageConfig, m: ImageModel) => Promise<string>;\n  videoRequest: (c: VideoConfig, m: VideoModel) => Promise<string>;\n  ttsRequest: (c: TTSConfig, m: TTSModel) => Promise<string>;\n  checkForUpdates?: () => Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }>;\n  updateVendor?: () => Promise<string>;\n};\n\n// ============================================================\n// \u4F9B\u5E94\u5546\u914D\u7F6E\n// ============================================================\n\nconst vendor: VendorConfig = {\n  id: "zhipu",\n  version: "1.0",\n  author: "Toonflow",\n  name: "\u667A\u8C31AI",\n  description: "\u667A\u8C31\u5F00\u653E\u5E73\u53F0\u5B98\u65B9\u63A5\u53E3\u9002\u914D\uFF0C\u63D0\u4F9B GLM \u7CFB\u5217\u6587\u672C\u5BF9\u8BDD\u4E0E\u591A\u6A21\u6001\u89C6\u89C9\u6A21\u578B\u80FD\u529B\u3002\\n\\n[\u524D\u5F80\u5E73\u53F0\u7533\u8BF7Key](https://bigmodel.cn/)",\n  icon: "",\n  inputs: [\n    { key: "apiKey", label: "API\u5BC6\u94A5", type: "password", required: true, placeholder: "\u667A\u8C31\u5F00\u653E\u5E73\u53F0 API Key" },\n    { key: "baseUrl", label: "\u8BF7\u6C42\u5730\u5740", type: "url", required: true, placeholder: "\u793A\u4F8B\uFF1Ahttps://open.bigmodel.cn/api/paas/v4" },\n  ],\n  inputValues: {\n    apiKey: "",\n    baseUrl: "https://open.bigmodel.cn/api/paas/v4",\n  },\n  models: [\n    { name: "GLM-4V-Flash (\u514D\u8D39\u89C6\u89C9)", modelName: "glm-4v-flash", type: "text", think: false },\n    { name: "GLM-4.1V-Thinking-Flash (\u514D\u8D39\u89C6\u89C9\u63A8\u7406)", modelName: "glm-4.1v-thinking-flash", type: "text", think: true },\n    { name: "GLM-4.6V-Flash (\u514D\u8D39\u89C6\u89C9\u63A8\u7406)", modelName: "glm-4.6v-flash", type: "text", think: true },\n    { name: "GLM-4-Flash (\u514D\u8D39\u6587\u672C)", modelName: "glm-4-flash", type: "text", think: false },\n    { name: "GLM-4.7-Flash (\u514D\u8D39\u6587\u672C)", modelName: "glm-4.7-flash", type: "text", think: false },\n    { name: "GLM-Z1-Flash (\u514D\u8D39\u63A8\u7406)", modelName: "glm-z1-flash", type: "text", think: true },\n  ],\n};\n\n// ============================================================\n// \u9002\u914D\u5668\u51FD\u6570\n// ============================================================\n\nconst textRequest = (model: TextModel, think: boolean, thinkLevel: 0 | 1 | 2 | 3) => {\n  if (!vendor.inputValues.apiKey) throw new Error("\u7F3A\u5C11API Key");\n  const apiKey = vendor.inputValues.apiKey.replace(/^Bearer\\s+/i, "");\n  const enableThinking = model.think && think;\n\n  return createZhipu({\n    baseURL: vendor.inputValues.baseUrl,\n    apiKey,\n  }).chat(model.modelName, {\n    thinking: {\n      type: enableThinking ? "enabled" : "disabled",\n    },\n  });\n};\n\nconst imageRequest = async (config: ImageConfig, model: ImageModel): Promise<string> => {\n  return "";\n};\n\nconst videoRequest = async (config: VideoConfig, model: VideoModel): Promise<string> => {\n  return "";\n};\n\nconst ttsRequest = async (config: TTSConfig, model: TTSModel): Promise<string> => {\n  return "";\n};\n\nconst checkForUpdates = async (): Promise<{ hasUpdate: boolean; latestVersion: string; notice: string }> => {\n  return { hasUpdate: false, latestVersion: "1.0", notice: "" };\n};\n\nconst updateVendor = async (): Promise<string> => {\n  return "";\n};\n\n// ============================================================\n// \u5BFC\u51FA\n// ============================================================\n\nexports.vendor = vendor;\nexports.textRequest = textRequest;\nexports.imageRequest = imageRequest;\nexports.videoRequest = videoRequest;\nexports.ttsRequest = ttsRequest;\nexports.checkForUpdates = checkForUpdates;\nexports.updateVendor = updateVendor;\n\nexport {};\n'
     };
   }
 });
@@ -122398,23 +122415,44 @@ var init_fixDB = __esm({
       await addColumn("o_agentDeploy", "maxOutputTokens", "integer");
       await addColumn("o_assets", "audioBindState", "integer");
       await addColumn("o_assets", "faceAssetIds", "text");
+      await addColumn("o_assets", "roleMeta", "text");
       await addColumn("o_modelPrompt", "fileName", "string");
       await addColumn("o_modelPrompt", "path", "string");
       await addColumn("o_project", "contentFormat", "string");
       await addColumn("o_project", "episodeDuration", "integer");
       await addColumn("o_project", "totalEpisodes", "integer");
-      await addColumn("o_faceAsset", "beautyLevel", "string");
+      await addColumn("o_faceAsset", "species", "integer");
+      await addColumn("o_faceAsset", "beautyScore", "float");
+      await addColumn("o_faceAsset", "useCount", "integer");
+      await dropColumn("o_faceAsset", "beautyLevel");
       if (!await knex3.schema.hasTable("o_faceAsset")) {
         await knex3.schema.createTable("o_faceAsset", (table) => {
           table.increments("id").primary();
           table.string("name");
           table.text("filePath");
+          table.integer("species").defaultTo(1);
           table.string("gender");
           table.string("ageGroup");
           table.string("ethnicity");
+          table.float("beautyScore").defaultTo(7);
           table.text("tags");
           table.text("description");
           table.integer("createTime");
+          table.integer("useCount").defaultTo(0);
+        });
+      }
+      if (!await knex3.schema.hasTable("o_agentStateSnapshot")) {
+        await knex3.schema.createTable("o_agentStateSnapshot", (table) => {
+          table.increments("id").primary();
+          table.integer("projectId").notNullable();
+          table.text("isolationKey").notNullable();
+          table.integer("userMessageTime").notNullable();
+          table.integer("turnEndTime").notNullable();
+          table.text("stateHash").notNullable();
+          table.text("payload");
+          table.integer("refId");
+          table.integer("createTime").notNullable();
+          table.index(["projectId", "isolationKey"]);
         });
       }
       const vendorDataSelect = await utils_default.db("o_vendorConfig").whereIn("id", ["deepseek", "atlascloud"]).select("*");
@@ -123509,7 +123547,7 @@ var init_mssql = __esm({
           UNION
           SELECT TOP 1 value FROM fn_listextendedproperty (NULL, 'schema', TABLE_SCHEMA, 'view', TABLE_NAME, null, null) EP WHERE EP.name = 'MS_Description'
         ) EP 
-      ${schemas.length > 0 ? `WHERE TABLE_SCHEMA IN (${schemas.map((_) => "?").join(",")})` : ""}`;
+      ${schemas.length > 0 ? `WHERE TABLE_SCHEMA IN (${schemas.map((_2) => "?").join(",")})` : ""}`;
         return await db2.raw(sql, schemas);
       },
       async getAllColumns(db2, config3, table, schema) {
@@ -142707,7 +142745,7 @@ var require_form_data = __commonJS({
     var parseUrl2 = require("url").parse;
     var fs37 = require("fs");
     var Stream = require("stream").Stream;
-    var crypto6 = require("crypto");
+    var crypto7 = require("crypto");
     var mime = require_mime_types4();
     var asynckit = require_asynckit();
     var setToStringTag = require_es_set_tostringtag();
@@ -142913,7 +142951,7 @@ var require_form_data = __commonJS({
       return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
     };
     FormData4.prototype._generateBoundary = function() {
-      this._boundary = "--------------------------" + crypto6.randomBytes(12).toString("hex");
+      this._boundary = "--------------------------" + crypto7.randomBytes(12).toString("hex");
     };
     FormData4.prototype.getLengthSync = function() {
       var knownLength = this._overheadLength + this._valueLength;
@@ -147778,7 +147816,7 @@ function $constructor(name28, initializer4, params) {
       Object.defineProperty(inst, "_zod", {
         value: {
           def,
-          constr: _,
+          constr: _2,
           traits: /* @__PURE__ */ new Set()
         },
         enumerable: false
@@ -147789,7 +147827,7 @@ function $constructor(name28, initializer4, params) {
     }
     inst._zod.traits.add(name28);
     initializer4(inst, def);
-    const proto = _.prototype;
+    const proto = _2.prototype;
     const keys2 = Object.keys(proto);
     for (let i = 0; i < keys2.length; i++) {
       const k = keys2[i];
@@ -147802,7 +147840,7 @@ function $constructor(name28, initializer4, params) {
   class Definition extends Parent {
   }
   Object.defineProperty(Definition, "name", { value: name28 });
-  function _(def) {
+  function _2(def) {
     var _a31;
     const inst = params?.Parent ? new Definition() : this;
     init(inst, def);
@@ -147812,16 +147850,16 @@ function $constructor(name28, initializer4, params) {
     }
     return inst;
   }
-  Object.defineProperty(_, "init", { value: init });
-  Object.defineProperty(_, Symbol.hasInstance, {
+  Object.defineProperty(_2, "init", { value: init });
+  Object.defineProperty(_2, Symbol.hasInstance, {
     value: (inst) => {
       if (params?.Parent && inst instanceof params.Parent)
         return true;
       return inst?._zod?.traits?.has(name28);
     }
   });
-  Object.defineProperty(_, "name", { value: name28 });
-  return _;
+  Object.defineProperty(_2, "name", { value: name28 });
+  return _2;
 }
 function config(newConfig) {
   if (newConfig)
@@ -147928,17 +147966,17 @@ function assertIs(_arg) {
 function assertNever(_x) {
   throw new Error("Unexpected value in exhaustive check");
 }
-function assert(_) {
+function assert(_2) {
 }
 function getEnumValues(entries) {
   const numericValues = Object.values(entries).filter((v) => typeof v === "number");
-  const values = Object.entries(entries).filter(([k, _]) => numericValues.indexOf(+k) === -1).map(([_, v]) => v);
+  const values = Object.entries(entries).filter(([k, _2]) => numericValues.indexOf(+k) === -1).map(([_2, v]) => v);
   return values;
 }
 function joinValues(array4, separator = "|") {
   return array4.map((val) => stringifyPrimitive(val)).join(separator);
 }
-function jsonStringifyReplacer(_, value) {
+function jsonStringifyReplacer(_2, value) {
   if (typeof value === "bigint")
     return value.toString();
   return value;
@@ -148116,31 +148154,31 @@ function normalizeParams(_params) {
 function createTransparentProxy(getter) {
   let target;
   return new Proxy({}, {
-    get(_, prop, receiver) {
+    get(_2, prop, receiver) {
       target ?? (target = getter());
       return Reflect.get(target, prop, receiver);
     },
-    set(_, prop, value, receiver) {
+    set(_2, prop, value, receiver) {
       target ?? (target = getter());
       return Reflect.set(target, prop, value, receiver);
     },
-    has(_, prop) {
+    has(_2, prop) {
       target ?? (target = getter());
       return Reflect.has(target, prop);
     },
-    deleteProperty(_, prop) {
+    deleteProperty(_2, prop) {
       target ?? (target = getter());
       return Reflect.deleteProperty(target, prop);
     },
-    ownKeys(_) {
+    ownKeys(_2) {
       target ?? (target = getter());
       return Reflect.ownKeys(target);
     },
-    getOwnPropertyDescriptor(_, prop) {
+    getOwnPropertyDescriptor(_2, prop) {
       target ?? (target = getter());
       return Reflect.getOwnPropertyDescriptor(target, prop);
     },
-    defineProperty(_, prop, descriptor) {
+    defineProperty(_2, prop, descriptor) {
       target ?? (target = getter());
       return Reflect.defineProperty(target, prop, descriptor);
     }
@@ -148412,7 +148450,7 @@ function issue(...args) {
   return { ...iss };
 }
 function cleanEnum(obj) {
-  return Object.entries(obj).filter(([k, _]) => {
+  return Object.entries(obj).filter(([k, _2]) => {
     return Number.isNaN(Number.parseInt(k, 10));
   }).map((el) => el[1]);
 }
@@ -148468,7 +148506,7 @@ var init_util = __esm({
         const F = Function;
         new F("");
         return true;
-      } catch (_) {
+      } catch (_2) {
         return false;
       }
     });
@@ -149956,13 +149994,13 @@ var init_schemas = __esm({
               continue;
             }
             const currLen = payload.issues.length;
-            const _ = ch._zod.check(payload);
-            if (_ instanceof Promise && ctx?.async === false) {
+            const _2 = ch._zod.check(payload);
+            if (_2 instanceof Promise && ctx?.async === false) {
               throw new $ZodAsyncError();
             }
-            if (asyncResult || _ instanceof Promise) {
+            if (asyncResult || _2 instanceof Promise) {
               asyncResult = (asyncResult ?? Promise.resolve()).then(async () => {
-                await _;
+                await _2;
                 const nextLen = payload.issues.length;
                 if (nextLen === currLen)
                   return;
@@ -150024,7 +150062,7 @@ var init_schemas = __esm({
           try {
             const r = safeParse(inst, value);
             return r.success ? { value: r.data } : { issues: r.error?.issues };
-          } catch (_) {
+          } catch (_2) {
             return safeParseAsync(inst, value).then((r) => r.success ? { value: r.data } : { issues: r.error?.issues });
           }
         },
@@ -150035,11 +150073,11 @@ var init_schemas = __esm({
     $ZodString = /* @__PURE__ */ $constructor("$ZodString", (inst, def) => {
       $ZodType.init(inst, def);
       inst._zod.pattern = [...inst?._zod.bag?.patterns ?? []].pop() ?? string(inst._zod.bag);
-      inst._zod.parse = (payload, _) => {
+      inst._zod.parse = (payload, _2) => {
         if (def.coerce)
           try {
             payload.value = String(payload.value);
-          } catch (_2) {
+          } catch (_3) {
           }
         if (typeof payload.value === "string")
           return payload;
@@ -150124,7 +150162,7 @@ var init_schemas = __esm({
             payload.value = trimmed;
           }
           return;
-        } catch (_) {
+        } catch (_2) {
           payload.issues.push({
             code: "invalid_format",
             format: "url",
@@ -150310,7 +150348,7 @@ var init_schemas = __esm({
         if (def.coerce)
           try {
             payload.value = Number(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         const input = payload.value;
         if (typeof input === "number" && !Number.isNaN(input) && Number.isFinite(input)) {
@@ -150338,7 +150376,7 @@ var init_schemas = __esm({
         if (def.coerce)
           try {
             payload.value = Boolean(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         const input = payload.value;
         if (typeof input === "boolean")
@@ -150359,7 +150397,7 @@ var init_schemas = __esm({
         if (def.coerce)
           try {
             payload.value = BigInt(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         if (typeof payload.value === "bigint")
           return payload;
@@ -151522,7 +151560,7 @@ var init_schemas = __esm({
     $ZodCustom = /* @__PURE__ */ $constructor("$ZodCustom", (inst, def) => {
       $ZodCheck.init(inst, def);
       $ZodType.init(inst, def);
-      inst._zod.parse = (payload, _) => {
+      inst._zod.parse = (payload, _2) => {
         return payload;
       };
       inst._zod.check = (payload) => {
@@ -158980,7 +159018,7 @@ function toJSONSchema(input, params) {
     const ctx2 = initializeContext({ ...params, processors: allProcessors });
     const defs = {};
     for (const entry of registry3._idmap.entries()) {
-      const [_, schema] = entry;
+      const [_2, schema] = entry;
       process2(schema, ctx2);
     }
     const schemas = {};
@@ -159608,7 +159646,7 @@ var init_json_schema_generator = __esm({
         }
         extractDefs(this.ctx, schema);
         const result = finalize(this.ctx, schema);
-        const { "~standard": _, ...plainResult } = result;
+        const { "~standard": _2, ...plainResult } = result;
         return plainResult;
       }
     };
@@ -162176,7 +162214,7 @@ var init_util2 = __esm({
   "node_modules/zod/v3/helpers/util.js"() {
     "use strict";
     (function(util4) {
-      util4.assertEqual = (_) => {
+      util4.assertEqual = (_2) => {
       };
       function assertIs3(_arg) {
       }
@@ -162226,7 +162264,7 @@ var init_util2 = __esm({
         return array4.map((val) => typeof val === "string" ? `'${val}'` : val).join(separator);
       }
       util4.joinValues = joinValues3;
-      util4.jsonStringifyReplacer = (_, value) => {
+      util4.jsonStringifyReplacer = (_2, value) => {
         if (typeof value === "bigint") {
           return value.toString();
         }
@@ -167083,7 +167121,7 @@ function parseStringDef(def, refs) {
         case "trim":
           break;
         default:
-          /* @__PURE__ */ ((_) => {
+          /* @__PURE__ */ ((_2) => {
           })(check3);
       }
     }
@@ -168299,7 +168337,7 @@ var init_dist5 = __esm({
         case ZodFirstPartyTypeKind2.ZodSymbol:
           return void 0;
         default:
-          return /* @__PURE__ */ ((_) => void 0)(typeName);
+          return /* @__PURE__ */ ((_2) => void 0)(typeName);
       }
     };
     getRelativePath = (pathA, pathB) => {
@@ -174650,7 +174688,7 @@ var init_dist6 = __esm({
                     const summaryPartIndices = Object.entries(
                       activeReasoningPart.summaryParts
                     ).filter(
-                      ([_, status]) => status === "active" || status === "can-conclude"
+                      ([_2, status]) => status === "active" || status === "can-conclude"
                     ).map(([summaryIndex]) => summaryIndex);
                     for (const summaryIndex of summaryPartIndices) {
                       controller.enqueue({
@@ -176919,7 +176957,7 @@ function $constructor2(name28, initializer32, params) {
       Object.defineProperty(inst, "_zod", {
         value: {
           def,
-          constr: _,
+          constr: _2,
           traits: /* @__PURE__ */ new Set()
         },
         enumerable: false
@@ -176930,7 +176968,7 @@ function $constructor2(name28, initializer32, params) {
     }
     inst._zod.traits.add(name28);
     initializer32(inst, def);
-    const proto = _.prototype;
+    const proto = _2.prototype;
     const keys2 = Object.keys(proto);
     for (let i = 0; i < keys2.length; i++) {
       const k = keys2[i];
@@ -176943,7 +176981,7 @@ function $constructor2(name28, initializer32, params) {
   class Definition extends Parent {
   }
   Object.defineProperty(Definition, "name", { value: name28 });
-  function _(def) {
+  function _2(def) {
     var _a57;
     var _a47;
     const inst = (params == null ? void 0 : params.Parent) ? new Definition() : this;
@@ -176954,8 +176992,8 @@ function $constructor2(name28, initializer32, params) {
     }
     return inst;
   }
-  Object.defineProperty(_, "init", { value: init });
-  Object.defineProperty(_, Symbol.hasInstance, {
+  Object.defineProperty(_2, "init", { value: init });
+  Object.defineProperty(_2, Symbol.hasInstance, {
     value: (inst) => {
       var _a47, _b27;
       if ((params == null ? void 0 : params.Parent) && inst instanceof params.Parent)
@@ -176963,8 +177001,8 @@ function $constructor2(name28, initializer32, params) {
       return (_b27 = (_a47 = inst == null ? void 0 : inst._zod) == null ? void 0 : _a47.traits) == null ? void 0 : _b27.has(name28);
     }
   });
-  Object.defineProperty(_, "name", { value: name28 });
-  return _;
+  Object.defineProperty(_2, "name", { value: name28 });
+  return _2;
 }
 function config2(newConfig) {
   if (newConfig)
@@ -176982,17 +177020,17 @@ function assertIs2(_arg) {
 function assertNever2(_x) {
   throw new Error("Unexpected value in exhaustive check");
 }
-function assert2(_) {
+function assert2(_2) {
 }
 function getEnumValues2(entries) {
   const numericValues = Object.values(entries).filter((v) => typeof v === "number");
-  const values = Object.entries(entries).filter(([k, _]) => numericValues.indexOf(+k) === -1).map(([_, v]) => v);
+  const values = Object.entries(entries).filter(([k, _2]) => numericValues.indexOf(+k) === -1).map(([_2, v]) => v);
   return values;
 }
 function joinValues2(array22, separator = "|") {
   return array22.map((val) => stringifyPrimitive2(val)).join(separator);
 }
-function jsonStringifyReplacer2(_, value) {
+function jsonStringifyReplacer2(_2, value) {
   if (typeof value === "bigint")
     return value.toString();
   return value;
@@ -177170,31 +177208,31 @@ function normalizeParams2(_params) {
 function createTransparentProxy2(getter) {
   let target;
   return new Proxy({}, {
-    get(_, prop, receiver) {
+    get(_2, prop, receiver) {
       target != null ? target : target = getter();
       return Reflect.get(target, prop, receiver);
     },
-    set(_, prop, value, receiver) {
+    set(_2, prop, value, receiver) {
       target != null ? target : target = getter();
       return Reflect.set(target, prop, value, receiver);
     },
-    has(_, prop) {
+    has(_2, prop) {
       target != null ? target : target = getter();
       return Reflect.has(target, prop);
     },
-    deleteProperty(_, prop) {
+    deleteProperty(_2, prop) {
       target != null ? target : target = getter();
       return Reflect.deleteProperty(target, prop);
     },
-    ownKeys(_) {
+    ownKeys(_2) {
       target != null ? target : target = getter();
       return Reflect.ownKeys(target);
     },
-    getOwnPropertyDescriptor(_, prop) {
+    getOwnPropertyDescriptor(_2, prop) {
       target != null ? target : target = getter();
       return Reflect.getOwnPropertyDescriptor(target, prop);
     },
-    defineProperty(_, prop, descriptor) {
+    defineProperty(_2, prop, descriptor) {
       target != null ? target : target = getter();
       return Reflect.defineProperty(target, prop, descriptor);
     }
@@ -177469,7 +177507,7 @@ function issue2(...args) {
   return { ...iss };
 }
 function cleanEnum2(obj) {
-  return Object.entries(obj).filter(([k, _]) => {
+  return Object.entries(obj).filter(([k, _2]) => {
     return Number.isNaN(Number.parseInt(k, 10));
   }).map((el) => el[1]);
 }
@@ -179700,7 +179738,7 @@ function toJSONSchema2(input, params) {
     const ctx2 = initializeContext2({ ...params, processors: allProcessors2 });
     const defs = {};
     for (const entry of registry22._idmap.entries()) {
-      const [_, schema] = entry;
+      const [_2, schema] = entry;
       process3(schema, ctx2);
     }
     const schemas = {};
@@ -181441,7 +181479,7 @@ var init_dist11 = __esm({
         const F = Function;
         new F("");
         return true;
-      } catch (_) {
+      } catch (_2) {
         return false;
       }
     });
@@ -182380,13 +182418,13 @@ var init_dist11 = __esm({
               continue;
             }
             const currLen = payload.issues.length;
-            const _ = ch._zod.check(payload);
-            if (_ instanceof Promise && (ctx == null ? void 0 : ctx.async) === false) {
+            const _2 = ch._zod.check(payload);
+            if (_2 instanceof Promise && (ctx == null ? void 0 : ctx.async) === false) {
               throw new $ZodAsyncError2();
             }
-            if (asyncResult || _ instanceof Promise) {
+            if (asyncResult || _2 instanceof Promise) {
               asyncResult = (asyncResult != null ? asyncResult : Promise.resolve()).then(async () => {
-                await _;
+                await _2;
                 const nextLen = payload.issues.length;
                 if (nextLen === currLen)
                   return;
@@ -182449,7 +182487,7 @@ var init_dist11 = __esm({
           try {
             const r = safeParse3(inst, value);
             return r.success ? { value: r.data } : { issues: (_a57 = r.error) == null ? void 0 : _a57.issues };
-          } catch (_) {
+          } catch (_2) {
             return safeParseAsync3(inst, value).then((r) => {
               var _a67;
               return r.success ? { value: r.data } : { issues: (_a67 = r.error) == null ? void 0 : _a67.issues };
@@ -182464,11 +182502,11 @@ var init_dist11 = __esm({
       var _a37, _b27, _c;
       $ZodType2.init(inst, def);
       inst._zod.pattern = (_c = [...(_b27 = (_a37 = inst == null ? void 0 : inst._zod.bag) == null ? void 0 : _a37.patterns) != null ? _b27 : []].pop()) != null ? _c : string4(inst._zod.bag);
-      inst._zod.parse = (payload, _) => {
+      inst._zod.parse = (payload, _2) => {
         if (def.coerce)
           try {
             payload.value = String(payload.value);
-          } catch (_2) {
+          } catch (_22) {
           }
         if (typeof payload.value === "string")
           return payload;
@@ -182556,7 +182594,7 @@ var init_dist11 = __esm({
             payload.value = trimmed;
           }
           return;
-        } catch (_) {
+        } catch (_2) {
           payload.issues.push({
             code: "invalid_format",
             format: "url",
@@ -182762,7 +182800,7 @@ var init_dist11 = __esm({
         if (def.coerce)
           try {
             payload.value = Number(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         const input = payload.value;
         if (typeof input === "number" && !Number.isNaN(input) && Number.isFinite(input)) {
@@ -182790,7 +182828,7 @@ var init_dist11 = __esm({
         if (def.coerce)
           try {
             payload.value = Boolean(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         const input = payload.value;
         if (typeof input === "boolean")
@@ -182811,7 +182849,7 @@ var init_dist11 = __esm({
         if (def.coerce)
           try {
             payload.value = BigInt(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         if (typeof payload.value === "bigint")
           return payload;
@@ -183996,7 +184034,7 @@ var init_dist11 = __esm({
     $ZodCustom2 = /* @__PURE__ */ $constructor2("$ZodCustom", (inst, def) => {
       $ZodCheck2.init(inst, def);
       $ZodType2.init(inst, def);
-      inst._zod.parse = (payload, _) => {
+      inst._zod.parse = (payload, _2) => {
         return payload;
       };
       inst._zod.check = (payload) => {
@@ -189942,7 +189980,7 @@ var init_dist11 = __esm({
         }
         extractDefs2(this.ctx, schema);
         const result = finalize2(this.ctx, schema);
-        const { "~standard": _, ...plainResult } = result;
+        const { "~standard": _2, ...plainResult } = result;
         return plainResult;
       }
     };
@@ -192095,7 +192133,7 @@ var require_core = __commonJS({
           Object.defineProperty(inst, "_zod", {
             value: {
               def,
-              constr: _,
+              constr: _2,
               traits: /* @__PURE__ */ new Set()
             },
             enumerable: false
@@ -192106,7 +192144,7 @@ var require_core = __commonJS({
         }
         inst._zod.traits.add(name28);
         initializer4(inst, def);
-        const proto = _.prototype;
+        const proto = _2.prototype;
         const keys2 = Object.keys(proto);
         for (let i = 0; i < keys2.length; i++) {
           const k = keys2[i];
@@ -192119,7 +192157,7 @@ var require_core = __commonJS({
       class Definition extends Parent {
       }
       Object.defineProperty(Definition, "name", { value: name28 });
-      function _(def) {
+      function _2(def) {
         var _a31;
         const inst = params?.Parent ? new Definition() : this;
         init(inst, def);
@@ -192129,16 +192167,16 @@ var require_core = __commonJS({
         }
         return inst;
       }
-      Object.defineProperty(_, "init", { value: init });
-      Object.defineProperty(_, Symbol.hasInstance, {
+      Object.defineProperty(_2, "init", { value: init });
+      Object.defineProperty(_2, Symbol.hasInstance, {
         value: (inst) => {
           if (params?.Parent && inst instanceof params.Parent)
             return true;
           return inst?._zod?.traits?.has(name28);
         }
       });
-      Object.defineProperty(_, "name", { value: name28 });
-      return _;
+      Object.defineProperty(_2, "name", { value: name28 });
+      return _2;
     }
     exports2.$brand = /* @__PURE__ */ Symbol("zod_brand");
     var $ZodAsyncError3 = class extends Error {
@@ -192234,17 +192272,17 @@ var require_util4 = __commonJS({
     function assertNever3(_x) {
       throw new Error("Unexpected value in exhaustive check");
     }
-    function assert3(_) {
+    function assert3(_2) {
     }
     function getEnumValues3(entries) {
       const numericValues = Object.values(entries).filter((v) => typeof v === "number");
-      const values = Object.entries(entries).filter(([k, _]) => numericValues.indexOf(+k) === -1).map(([_, v]) => v);
+      const values = Object.entries(entries).filter(([k, _2]) => numericValues.indexOf(+k) === -1).map(([_2, v]) => v);
       return values;
     }
     function joinValues3(array4, separator = "|") {
       return array4.map((val) => stringifyPrimitive3(val)).join(separator);
     }
-    function jsonStringifyReplacer3(_, value) {
+    function jsonStringifyReplacer3(_2, value) {
       if (typeof value === "bigint")
         return value.toString();
       return value;
@@ -192373,7 +192411,7 @@ var require_util4 = __commonJS({
         const F = Function;
         new F("");
         return true;
-      } catch (_) {
+      } catch (_2) {
         return false;
       }
     });
@@ -192484,31 +192522,31 @@ var require_util4 = __commonJS({
     function createTransparentProxy3(getter) {
       let target;
       return new Proxy({}, {
-        get(_, prop, receiver) {
+        get(_2, prop, receiver) {
           target ?? (target = getter());
           return Reflect.get(target, prop, receiver);
         },
-        set(_, prop, value, receiver) {
+        set(_2, prop, value, receiver) {
           target ?? (target = getter());
           return Reflect.set(target, prop, value, receiver);
         },
-        has(_, prop) {
+        has(_2, prop) {
           target ?? (target = getter());
           return Reflect.has(target, prop);
         },
-        deleteProperty(_, prop) {
+        deleteProperty(_2, prop) {
           target ?? (target = getter());
           return Reflect.deleteProperty(target, prop);
         },
-        ownKeys(_) {
+        ownKeys(_2) {
           target ?? (target = getter());
           return Reflect.ownKeys(target);
         },
-        getOwnPropertyDescriptor(_, prop) {
+        getOwnPropertyDescriptor(_2, prop) {
           target ?? (target = getter());
           return Reflect.getOwnPropertyDescriptor(target, prop);
         },
-        defineProperty(_, prop, descriptor) {
+        defineProperty(_2, prop, descriptor) {
           target ?? (target = getter());
           return Reflect.defineProperty(target, prop, descriptor);
         }
@@ -192791,7 +192829,7 @@ var require_util4 = __commonJS({
       return { ...iss };
     }
     function cleanEnum3(obj) {
-      return Object.entries(obj).filter(([k, _]) => {
+      return Object.entries(obj).filter(([k, _2]) => {
         return Number.isNaN(Number.parseInt(k, 10));
       }).map((el) => el[1]);
     }
@@ -194014,13 +194052,13 @@ var require_schemas = __commonJS({
               continue;
             }
             const currLen = payload.issues.length;
-            const _ = ch._zod.check(payload);
-            if (_ instanceof Promise && ctx?.async === false) {
+            const _2 = ch._zod.check(payload);
+            if (_2 instanceof Promise && ctx?.async === false) {
               throw new core.$ZodAsyncError();
             }
-            if (asyncResult || _ instanceof Promise) {
+            if (asyncResult || _2 instanceof Promise) {
               asyncResult = (asyncResult ?? Promise.resolve()).then(async () => {
-                await _;
+                await _2;
                 const nextLen = payload.issues.length;
                 if (nextLen === currLen)
                   return;
@@ -194082,7 +194120,7 @@ var require_schemas = __commonJS({
           try {
             const r = (0, parse_js_1.safeParse)(inst, value);
             return r.success ? { value: r.data } : { issues: r.error?.issues };
-          } catch (_) {
+          } catch (_2) {
             return (0, parse_js_1.safeParseAsync)(inst, value).then((r) => r.success ? { value: r.data } : { issues: r.error?.issues });
           }
         },
@@ -194097,11 +194135,11 @@ var require_schemas = __commonJS({
     exports2.$ZodString = core.$constructor("$ZodString", (inst, def) => {
       exports2.$ZodType.init(inst, def);
       inst._zod.pattern = [...inst?._zod.bag?.patterns ?? []].pop() ?? regexes.string(inst._zod.bag);
-      inst._zod.parse = (payload, _) => {
+      inst._zod.parse = (payload, _2) => {
         if (def.coerce)
           try {
             payload.value = String(payload.value);
-          } catch (_2) {
+          } catch (_3) {
           }
         if (typeof payload.value === "string")
           return payload;
@@ -194186,7 +194224,7 @@ var require_schemas = __commonJS({
             payload.value = trimmed;
           }
           return;
-        } catch (_) {
+        } catch (_2) {
           payload.issues.push({
             code: "invalid_format",
             format: "url",
@@ -194411,7 +194449,7 @@ var require_schemas = __commonJS({
         if (def.coerce)
           try {
             payload.value = Number(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         const input = payload.value;
         if (typeof input === "number" && !Number.isNaN(input) && Number.isFinite(input)) {
@@ -194439,7 +194477,7 @@ var require_schemas = __commonJS({
         if (def.coerce)
           try {
             payload.value = Boolean(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         const input = payload.value;
         if (typeof input === "boolean")
@@ -194460,7 +194498,7 @@ var require_schemas = __commonJS({
         if (def.coerce)
           try {
             payload.value = BigInt(payload.value);
-          } catch (_) {
+          } catch (_2) {
           }
         if (typeof payload.value === "bigint")
           return payload;
@@ -195924,7 +195962,7 @@ var require_schemas = __commonJS({
     exports2.$ZodCustom = core.$constructor("$ZodCustom", (inst, def) => {
       checks.$ZodCheck.init(inst, def);
       exports2.$ZodType.init(inst, def);
-      inst._zod.parse = (payload, _) => {
+      inst._zod.parse = (payload, _2) => {
         return payload;
       };
       inst._zod.check = (payload) => {
@@ -205595,7 +205633,7 @@ var require_json_schema_processors = __commonJS({
         const ctx2 = (0, to_json_schema_js_1.initializeContext)({ ...params, processors: exports2.allProcessors });
         const defs = {};
         for (const entry of registry3._idmap.entries()) {
-          const [_, schema] = entry;
+          const [_2, schema] = entry;
           (0, to_json_schema_js_1.process)(schema, ctx2);
         }
         const schemas = {};
@@ -205703,7 +205741,7 @@ var require_json_schema_generator = __commonJS({
         }
         (0, to_json_schema_js_1.extractDefs)(this.ctx, schema);
         const result = (0, to_json_schema_js_1.finalize)(this.ctx, schema);
-        const { "~standard": _, ...plainResult } = result;
+        const { "~standard": _2, ...plainResult } = result;
         return plainResult;
       }
     };
@@ -208131,7 +208169,7 @@ var require_util5 = __commonJS({
     exports2.getParsedType = exports2.ZodParsedType = exports2.objectUtil = exports2.util = void 0;
     var util4;
     (function(util5) {
-      util5.assertEqual = (_) => {
+      util5.assertEqual = (_2) => {
       };
       function assertIs3(_arg) {
       }
@@ -208181,7 +208219,7 @@ var require_util5 = __commonJS({
         return array4.map((val) => typeof val === "string" ? `'${val}'` : val).join(separator);
       }
       util5.joinValues = joinValues3;
-      util5.jsonStringifyReplacer = (_, value) => {
+      util5.jsonStringifyReplacer = (_2, value) => {
         if (typeof value === "bigint") {
           return value.toString();
         }
@@ -213756,7 +213794,7 @@ var require_dist8 = __commonJS({
             case "trim":
               break;
             default:
-              /* @__PURE__ */ ((_) => {
+              /* @__PURE__ */ ((_2) => {
               })(check3);
           }
         }
@@ -214332,7 +214370,7 @@ var require_dist8 = __commonJS({
         case import_v332.ZodFirstPartyTypeKind.ZodSymbol:
           return void 0;
         default:
-          return /* @__PURE__ */ ((_) => void 0)(typeName);
+          return /* @__PURE__ */ ((_2) => void 0)(typeName);
       }
     };
     var getRelativePath4 = (pathA, pathB) => {
@@ -220049,7 +220087,7 @@ async function convertToAnthropicMessagesPrompt({
                     // Strip the fake 'programmatic-tool-call' type before sending to Anthropic
                     providerToolName === "code_execution" && part.input != null && typeof part.input === "object" && "type" in part.input && part.input.type === "programmatic-tool-call"
                   ) {
-                    const { type: _, ...inputWithoutType } = part.input;
+                    const { type: _2, ...inputWithoutType } = part.input;
                     anthropicContent.push({
                       type: "server_tool_use",
                       id: part.toolCallId,
@@ -229652,7 +229690,7 @@ function parseStringDef2(def, refs) {
         case "trim":
           break;
         default:
-          /* @__PURE__ */ ((_) => {
+          /* @__PURE__ */ ((_2) => {
           })(check3);
       }
     }
@@ -230709,7 +230747,7 @@ var init_dist17 = __esm({
         case ZodFirstPartyTypeKind2.ZodSymbol:
           return void 0;
         default:
-          return /* @__PURE__ */ ((_) => void 0)(typeName);
+          return /* @__PURE__ */ ((_2) => void 0)(typeName);
       }
     };
     getRelativePath2 = (pathA, pathB) => {
@@ -231709,7 +231747,7 @@ async function convertToAnthropicMessagesPrompt2({
                     // Strip the fake 'programmatic-tool-call' type before sending to Anthropic
                     providerToolName === "code_execution" && part.input != null && typeof part.input === "object" && "type" in part.input && part.input.type === "programmatic-tool-call"
                   ) {
-                    const { type: _, ...inputWithoutType } = part.input;
+                    const { type: _2, ...inputWithoutType } = part.input;
                     anthropicContent.push({
                       type: "server_tool_use",
                       id: part.toolCallId,
@@ -235746,7 +235784,7 @@ function parseStringDef3(def, refs) {
         case "trim":
           break;
         default:
-          /* @__PURE__ */ ((_) => {
+          /* @__PURE__ */ ((_2) => {
           })(check3);
       }
     }
@@ -236741,7 +236779,7 @@ var init_dist19 = __esm({
         case ZodFirstPartyTypeKind2.ZodSymbol:
           return void 0;
         default:
-          return /* @__PURE__ */ ((_) => void 0)(typeName);
+          return /* @__PURE__ */ ((_2) => void 0)(typeName);
       }
     };
     getRelativePath3 = (pathA, pathB) => {
@@ -238249,14 +238287,14 @@ var require_jwa = __commonJS({
   "node_modules/jwa/index.js"(exports2, module2) {
     "use strict";
     var Buffer3 = require_safe_buffer2().Buffer;
-    var crypto6 = require("crypto");
+    var crypto7 = require("crypto");
     var formatEcdsa = require_ecdsa_sig_formatter();
     var util4 = require("util");
     var MSG_INVALID_ALGORITHM = '"%s" is not a valid algorithm.\n  Supported algorithms are:\n  "HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "PS256", "PS384", "PS512", "ES256", "ES384", "ES512" and "none".';
     var MSG_INVALID_SECRET = "secret must be a string or buffer";
     var MSG_INVALID_VERIFIER_KEY = "key must be a string or a buffer";
     var MSG_INVALID_SIGNER_KEY = "key must be a string, a buffer or an object";
-    var supportsKeyObjects = typeof crypto6.createPublicKey === "function";
+    var supportsKeyObjects = typeof crypto7.createPublicKey === "function";
     if (supportsKeyObjects) {
       MSG_INVALID_VERIFIER_KEY += " or a KeyObject";
       MSG_INVALID_SECRET += "or a KeyObject";
@@ -238346,17 +238384,17 @@ var require_jwa = __commonJS({
       return function sign(thing, secret) {
         checkIsSecretKey(secret);
         thing = normalizeInput(thing);
-        var hmac = crypto6.createHmac("sha" + bits, secret);
+        var hmac = crypto7.createHmac("sha" + bits, secret);
         var sig = (hmac.update(thing), hmac.digest("base64"));
         return fromBase64(sig);
       };
     }
     var bufferEqual;
-    var timingSafeEqual = "timingSafeEqual" in crypto6 ? function timingSafeEqual2(a, b) {
+    var timingSafeEqual = "timingSafeEqual" in crypto7 ? function timingSafeEqual2(a, b) {
       if (a.byteLength !== b.byteLength) {
         return false;
       }
-      return crypto6.timingSafeEqual(a, b);
+      return crypto7.timingSafeEqual(a, b);
     } : function timingSafeEqual2(a, b) {
       if (!bufferEqual) {
         bufferEqual = require_buffer_equal_constant_time();
@@ -238373,7 +238411,7 @@ var require_jwa = __commonJS({
       return function sign(thing, privateKey) {
         checkIsPrivateKey(privateKey);
         thing = normalizeInput(thing);
-        var signer = crypto6.createSign("RSA-SHA" + bits);
+        var signer = crypto7.createSign("RSA-SHA" + bits);
         var sig = (signer.update(thing), signer.sign(privateKey, "base64"));
         return fromBase64(sig);
       };
@@ -238383,7 +238421,7 @@ var require_jwa = __commonJS({
         checkIsPublicKey(publicKey);
         thing = normalizeInput(thing);
         signature = toBase64(signature);
-        var verifier = crypto6.createVerify("RSA-SHA" + bits);
+        var verifier = crypto7.createVerify("RSA-SHA" + bits);
         verifier.update(thing);
         return verifier.verify(publicKey, signature, "base64");
       };
@@ -238392,11 +238430,11 @@ var require_jwa = __commonJS({
       return function sign(thing, privateKey) {
         checkIsPrivateKey(privateKey);
         thing = normalizeInput(thing);
-        var signer = crypto6.createSign("RSA-SHA" + bits);
+        var signer = crypto7.createSign("RSA-SHA" + bits);
         var sig = (signer.update(thing), signer.sign({
           key: privateKey,
-          padding: crypto6.constants.RSA_PKCS1_PSS_PADDING,
-          saltLength: crypto6.constants.RSA_PSS_SALTLEN_DIGEST
+          padding: crypto7.constants.RSA_PKCS1_PSS_PADDING,
+          saltLength: crypto7.constants.RSA_PSS_SALTLEN_DIGEST
         }, "base64"));
         return fromBase64(sig);
       };
@@ -238406,12 +238444,12 @@ var require_jwa = __commonJS({
         checkIsPublicKey(publicKey);
         thing = normalizeInput(thing);
         signature = toBase64(signature);
-        var verifier = crypto6.createVerify("RSA-SHA" + bits);
+        var verifier = crypto7.createVerify("RSA-SHA" + bits);
         verifier.update(thing);
         return verifier.verify({
           key: publicKey,
-          padding: crypto6.constants.RSA_PKCS1_PSS_PADDING,
-          saltLength: crypto6.constants.RSA_PSS_SALTLEN_DIGEST
+          padding: crypto7.constants.RSA_PKCS1_PSS_PADDING,
+          saltLength: crypto7.constants.RSA_PSS_SALTLEN_DIGEST
         }, signature, "base64");
       };
     }
@@ -239877,8 +239915,8 @@ var require_range2 = __commonJS({
     };
     var replaceTilde = (comp, options) => {
       const r = options.loose ? re2[t.TILDELOOSE] : re2[t.TILDE];
-      return comp.replace(r, (_, M, m, p3, pr) => {
-        debug("tilde", comp, _, M, m, p3, pr);
+      return comp.replace(r, (_2, M, m, p3, pr) => {
+        debug("tilde", comp, _2, M, m, p3, pr);
         let ret;
         if (isX(M)) {
           ret = "";
@@ -239903,8 +239941,8 @@ var require_range2 = __commonJS({
       debug("caret", comp, options);
       const r = options.loose ? re2[t.CARETLOOSE] : re2[t.CARET];
       const z3 = options.includePrerelease ? "-0" : "";
-      return comp.replace(r, (_, M, m, p3, pr) => {
-        debug("caret", comp, _, M, m, p3, pr);
+      return comp.replace(r, (_2, M, m, p3, pr) => {
+        debug("caret", comp, _2, M, m, p3, pr);
         let ret;
         if (isX(M)) {
           ret = "";
@@ -240924,10 +240962,10 @@ var require_verify = __commonJS({
         if (secretOrPublicKey2 != null && !(secretOrPublicKey2 instanceof KeyObject)) {
           try {
             secretOrPublicKey2 = createPublicKey(secretOrPublicKey2);
-          } catch (_) {
+          } catch (_2) {
             try {
               secretOrPublicKey2 = createSecretKey(typeof secretOrPublicKey2 === "string" ? Buffer.from(secretOrPublicKey2) : secretOrPublicKey2);
-            } catch (_2) {
+            } catch (_3) {
               return done(new JsonWebTokenError("secretOrPublicKey is not valid key material"));
             }
           }
@@ -241582,10 +241620,10 @@ var require_sign2 = __commonJS({
       if (secretOrPrivateKey != null && !(secretOrPrivateKey instanceof KeyObject)) {
         try {
           secretOrPrivateKey = createPrivateKey(secretOrPrivateKey);
-        } catch (_) {
+        } catch (_2) {
           try {
             secretOrPrivateKey = createSecretKey(typeof secretOrPrivateKey === "string" ? Buffer.from(secretOrPrivateKey) : secretOrPrivateKey);
-          } catch (_2) {
+          } catch (_3) {
             return failure(new Error("secretOrPrivateKey is not valid key material"));
           }
         }
@@ -241734,6 +241772,12 @@ function runCode(code, vendor) {
     pollTask,
     fetch,
     exports: exports2,
+    // Web 流式 API：供应商适配器做 SSE 流清洗（修正非标准 tool_calls 分片）时使用
+    TextDecoder,
+    TextEncoder,
+    TransformStream,
+    ReadableStream,
+    Response,
     axios: axios_default,
     FormData: import_form_data2.default,
     Buffer,
@@ -253495,7 +253539,7 @@ async function getVendorTemplateFn(fnName, modelName) {
 }
 async function withTaskRecord(modelKey, taskClass, describe4, relatedObjects, projectId, fn) {
   const modelName = await resolveModelName(modelKey);
-  const [_, model] = modelName.split(/:(.+)/);
+  const [_2, model] = modelName.split(/:(.+)/);
   const taskRecord2 = await utils_default.task(projectId, taskClass, model, { describe: describe4, content: relatedObjects });
   try {
     const result = await fn(modelName, false, 0);
@@ -255162,121 +255206,5758 @@ var init_p_limit = __esm({
   }
 });
 
+// node_modules/lodash/lodash.js
+var require_lodash8 = __commonJS({
+  "node_modules/lodash/lodash.js"(exports2, module2) {
+    "use strict";
+    (function() {
+      var undefined2;
+      var VERSION16 = "4.17.23";
+      var LARGE_ARRAY_SIZE3 = 200;
+      var CORE_ERROR_TEXT = "Unsupported core-js use. Try https://npms.io/search?q=ponyfill.", FUNC_ERROR_TEXT2 = "Expected a function", INVALID_TEMPL_VAR_ERROR_TEXT = "Invalid `variable` option passed into `_.template`";
+      var HASH_UNDEFINED4 = "__lodash_hash_undefined__";
+      var MAX_MEMOIZE_SIZE2 = 500;
+      var PLACEHOLDER = "__lodash_placeholder__";
+      var CLONE_DEEP_FLAG = 1, CLONE_FLAT_FLAG = 2, CLONE_SYMBOLS_FLAG = 4;
+      var COMPARE_PARTIAL_FLAG7 = 1, COMPARE_UNORDERED_FLAG5 = 2;
+      var WRAP_BIND_FLAG = 1, WRAP_BIND_KEY_FLAG = 2, WRAP_CURRY_BOUND_FLAG = 4, WRAP_CURRY_FLAG = 8, WRAP_CURRY_RIGHT_FLAG = 16, WRAP_PARTIAL_FLAG = 32, WRAP_PARTIAL_RIGHT_FLAG = 64, WRAP_ARY_FLAG = 128, WRAP_REARG_FLAG = 256, WRAP_FLIP_FLAG = 512;
+      var DEFAULT_TRUNC_LENGTH = 30, DEFAULT_TRUNC_OMISSION = "...";
+      var HOT_COUNT = 800, HOT_SPAN = 16;
+      var LAZY_FILTER_FLAG = 1, LAZY_MAP_FLAG = 2, LAZY_WHILE_FLAG = 3;
+      var INFINITY4 = 1 / 0, MAX_SAFE_INTEGER3 = 9007199254740991, MAX_INTEGER = 17976931348623157e292, NAN = 0 / 0;
+      var MAX_ARRAY_LENGTH = 4294967295, MAX_ARRAY_INDEX = MAX_ARRAY_LENGTH - 1, HALF_MAX_ARRAY_LENGTH = MAX_ARRAY_LENGTH >>> 1;
+      var wrapFlags = [
+        ["ary", WRAP_ARY_FLAG],
+        ["bind", WRAP_BIND_FLAG],
+        ["bindKey", WRAP_BIND_KEY_FLAG],
+        ["curry", WRAP_CURRY_FLAG],
+        ["curryRight", WRAP_CURRY_RIGHT_FLAG],
+        ["flip", WRAP_FLIP_FLAG],
+        ["partial", WRAP_PARTIAL_FLAG],
+        ["partialRight", WRAP_PARTIAL_RIGHT_FLAG],
+        ["rearg", WRAP_REARG_FLAG]
+      ];
+      var argsTag4 = "[object Arguments]", arrayTag3 = "[object Array]", asyncTag2 = "[object AsyncFunction]", boolTag3 = "[object Boolean]", dateTag3 = "[object Date]", domExcTag = "[object DOMException]", errorTag3 = "[object Error]", funcTag3 = "[object Function]", genTag2 = "[object GeneratorFunction]", mapTag4 = "[object Map]", numberTag3 = "[object Number]", nullTag2 = "[object Null]", objectTag4 = "[object Object]", promiseTag2 = "[object Promise]", proxyTag2 = "[object Proxy]", regexpTag3 = "[object RegExp]", setTag4 = "[object Set]", stringTag3 = "[object String]", symbolTag3 = "[object Symbol]", undefinedTag2 = "[object Undefined]", weakMapTag3 = "[object WeakMap]", weakSetTag = "[object WeakSet]";
+      var arrayBufferTag3 = "[object ArrayBuffer]", dataViewTag4 = "[object DataView]", float32Tag2 = "[object Float32Array]", float64Tag2 = "[object Float64Array]", int8Tag2 = "[object Int8Array]", int16Tag2 = "[object Int16Array]", int32Tag2 = "[object Int32Array]", uint8Tag2 = "[object Uint8Array]", uint8ClampedTag2 = "[object Uint8ClampedArray]", uint16Tag2 = "[object Uint16Array]", uint32Tag2 = "[object Uint32Array]";
+      var reEmptyStringLeading = /\b__p \+= '';/g, reEmptyStringMiddle = /\b(__p \+=) '' \+/g, reEmptyStringTrailing = /(__e\(.*?\)|\b__t\)) \+\n'';/g;
+      var reEscapedHtml = /&(?:amp|lt|gt|quot|#39);/g, reUnescapedHtml = /[&<>"']/g, reHasEscapedHtml = RegExp(reEscapedHtml.source), reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
+      var reEscape = /<%-([\s\S]+?)%>/g, reEvaluate = /<%([\s\S]+?)%>/g, reInterpolate = /<%=([\s\S]+?)%>/g;
+      var reIsDeepProp2 = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/, reIsPlainProp2 = /^\w*$/, rePropName2 = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+      var reRegExpChar2 = /[\\^$.*+?()[\]{}|]/g, reHasRegExpChar = RegExp(reRegExpChar2.source);
+      var reTrimStart = /^\s+/;
+      var reWhitespace = /\s/;
+      var reWrapComment = /\{(?:\n\/\* \[wrapped with .+\] \*\/)?\n?/, reWrapDetails = /\{\n\/\* \[wrapped with (.+)\] \*/, reSplitDetails = /,? & /;
+      var reAsciiWord = /[^\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/g;
+      var reForbiddenIdentifierChars = /[()=,{}\[\]\/\s]/;
+      var reEscapeChar2 = /\\(\\)?/g;
+      var reEsTemplate = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
+      var reFlags = /\w*$/;
+      var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+      var reIsBinary = /^0b[01]+$/i;
+      var reIsHostCtor2 = /^\[object .+?Constructor\]$/;
+      var reIsOctal = /^0o[0-7]+$/i;
+      var reIsUint2 = /^(?:0|[1-9]\d*)$/;
+      var reLatin = /[\xc0-\xd6\xd8-\xf6\xf8-\xff\u0100-\u017f]/g;
+      var reNoMatch = /($^)/;
+      var reUnescapedString = /['\n\r\u2028\u2029\\]/g;
+      var rsAstralRange = "\\ud800-\\udfff", rsComboMarksRange = "\\u0300-\\u036f", reComboHalfMarksRange = "\\ufe20-\\ufe2f", rsComboSymbolsRange = "\\u20d0-\\u20ff", rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange, rsDingbatRange = "\\u2700-\\u27bf", rsLowerRange = "a-z\\xdf-\\xf6\\xf8-\\xff", rsMathOpRange = "\\xac\\xb1\\xd7\\xf7", rsNonCharRange = "\\x00-\\x2f\\x3a-\\x40\\x5b-\\x60\\x7b-\\xbf", rsPunctuationRange = "\\u2000-\\u206f", rsSpaceRange = " \\t\\x0b\\f\\xa0\\ufeff\\n\\r\\u2028\\u2029\\u1680\\u180e\\u2000\\u2001\\u2002\\u2003\\u2004\\u2005\\u2006\\u2007\\u2008\\u2009\\u200a\\u202f\\u205f\\u3000", rsUpperRange = "A-Z\\xc0-\\xd6\\xd8-\\xde", rsVarRange = "\\ufe0e\\ufe0f", rsBreakRange = rsMathOpRange + rsNonCharRange + rsPunctuationRange + rsSpaceRange;
+      var rsApos = "['\u2019]", rsAstral = "[" + rsAstralRange + "]", rsBreak = "[" + rsBreakRange + "]", rsCombo = "[" + rsComboRange + "]", rsDigits = "\\d+", rsDingbat = "[" + rsDingbatRange + "]", rsLower = "[" + rsLowerRange + "]", rsMisc = "[^" + rsAstralRange + rsBreakRange + rsDigits + rsDingbatRange + rsLowerRange + rsUpperRange + "]", rsFitz = "\\ud83c[\\udffb-\\udfff]", rsModifier = "(?:" + rsCombo + "|" + rsFitz + ")", rsNonAstral = "[^" + rsAstralRange + "]", rsRegional = "(?:\\ud83c[\\udde6-\\uddff]){2}", rsSurrPair = "[\\ud800-\\udbff][\\udc00-\\udfff]", rsUpper = "[" + rsUpperRange + "]", rsZWJ = "\\u200d";
+      var rsMiscLower = "(?:" + rsLower + "|" + rsMisc + ")", rsMiscUpper = "(?:" + rsUpper + "|" + rsMisc + ")", rsOptContrLower = "(?:" + rsApos + "(?:d|ll|m|re|s|t|ve))?", rsOptContrUpper = "(?:" + rsApos + "(?:D|LL|M|RE|S|T|VE))?", reOptMod = rsModifier + "?", rsOptVar = "[" + rsVarRange + "]?", rsOptJoin = "(?:" + rsZWJ + "(?:" + [rsNonAstral, rsRegional, rsSurrPair].join("|") + ")" + rsOptVar + reOptMod + ")*", rsOrdLower = "\\d*(?:1st|2nd|3rd|(?![123])\\dth)(?=\\b|[A-Z_])", rsOrdUpper = "\\d*(?:1ST|2ND|3RD|(?![123])\\dTH)(?=\\b|[a-z_])", rsSeq = rsOptVar + reOptMod + rsOptJoin, rsEmoji = "(?:" + [rsDingbat, rsRegional, rsSurrPair].join("|") + ")" + rsSeq, rsSymbol = "(?:" + [rsNonAstral + rsCombo + "?", rsCombo, rsRegional, rsSurrPair, rsAstral].join("|") + ")";
+      var reApos = RegExp(rsApos, "g");
+      var reComboMark = RegExp(rsCombo, "g");
+      var reUnicode = RegExp(rsFitz + "(?=" + rsFitz + ")|" + rsSymbol + rsSeq, "g");
+      var reUnicodeWord = RegExp([
+        rsUpper + "?" + rsLower + "+" + rsOptContrLower + "(?=" + [rsBreak, rsUpper, "$"].join("|") + ")",
+        rsMiscUpper + "+" + rsOptContrUpper + "(?=" + [rsBreak, rsUpper + rsMiscLower, "$"].join("|") + ")",
+        rsUpper + "?" + rsMiscLower + "+" + rsOptContrLower,
+        rsUpper + "+" + rsOptContrUpper,
+        rsOrdUpper,
+        rsOrdLower,
+        rsDigits,
+        rsEmoji
+      ].join("|"), "g");
+      var reHasUnicode = RegExp("[" + rsZWJ + rsAstralRange + rsComboRange + rsVarRange + "]");
+      var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
+      var contextProps = [
+        "Array",
+        "Buffer",
+        "DataView",
+        "Date",
+        "Error",
+        "Float32Array",
+        "Float64Array",
+        "Function",
+        "Int8Array",
+        "Int16Array",
+        "Int32Array",
+        "Map",
+        "Math",
+        "Object",
+        "Promise",
+        "RegExp",
+        "Set",
+        "String",
+        "Symbol",
+        "TypeError",
+        "Uint8Array",
+        "Uint8ClampedArray",
+        "Uint16Array",
+        "Uint32Array",
+        "WeakMap",
+        "_",
+        "clearTimeout",
+        "isFinite",
+        "parseInt",
+        "setTimeout"
+      ];
+      var templateCounter = -1;
+      var typedArrayTags2 = {};
+      typedArrayTags2[float32Tag2] = typedArrayTags2[float64Tag2] = typedArrayTags2[int8Tag2] = typedArrayTags2[int16Tag2] = typedArrayTags2[int32Tag2] = typedArrayTags2[uint8Tag2] = typedArrayTags2[uint8ClampedTag2] = typedArrayTags2[uint16Tag2] = typedArrayTags2[uint32Tag2] = true;
+      typedArrayTags2[argsTag4] = typedArrayTags2[arrayTag3] = typedArrayTags2[arrayBufferTag3] = typedArrayTags2[boolTag3] = typedArrayTags2[dataViewTag4] = typedArrayTags2[dateTag3] = typedArrayTags2[errorTag3] = typedArrayTags2[funcTag3] = typedArrayTags2[mapTag4] = typedArrayTags2[numberTag3] = typedArrayTags2[objectTag4] = typedArrayTags2[regexpTag3] = typedArrayTags2[setTag4] = typedArrayTags2[stringTag3] = typedArrayTags2[weakMapTag3] = false;
+      var cloneableTags = {};
+      cloneableTags[argsTag4] = cloneableTags[arrayTag3] = cloneableTags[arrayBufferTag3] = cloneableTags[dataViewTag4] = cloneableTags[boolTag3] = cloneableTags[dateTag3] = cloneableTags[float32Tag2] = cloneableTags[float64Tag2] = cloneableTags[int8Tag2] = cloneableTags[int16Tag2] = cloneableTags[int32Tag2] = cloneableTags[mapTag4] = cloneableTags[numberTag3] = cloneableTags[objectTag4] = cloneableTags[regexpTag3] = cloneableTags[setTag4] = cloneableTags[stringTag3] = cloneableTags[symbolTag3] = cloneableTags[uint8Tag2] = cloneableTags[uint8ClampedTag2] = cloneableTags[uint16Tag2] = cloneableTags[uint32Tag2] = true;
+      cloneableTags[errorTag3] = cloneableTags[funcTag3] = cloneableTags[weakMapTag3] = false;
+      var deburredLetters = {
+        // Latin-1 Supplement block.
+        "\xC0": "A",
+        "\xC1": "A",
+        "\xC2": "A",
+        "\xC3": "A",
+        "\xC4": "A",
+        "\xC5": "A",
+        "\xE0": "a",
+        "\xE1": "a",
+        "\xE2": "a",
+        "\xE3": "a",
+        "\xE4": "a",
+        "\xE5": "a",
+        "\xC7": "C",
+        "\xE7": "c",
+        "\xD0": "D",
+        "\xF0": "d",
+        "\xC8": "E",
+        "\xC9": "E",
+        "\xCA": "E",
+        "\xCB": "E",
+        "\xE8": "e",
+        "\xE9": "e",
+        "\xEA": "e",
+        "\xEB": "e",
+        "\xCC": "I",
+        "\xCD": "I",
+        "\xCE": "I",
+        "\xCF": "I",
+        "\xEC": "i",
+        "\xED": "i",
+        "\xEE": "i",
+        "\xEF": "i",
+        "\xD1": "N",
+        "\xF1": "n",
+        "\xD2": "O",
+        "\xD3": "O",
+        "\xD4": "O",
+        "\xD5": "O",
+        "\xD6": "O",
+        "\xD8": "O",
+        "\xF2": "o",
+        "\xF3": "o",
+        "\xF4": "o",
+        "\xF5": "o",
+        "\xF6": "o",
+        "\xF8": "o",
+        "\xD9": "U",
+        "\xDA": "U",
+        "\xDB": "U",
+        "\xDC": "U",
+        "\xF9": "u",
+        "\xFA": "u",
+        "\xFB": "u",
+        "\xFC": "u",
+        "\xDD": "Y",
+        "\xFD": "y",
+        "\xFF": "y",
+        "\xC6": "Ae",
+        "\xE6": "ae",
+        "\xDE": "Th",
+        "\xFE": "th",
+        "\xDF": "ss",
+        // Latin Extended-A block.
+        "\u0100": "A",
+        "\u0102": "A",
+        "\u0104": "A",
+        "\u0101": "a",
+        "\u0103": "a",
+        "\u0105": "a",
+        "\u0106": "C",
+        "\u0108": "C",
+        "\u010A": "C",
+        "\u010C": "C",
+        "\u0107": "c",
+        "\u0109": "c",
+        "\u010B": "c",
+        "\u010D": "c",
+        "\u010E": "D",
+        "\u0110": "D",
+        "\u010F": "d",
+        "\u0111": "d",
+        "\u0112": "E",
+        "\u0114": "E",
+        "\u0116": "E",
+        "\u0118": "E",
+        "\u011A": "E",
+        "\u0113": "e",
+        "\u0115": "e",
+        "\u0117": "e",
+        "\u0119": "e",
+        "\u011B": "e",
+        "\u011C": "G",
+        "\u011E": "G",
+        "\u0120": "G",
+        "\u0122": "G",
+        "\u011D": "g",
+        "\u011F": "g",
+        "\u0121": "g",
+        "\u0123": "g",
+        "\u0124": "H",
+        "\u0126": "H",
+        "\u0125": "h",
+        "\u0127": "h",
+        "\u0128": "I",
+        "\u012A": "I",
+        "\u012C": "I",
+        "\u012E": "I",
+        "\u0130": "I",
+        "\u0129": "i",
+        "\u012B": "i",
+        "\u012D": "i",
+        "\u012F": "i",
+        "\u0131": "i",
+        "\u0134": "J",
+        "\u0135": "j",
+        "\u0136": "K",
+        "\u0137": "k",
+        "\u0138": "k",
+        "\u0139": "L",
+        "\u013B": "L",
+        "\u013D": "L",
+        "\u013F": "L",
+        "\u0141": "L",
+        "\u013A": "l",
+        "\u013C": "l",
+        "\u013E": "l",
+        "\u0140": "l",
+        "\u0142": "l",
+        "\u0143": "N",
+        "\u0145": "N",
+        "\u0147": "N",
+        "\u014A": "N",
+        "\u0144": "n",
+        "\u0146": "n",
+        "\u0148": "n",
+        "\u014B": "n",
+        "\u014C": "O",
+        "\u014E": "O",
+        "\u0150": "O",
+        "\u014D": "o",
+        "\u014F": "o",
+        "\u0151": "o",
+        "\u0154": "R",
+        "\u0156": "R",
+        "\u0158": "R",
+        "\u0155": "r",
+        "\u0157": "r",
+        "\u0159": "r",
+        "\u015A": "S",
+        "\u015C": "S",
+        "\u015E": "S",
+        "\u0160": "S",
+        "\u015B": "s",
+        "\u015D": "s",
+        "\u015F": "s",
+        "\u0161": "s",
+        "\u0162": "T",
+        "\u0164": "T",
+        "\u0166": "T",
+        "\u0163": "t",
+        "\u0165": "t",
+        "\u0167": "t",
+        "\u0168": "U",
+        "\u016A": "U",
+        "\u016C": "U",
+        "\u016E": "U",
+        "\u0170": "U",
+        "\u0172": "U",
+        "\u0169": "u",
+        "\u016B": "u",
+        "\u016D": "u",
+        "\u016F": "u",
+        "\u0171": "u",
+        "\u0173": "u",
+        "\u0174": "W",
+        "\u0175": "w",
+        "\u0176": "Y",
+        "\u0177": "y",
+        "\u0178": "Y",
+        "\u0179": "Z",
+        "\u017B": "Z",
+        "\u017D": "Z",
+        "\u017A": "z",
+        "\u017C": "z",
+        "\u017E": "z",
+        "\u0132": "IJ",
+        "\u0133": "ij",
+        "\u0152": "Oe",
+        "\u0153": "oe",
+        "\u0149": "'n",
+        "\u017F": "s"
+      };
+      var htmlEscapes = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      };
+      var htmlUnescapes = {
+        "&amp;": "&",
+        "&lt;": "<",
+        "&gt;": ">",
+        "&quot;": '"',
+        "&#39;": "'"
+      };
+      var stringEscapes = {
+        "\\": "\\",
+        "'": "'",
+        "\n": "n",
+        "\r": "r",
+        "\u2028": "u2028",
+        "\u2029": "u2029"
+      };
+      var freeParseFloat = parseFloat, freeParseInt = parseInt;
+      var freeGlobal2 = typeof global == "object" && global && global.Object === Object && global;
+      var freeSelf2 = typeof self == "object" && self && self.Object === Object && self;
+      var root2 = freeGlobal2 || freeSelf2 || Function("return this")();
+      var freeExports3 = typeof exports2 == "object" && exports2 && !exports2.nodeType && exports2;
+      var freeModule3 = freeExports3 && typeof module2 == "object" && module2 && !module2.nodeType && module2;
+      var moduleExports3 = freeModule3 && freeModule3.exports === freeExports3;
+      var freeProcess2 = moduleExports3 && freeGlobal2.process;
+      var nodeUtil2 = (function() {
+        try {
+          var types = freeModule3 && freeModule3.require && freeModule3.require("util").types;
+          if (types) {
+            return types;
+          }
+          return freeProcess2 && freeProcess2.binding && freeProcess2.binding("util");
+        } catch (e) {
+        }
+      })();
+      var nodeIsArrayBuffer = nodeUtil2 && nodeUtil2.isArrayBuffer, nodeIsDate = nodeUtil2 && nodeUtil2.isDate, nodeIsMap = nodeUtil2 && nodeUtil2.isMap, nodeIsRegExp = nodeUtil2 && nodeUtil2.isRegExp, nodeIsSet = nodeUtil2 && nodeUtil2.isSet, nodeIsTypedArray2 = nodeUtil2 && nodeUtil2.isTypedArray;
+      function apply(func, thisArg, args) {
+        switch (args.length) {
+          case 0:
+            return func.call(thisArg);
+          case 1:
+            return func.call(thisArg, args[0]);
+          case 2:
+            return func.call(thisArg, args[0], args[1]);
+          case 3:
+            return func.call(thisArg, args[0], args[1], args[2]);
+        }
+        return func.apply(thisArg, args);
+      }
+      function arrayAggregator(array4, setter, iteratee, accumulator) {
+        var index = -1, length = array4 == null ? 0 : array4.length;
+        while (++index < length) {
+          var value = array4[index];
+          setter(accumulator, value, iteratee(value), array4);
+        }
+        return accumulator;
+      }
+      function arrayEach(array4, iteratee) {
+        var index = -1, length = array4 == null ? 0 : array4.length;
+        while (++index < length) {
+          if (iteratee(array4[index], index, array4) === false) {
+            break;
+          }
+        }
+        return array4;
+      }
+      function arrayEachRight(array4, iteratee) {
+        var length = array4 == null ? 0 : array4.length;
+        while (length--) {
+          if (iteratee(array4[length], length, array4) === false) {
+            break;
+          }
+        }
+        return array4;
+      }
+      function arrayEvery(array4, predicate) {
+        var index = -1, length = array4 == null ? 0 : array4.length;
+        while (++index < length) {
+          if (!predicate(array4[index], index, array4)) {
+            return false;
+          }
+        }
+        return true;
+      }
+      function arrayFilter2(array4, predicate) {
+        var index = -1, length = array4 == null ? 0 : array4.length, resIndex = 0, result = [];
+        while (++index < length) {
+          var value = array4[index];
+          if (predicate(value, index, array4)) {
+            result[resIndex++] = value;
+          }
+        }
+        return result;
+      }
+      function arrayIncludes2(array4, value) {
+        var length = array4 == null ? 0 : array4.length;
+        return !!length && baseIndexOf2(array4, value, 0) > -1;
+      }
+      function arrayIncludesWith2(array4, value, comparator) {
+        var index = -1, length = array4 == null ? 0 : array4.length;
+        while (++index < length) {
+          if (comparator(value, array4[index])) {
+            return true;
+          }
+        }
+        return false;
+      }
+      function arrayMap2(array4, iteratee) {
+        var index = -1, length = array4 == null ? 0 : array4.length, result = Array(length);
+        while (++index < length) {
+          result[index] = iteratee(array4[index], index, array4);
+        }
+        return result;
+      }
+      function arrayPush2(array4, values) {
+        var index = -1, length = values.length, offset = array4.length;
+        while (++index < length) {
+          array4[offset + index] = values[index];
+        }
+        return array4;
+      }
+      function arrayReduce(array4, iteratee, accumulator, initAccum) {
+        var index = -1, length = array4 == null ? 0 : array4.length;
+        if (initAccum && length) {
+          accumulator = array4[++index];
+        }
+        while (++index < length) {
+          accumulator = iteratee(accumulator, array4[index], index, array4);
+        }
+        return accumulator;
+      }
+      function arrayReduceRight(array4, iteratee, accumulator, initAccum) {
+        var length = array4 == null ? 0 : array4.length;
+        if (initAccum && length) {
+          accumulator = array4[--length];
+        }
+        while (length--) {
+          accumulator = iteratee(accumulator, array4[length], length, array4);
+        }
+        return accumulator;
+      }
+      function arraySome2(array4, predicate) {
+        var index = -1, length = array4 == null ? 0 : array4.length;
+        while (++index < length) {
+          if (predicate(array4[index], index, array4)) {
+            return true;
+          }
+        }
+        return false;
+      }
+      var asciiSize = baseProperty2("length");
+      function asciiToArray(string5) {
+        return string5.split("");
+      }
+      function asciiWords(string5) {
+        return string5.match(reAsciiWord) || [];
+      }
+      function baseFindKey(collection, predicate, eachFunc) {
+        var result;
+        eachFunc(collection, function(value, key, collection2) {
+          if (predicate(value, key, collection2)) {
+            result = key;
+            return false;
+          }
+        });
+        return result;
+      }
+      function baseFindIndex2(array4, predicate, fromIndex, fromRight) {
+        var length = array4.length, index = fromIndex + (fromRight ? 1 : -1);
+        while (fromRight ? index-- : ++index < length) {
+          if (predicate(array4[index], index, array4)) {
+            return index;
+          }
+        }
+        return -1;
+      }
+      function baseIndexOf2(array4, value, fromIndex) {
+        return value === value ? strictIndexOf2(array4, value, fromIndex) : baseFindIndex2(array4, baseIsNaN2, fromIndex);
+      }
+      function baseIndexOfWith(array4, value, fromIndex, comparator) {
+        var index = fromIndex - 1, length = array4.length;
+        while (++index < length) {
+          if (comparator(array4[index], value)) {
+            return index;
+          }
+        }
+        return -1;
+      }
+      function baseIsNaN2(value) {
+        return value !== value;
+      }
+      function baseMean(array4, iteratee) {
+        var length = array4 == null ? 0 : array4.length;
+        return length ? baseSum(array4, iteratee) / length : NAN;
+      }
+      function baseProperty2(key) {
+        return function(object4) {
+          return object4 == null ? undefined2 : object4[key];
+        };
+      }
+      function basePropertyOf(object4) {
+        return function(key) {
+          return object4 == null ? undefined2 : object4[key];
+        };
+      }
+      function baseReduce(collection, iteratee, accumulator, initAccum, eachFunc) {
+        eachFunc(collection, function(value, index, collection2) {
+          accumulator = initAccum ? (initAccum = false, value) : iteratee(accumulator, value, index, collection2);
+        });
+        return accumulator;
+      }
+      function baseSortBy(array4, comparer) {
+        var length = array4.length;
+        array4.sort(comparer);
+        while (length--) {
+          array4[length] = array4[length].value;
+        }
+        return array4;
+      }
+      function baseSum(array4, iteratee) {
+        var result, index = -1, length = array4.length;
+        while (++index < length) {
+          var current = iteratee(array4[index]);
+          if (current !== undefined2) {
+            result = result === undefined2 ? current : result + current;
+          }
+        }
+        return result;
+      }
+      function baseTimes2(n, iteratee) {
+        var index = -1, result = Array(n);
+        while (++index < n) {
+          result[index] = iteratee(index);
+        }
+        return result;
+      }
+      function baseToPairs(object4, props) {
+        return arrayMap2(props, function(key) {
+          return [key, object4[key]];
+        });
+      }
+      function baseTrim(string5) {
+        return string5 ? string5.slice(0, trimmedEndIndex(string5) + 1).replace(reTrimStart, "") : string5;
+      }
+      function baseUnary2(func) {
+        return function(value) {
+          return func(value);
+        };
+      }
+      function baseValues(object4, props) {
+        return arrayMap2(props, function(key) {
+          return object4[key];
+        });
+      }
+      function cacheHas2(cache, key) {
+        return cache.has(key);
+      }
+      function charsStartIndex(strSymbols, chrSymbols) {
+        var index = -1, length = strSymbols.length;
+        while (++index < length && baseIndexOf2(chrSymbols, strSymbols[index], 0) > -1) {
+        }
+        return index;
+      }
+      function charsEndIndex(strSymbols, chrSymbols) {
+        var index = strSymbols.length;
+        while (index-- && baseIndexOf2(chrSymbols, strSymbols[index], 0) > -1) {
+        }
+        return index;
+      }
+      function countHolders(array4, placeholder) {
+        var length = array4.length, result = 0;
+        while (length--) {
+          if (array4[length] === placeholder) {
+            ++result;
+          }
+        }
+        return result;
+      }
+      var deburrLetter = basePropertyOf(deburredLetters);
+      var escapeHtmlChar = basePropertyOf(htmlEscapes);
+      function escapeStringChar(chr) {
+        return "\\" + stringEscapes[chr];
+      }
+      function getValue2(object4, key) {
+        return object4 == null ? undefined2 : object4[key];
+      }
+      function hasUnicode(string5) {
+        return reHasUnicode.test(string5);
+      }
+      function hasUnicodeWord(string5) {
+        return reHasUnicodeWord.test(string5);
+      }
+      function iteratorToArray(iterator2) {
+        var data, result = [];
+        while (!(data = iterator2.next()).done) {
+          result.push(data.value);
+        }
+        return result;
+      }
+      function mapToArray2(map3) {
+        var index = -1, result = Array(map3.size);
+        map3.forEach(function(value, key) {
+          result[++index] = [key, value];
+        });
+        return result;
+      }
+      function overArg2(func, transform8) {
+        return function(arg) {
+          return func(transform8(arg));
+        };
+      }
+      function replaceHolders(array4, placeholder) {
+        var index = -1, length = array4.length, resIndex = 0, result = [];
+        while (++index < length) {
+          var value = array4[index];
+          if (value === placeholder || value === PLACEHOLDER) {
+            array4[index] = PLACEHOLDER;
+            result[resIndex++] = index;
+          }
+        }
+        return result;
+      }
+      function setToArray2(set3) {
+        var index = -1, result = Array(set3.size);
+        set3.forEach(function(value) {
+          result[++index] = value;
+        });
+        return result;
+      }
+      function setToPairs(set3) {
+        var index = -1, result = Array(set3.size);
+        set3.forEach(function(value) {
+          result[++index] = [value, value];
+        });
+        return result;
+      }
+      function strictIndexOf2(array4, value, fromIndex) {
+        var index = fromIndex - 1, length = array4.length;
+        while (++index < length) {
+          if (array4[index] === value) {
+            return index;
+          }
+        }
+        return -1;
+      }
+      function strictLastIndexOf(array4, value, fromIndex) {
+        var index = fromIndex + 1;
+        while (index--) {
+          if (array4[index] === value) {
+            return index;
+          }
+        }
+        return index;
+      }
+      function stringSize(string5) {
+        return hasUnicode(string5) ? unicodeSize(string5) : asciiSize(string5);
+      }
+      function stringToArray(string5) {
+        return hasUnicode(string5) ? unicodeToArray(string5) : asciiToArray(string5);
+      }
+      function trimmedEndIndex(string5) {
+        var index = string5.length;
+        while (index-- && reWhitespace.test(string5.charAt(index))) {
+        }
+        return index;
+      }
+      var unescapeHtmlChar = basePropertyOf(htmlUnescapes);
+      function unicodeSize(string5) {
+        var result = reUnicode.lastIndex = 0;
+        while (reUnicode.test(string5)) {
+          ++result;
+        }
+        return result;
+      }
+      function unicodeToArray(string5) {
+        return string5.match(reUnicode) || [];
+      }
+      function unicodeWords(string5) {
+        return string5.match(reUnicodeWord) || [];
+      }
+      var runInContext = (function runInContext2(context2) {
+        context2 = context2 == null ? root2 : _2.defaults(root2.Object(), context2, _2.pick(root2, contextProps));
+        var Array2 = context2.Array, Date2 = context2.Date, Error2 = context2.Error, Function2 = context2.Function, Math2 = context2.Math, Object2 = context2.Object, RegExp2 = context2.RegExp, String2 = context2.String, TypeError2 = context2.TypeError;
+        var arrayProto2 = Array2.prototype, funcProto3 = Function2.prototype, objectProto13 = Object2.prototype;
+        var coreJsData2 = context2["__core-js_shared__"];
+        var funcToString3 = funcProto3.toString;
+        var hasOwnProperty11 = objectProto13.hasOwnProperty;
+        var idCounter = 0;
+        var maskSrcKey2 = (function() {
+          var uid = /[^.]+$/.exec(coreJsData2 && coreJsData2.keys && coreJsData2.keys.IE_PROTO || "");
+          return uid ? "Symbol(src)_1." + uid : "";
+        })();
+        var nativeObjectToString3 = objectProto13.toString;
+        var objectCtorString = funcToString3.call(Object2);
+        var oldDash = root2._;
+        var reIsNative2 = RegExp2(
+          "^" + funcToString3.call(hasOwnProperty11).replace(reRegExpChar2, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
+        );
+        var Buffer3 = moduleExports3 ? context2.Buffer : undefined2, Symbol3 = context2.Symbol, Uint8Array3 = context2.Uint8Array, allocUnsafe = Buffer3 ? Buffer3.allocUnsafe : undefined2, getPrototype = overArg2(Object2.getPrototypeOf, Object2), objectCreate = Object2.create, propertyIsEnumerable3 = objectProto13.propertyIsEnumerable, splice2 = arrayProto2.splice, spreadableSymbol = Symbol3 ? Symbol3.isConcatSpreadable : undefined2, symIterator = Symbol3 ? Symbol3.iterator : undefined2, symToStringTag3 = Symbol3 ? Symbol3.toStringTag : undefined2;
+        var defineProperty2 = (function() {
+          try {
+            var func = getNative2(Object2, "defineProperty");
+            func({}, "", {});
+            return func;
+          } catch (e) {
+          }
+        })();
+        var ctxClearTimeout = context2.clearTimeout !== root2.clearTimeout && context2.clearTimeout, ctxNow = Date2 && Date2.now !== root2.Date.now && Date2.now, ctxSetTimeout = context2.setTimeout !== root2.setTimeout && context2.setTimeout;
+        var nativeCeil = Math2.ceil, nativeFloor = Math2.floor, nativeGetSymbols2 = Object2.getOwnPropertySymbols, nativeIsBuffer2 = Buffer3 ? Buffer3.isBuffer : undefined2, nativeIsFinite = context2.isFinite, nativeJoin = arrayProto2.join, nativeKeys2 = overArg2(Object2.keys, Object2), nativeMax = Math2.max, nativeMin = Math2.min, nativeNow = Date2.now, nativeParseInt = context2.parseInt, nativeRandom = Math2.random, nativeReverse = arrayProto2.reverse;
+        var DataView3 = getNative2(context2, "DataView"), Map3 = getNative2(context2, "Map"), Promise3 = getNative2(context2, "Promise"), Set3 = getNative2(context2, "Set"), WeakMap3 = getNative2(context2, "WeakMap"), nativeCreate2 = getNative2(Object2, "create");
+        var metaMap = WeakMap3 && new WeakMap3();
+        var realNames = {};
+        var dataViewCtorString2 = toSource2(DataView3), mapCtorString2 = toSource2(Map3), promiseCtorString2 = toSource2(Promise3), setCtorString2 = toSource2(Set3), weakMapCtorString2 = toSource2(WeakMap3);
+        var symbolProto3 = Symbol3 ? Symbol3.prototype : undefined2, symbolValueOf2 = symbolProto3 ? symbolProto3.valueOf : undefined2, symbolToString2 = symbolProto3 ? symbolProto3.toString : undefined2;
+        function lodash(value) {
+          if (isObjectLike2(value) && !isArray3(value) && !(value instanceof LazyWrapper)) {
+            if (value instanceof LodashWrapper) {
+              return value;
+            }
+            if (hasOwnProperty11.call(value, "__wrapped__")) {
+              return wrapperClone(value);
+            }
+          }
+          return new LodashWrapper(value);
+        }
+        var baseCreate = /* @__PURE__ */ (function() {
+          function object4() {
+          }
+          return function(proto) {
+            if (!isObject5(proto)) {
+              return {};
+            }
+            if (objectCreate) {
+              return objectCreate(proto);
+            }
+            object4.prototype = proto;
+            var result2 = new object4();
+            object4.prototype = undefined2;
+            return result2;
+          };
+        })();
+        function baseLodash() {
+        }
+        function LodashWrapper(value, chainAll) {
+          this.__wrapped__ = value;
+          this.__actions__ = [];
+          this.__chain__ = !!chainAll;
+          this.__index__ = 0;
+          this.__values__ = undefined2;
+        }
+        lodash.templateSettings = {
+          /**
+           * Used to detect `data` property values to be HTML-escaped.
+           *
+           * @memberOf _.templateSettings
+           * @type {RegExp}
+           */
+          "escape": reEscape,
+          /**
+           * Used to detect code to be evaluated.
+           *
+           * @memberOf _.templateSettings
+           * @type {RegExp}
+           */
+          "evaluate": reEvaluate,
+          /**
+           * Used to detect `data` property values to inject.
+           *
+           * @memberOf _.templateSettings
+           * @type {RegExp}
+           */
+          "interpolate": reInterpolate,
+          /**
+           * Used to reference the data object in the template text.
+           *
+           * @memberOf _.templateSettings
+           * @type {string}
+           */
+          "variable": "",
+          /**
+           * Used to import variables into the compiled template.
+           *
+           * @memberOf _.templateSettings
+           * @type {Object}
+           */
+          "imports": {
+            /**
+             * A reference to the `lodash` function.
+             *
+             * @memberOf _.templateSettings.imports
+             * @type {Function}
+             */
+            "_": lodash
+          }
+        };
+        lodash.prototype = baseLodash.prototype;
+        lodash.prototype.constructor = lodash;
+        LodashWrapper.prototype = baseCreate(baseLodash.prototype);
+        LodashWrapper.prototype.constructor = LodashWrapper;
+        function LazyWrapper(value) {
+          this.__wrapped__ = value;
+          this.__actions__ = [];
+          this.__dir__ = 1;
+          this.__filtered__ = false;
+          this.__iteratees__ = [];
+          this.__takeCount__ = MAX_ARRAY_LENGTH;
+          this.__views__ = [];
+        }
+        function lazyClone() {
+          var result2 = new LazyWrapper(this.__wrapped__);
+          result2.__actions__ = copyArray(this.__actions__);
+          result2.__dir__ = this.__dir__;
+          result2.__filtered__ = this.__filtered__;
+          result2.__iteratees__ = copyArray(this.__iteratees__);
+          result2.__takeCount__ = this.__takeCount__;
+          result2.__views__ = copyArray(this.__views__);
+          return result2;
+        }
+        function lazyReverse() {
+          if (this.__filtered__) {
+            var result2 = new LazyWrapper(this);
+            result2.__dir__ = -1;
+            result2.__filtered__ = true;
+          } else {
+            result2 = this.clone();
+            result2.__dir__ *= -1;
+          }
+          return result2;
+        }
+        function lazyValue() {
+          var array4 = this.__wrapped__.value(), dir = this.__dir__, isArr = isArray3(array4), isRight = dir < 0, arrLength = isArr ? array4.length : 0, view = getView(0, arrLength, this.__views__), start = view.start, end = view.end, length = end - start, index = isRight ? end : start - 1, iteratees = this.__iteratees__, iterLength = iteratees.length, resIndex = 0, takeCount = nativeMin(length, this.__takeCount__);
+          if (!isArr || !isRight && arrLength == length && takeCount == length) {
+            return baseWrapperValue(array4, this.__actions__);
+          }
+          var result2 = [];
+          outer:
+            while (length-- && resIndex < takeCount) {
+              index += dir;
+              var iterIndex = -1, value = array4[index];
+              while (++iterIndex < iterLength) {
+                var data = iteratees[iterIndex], iteratee2 = data.iteratee, type = data.type, computed = iteratee2(value);
+                if (type == LAZY_MAP_FLAG) {
+                  value = computed;
+                } else if (!computed) {
+                  if (type == LAZY_FILTER_FLAG) {
+                    continue outer;
+                  } else {
+                    break outer;
+                  }
+                }
+              }
+              result2[resIndex++] = value;
+            }
+          return result2;
+        }
+        LazyWrapper.prototype = baseCreate(baseLodash.prototype);
+        LazyWrapper.prototype.constructor = LazyWrapper;
+        function Hash2(entries) {
+          var index = -1, length = entries == null ? 0 : entries.length;
+          this.clear();
+          while (++index < length) {
+            var entry = entries[index];
+            this.set(entry[0], entry[1]);
+          }
+        }
+        function hashClear2() {
+          this.__data__ = nativeCreate2 ? nativeCreate2(null) : {};
+          this.size = 0;
+        }
+        function hashDelete2(key) {
+          var result2 = this.has(key) && delete this.__data__[key];
+          this.size -= result2 ? 1 : 0;
+          return result2;
+        }
+        function hashGet2(key) {
+          var data = this.__data__;
+          if (nativeCreate2) {
+            var result2 = data[key];
+            return result2 === HASH_UNDEFINED4 ? undefined2 : result2;
+          }
+          return hasOwnProperty11.call(data, key) ? data[key] : undefined2;
+        }
+        function hashHas2(key) {
+          var data = this.__data__;
+          return nativeCreate2 ? data[key] !== undefined2 : hasOwnProperty11.call(data, key);
+        }
+        function hashSet2(key, value) {
+          var data = this.__data__;
+          this.size += this.has(key) ? 0 : 1;
+          data[key] = nativeCreate2 && value === undefined2 ? HASH_UNDEFINED4 : value;
+          return this;
+        }
+        Hash2.prototype.clear = hashClear2;
+        Hash2.prototype["delete"] = hashDelete2;
+        Hash2.prototype.get = hashGet2;
+        Hash2.prototype.has = hashHas2;
+        Hash2.prototype.set = hashSet2;
+        function ListCache2(entries) {
+          var index = -1, length = entries == null ? 0 : entries.length;
+          this.clear();
+          while (++index < length) {
+            var entry = entries[index];
+            this.set(entry[0], entry[1]);
+          }
+        }
+        function listCacheClear2() {
+          this.__data__ = [];
+          this.size = 0;
+        }
+        function listCacheDelete2(key) {
+          var data = this.__data__, index = assocIndexOf2(data, key);
+          if (index < 0) {
+            return false;
+          }
+          var lastIndex = data.length - 1;
+          if (index == lastIndex) {
+            data.pop();
+          } else {
+            splice2.call(data, index, 1);
+          }
+          --this.size;
+          return true;
+        }
+        function listCacheGet2(key) {
+          var data = this.__data__, index = assocIndexOf2(data, key);
+          return index < 0 ? undefined2 : data[index][1];
+        }
+        function listCacheHas2(key) {
+          return assocIndexOf2(this.__data__, key) > -1;
+        }
+        function listCacheSet2(key, value) {
+          var data = this.__data__, index = assocIndexOf2(data, key);
+          if (index < 0) {
+            ++this.size;
+            data.push([key, value]);
+          } else {
+            data[index][1] = value;
+          }
+          return this;
+        }
+        ListCache2.prototype.clear = listCacheClear2;
+        ListCache2.prototype["delete"] = listCacheDelete2;
+        ListCache2.prototype.get = listCacheGet2;
+        ListCache2.prototype.has = listCacheHas2;
+        ListCache2.prototype.set = listCacheSet2;
+        function MapCache2(entries) {
+          var index = -1, length = entries == null ? 0 : entries.length;
+          this.clear();
+          while (++index < length) {
+            var entry = entries[index];
+            this.set(entry[0], entry[1]);
+          }
+        }
+        function mapCacheClear2() {
+          this.size = 0;
+          this.__data__ = {
+            "hash": new Hash2(),
+            "map": new (Map3 || ListCache2)(),
+            "string": new Hash2()
+          };
+        }
+        function mapCacheDelete2(key) {
+          var result2 = getMapData2(this, key)["delete"](key);
+          this.size -= result2 ? 1 : 0;
+          return result2;
+        }
+        function mapCacheGet2(key) {
+          return getMapData2(this, key).get(key);
+        }
+        function mapCacheHas2(key) {
+          return getMapData2(this, key).has(key);
+        }
+        function mapCacheSet2(key, value) {
+          var data = getMapData2(this, key), size2 = data.size;
+          data.set(key, value);
+          this.size += data.size == size2 ? 0 : 1;
+          return this;
+        }
+        MapCache2.prototype.clear = mapCacheClear2;
+        MapCache2.prototype["delete"] = mapCacheDelete2;
+        MapCache2.prototype.get = mapCacheGet2;
+        MapCache2.prototype.has = mapCacheHas2;
+        MapCache2.prototype.set = mapCacheSet2;
+        function SetCache2(values2) {
+          var index = -1, length = values2 == null ? 0 : values2.length;
+          this.__data__ = new MapCache2();
+          while (++index < length) {
+            this.add(values2[index]);
+          }
+        }
+        function setCacheAdd2(value) {
+          this.__data__.set(value, HASH_UNDEFINED4);
+          return this;
+        }
+        function setCacheHas2(value) {
+          return this.__data__.has(value);
+        }
+        SetCache2.prototype.add = SetCache2.prototype.push = setCacheAdd2;
+        SetCache2.prototype.has = setCacheHas2;
+        function Stack2(entries) {
+          var data = this.__data__ = new ListCache2(entries);
+          this.size = data.size;
+        }
+        function stackClear2() {
+          this.__data__ = new ListCache2();
+          this.size = 0;
+        }
+        function stackDelete2(key) {
+          var data = this.__data__, result2 = data["delete"](key);
+          this.size = data.size;
+          return result2;
+        }
+        function stackGet2(key) {
+          return this.__data__.get(key);
+        }
+        function stackHas2(key) {
+          return this.__data__.has(key);
+        }
+        function stackSet2(key, value) {
+          var data = this.__data__;
+          if (data instanceof ListCache2) {
+            var pairs = data.__data__;
+            if (!Map3 || pairs.length < LARGE_ARRAY_SIZE3 - 1) {
+              pairs.push([key, value]);
+              this.size = ++data.size;
+              return this;
+            }
+            data = this.__data__ = new MapCache2(pairs);
+          }
+          data.set(key, value);
+          this.size = data.size;
+          return this;
+        }
+        Stack2.prototype.clear = stackClear2;
+        Stack2.prototype["delete"] = stackDelete2;
+        Stack2.prototype.get = stackGet2;
+        Stack2.prototype.has = stackHas2;
+        Stack2.prototype.set = stackSet2;
+        function arrayLikeKeys2(value, inherited) {
+          var isArr = isArray3(value), isArg = !isArr && isArguments2(value), isBuff = !isArr && !isArg && isBuffer3(value), isType = !isArr && !isArg && !isBuff && isTypedArray3(value), skipIndexes = isArr || isArg || isBuff || isType, result2 = skipIndexes ? baseTimes2(value.length, String2) : [], length = result2.length;
+          for (var key in value) {
+            if ((inherited || hasOwnProperty11.call(value, key)) && !(skipIndexes && // Safari 9 has enumerable `arguments.length` in strict mode.
+            (key == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
+            isBuff && (key == "offset" || key == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
+            isType && (key == "buffer" || key == "byteLength" || key == "byteOffset") || // Skip index properties.
+            isIndex2(key, length)))) {
+              result2.push(key);
+            }
+          }
+          return result2;
+        }
+        function arraySample(array4) {
+          var length = array4.length;
+          return length ? array4[baseRandom(0, length - 1)] : undefined2;
+        }
+        function arraySampleSize(array4, n) {
+          return shuffleSelf(copyArray(array4), baseClamp(n, 0, array4.length));
+        }
+        function arrayShuffle(array4) {
+          return shuffleSelf(copyArray(array4));
+        }
+        function assignMergeValue(object4, key, value) {
+          if (value !== undefined2 && !eq2(object4[key], value) || value === undefined2 && !(key in object4)) {
+            baseAssignValue(object4, key, value);
+          }
+        }
+        function assignValue(object4, key, value) {
+          var objValue = object4[key];
+          if (!(hasOwnProperty11.call(object4, key) && eq2(objValue, value)) || value === undefined2 && !(key in object4)) {
+            baseAssignValue(object4, key, value);
+          }
+        }
+        function assocIndexOf2(array4, key) {
+          var length = array4.length;
+          while (length--) {
+            if (eq2(array4[length][0], key)) {
+              return length;
+            }
+          }
+          return -1;
+        }
+        function baseAggregator(collection, setter, iteratee2, accumulator) {
+          baseEach(collection, function(value, key, collection2) {
+            setter(accumulator, value, iteratee2(value), collection2);
+          });
+          return accumulator;
+        }
+        function baseAssign(object4, source) {
+          return object4 && copyObject(source, keys2(source), object4);
+        }
+        function baseAssignIn(object4, source) {
+          return object4 && copyObject(source, keysIn(source), object4);
+        }
+        function baseAssignValue(object4, key, value) {
+          if (key == "__proto__" && defineProperty2) {
+            defineProperty2(object4, key, {
+              "configurable": true,
+              "enumerable": true,
+              "value": value,
+              "writable": true
+            });
+          } else {
+            object4[key] = value;
+          }
+        }
+        function baseAt(object4, paths) {
+          var index = -1, length = paths.length, result2 = Array2(length), skip = object4 == null;
+          while (++index < length) {
+            result2[index] = skip ? undefined2 : get2(object4, paths[index]);
+          }
+          return result2;
+        }
+        function baseClamp(number6, lower, upper) {
+          if (number6 === number6) {
+            if (upper !== undefined2) {
+              number6 = number6 <= upper ? number6 : upper;
+            }
+            if (lower !== undefined2) {
+              number6 = number6 >= lower ? number6 : lower;
+            }
+          }
+          return number6;
+        }
+        function baseClone(value, bitmask, customizer, key, object4, stack) {
+          var result2, isDeep = bitmask & CLONE_DEEP_FLAG, isFlat = bitmask & CLONE_FLAT_FLAG, isFull = bitmask & CLONE_SYMBOLS_FLAG;
+          if (customizer) {
+            result2 = object4 ? customizer(value, key, object4, stack) : customizer(value);
+          }
+          if (result2 !== undefined2) {
+            return result2;
+          }
+          if (!isObject5(value)) {
+            return value;
+          }
+          var isArr = isArray3(value);
+          if (isArr) {
+            result2 = initCloneArray(value);
+            if (!isDeep) {
+              return copyArray(value, result2);
+            }
+          } else {
+            var tag = getTag2(value), isFunc = tag == funcTag3 || tag == genTag2;
+            if (isBuffer3(value)) {
+              return cloneBuffer(value, isDeep);
+            }
+            if (tag == objectTag4 || tag == argsTag4 || isFunc && !object4) {
+              result2 = isFlat || isFunc ? {} : initCloneObject(value);
+              if (!isDeep) {
+                return isFlat ? copySymbolsIn(value, baseAssignIn(result2, value)) : copySymbols(value, baseAssign(result2, value));
+              }
+            } else {
+              if (!cloneableTags[tag]) {
+                return object4 ? value : {};
+              }
+              result2 = initCloneByTag(value, tag, isDeep);
+            }
+          }
+          stack || (stack = new Stack2());
+          var stacked = stack.get(value);
+          if (stacked) {
+            return stacked;
+          }
+          stack.set(value, result2);
+          if (isSet(value)) {
+            value.forEach(function(subValue) {
+              result2.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
+            });
+          } else if (isMap(value)) {
+            value.forEach(function(subValue, key2) {
+              result2.set(key2, baseClone(subValue, bitmask, customizer, key2, value, stack));
+            });
+          }
+          var keysFunc = isFull ? isFlat ? getAllKeysIn : getAllKeys2 : isFlat ? keysIn : keys2;
+          var props = isArr ? undefined2 : keysFunc(value);
+          arrayEach(props || value, function(subValue, key2) {
+            if (props) {
+              key2 = subValue;
+              subValue = value[key2];
+            }
+            assignValue(result2, key2, baseClone(subValue, bitmask, customizer, key2, value, stack));
+          });
+          return result2;
+        }
+        function baseConforms(source) {
+          var props = keys2(source);
+          return function(object4) {
+            return baseConformsTo(object4, source, props);
+          };
+        }
+        function baseConformsTo(object4, source, props) {
+          var length = props.length;
+          if (object4 == null) {
+            return !length;
+          }
+          object4 = Object2(object4);
+          while (length--) {
+            var key = props[length], predicate = source[key], value = object4[key];
+            if (value === undefined2 && !(key in object4) || !predicate(value)) {
+              return false;
+            }
+          }
+          return true;
+        }
+        function baseDelay(func, wait, args) {
+          if (typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          return setTimeout2(function() {
+            func.apply(undefined2, args);
+          }, wait);
+        }
+        function baseDifference(array4, values2, iteratee2, comparator) {
+          var index = -1, includes2 = arrayIncludes2, isCommon = true, length = array4.length, result2 = [], valuesLength = values2.length;
+          if (!length) {
+            return result2;
+          }
+          if (iteratee2) {
+            values2 = arrayMap2(values2, baseUnary2(iteratee2));
+          }
+          if (comparator) {
+            includes2 = arrayIncludesWith2;
+            isCommon = false;
+          } else if (values2.length >= LARGE_ARRAY_SIZE3) {
+            includes2 = cacheHas2;
+            isCommon = false;
+            values2 = new SetCache2(values2);
+          }
+          outer:
+            while (++index < length) {
+              var value = array4[index], computed = iteratee2 == null ? value : iteratee2(value);
+              value = comparator || value !== 0 ? value : 0;
+              if (isCommon && computed === computed) {
+                var valuesIndex = valuesLength;
+                while (valuesIndex--) {
+                  if (values2[valuesIndex] === computed) {
+                    continue outer;
+                  }
+                }
+                result2.push(value);
+              } else if (!includes2(values2, computed, comparator)) {
+                result2.push(value);
+              }
+            }
+          return result2;
+        }
+        var baseEach = createBaseEach(baseForOwn);
+        var baseEachRight = createBaseEach(baseForOwnRight, true);
+        function baseEvery(collection, predicate) {
+          var result2 = true;
+          baseEach(collection, function(value, index, collection2) {
+            result2 = !!predicate(value, index, collection2);
+            return result2;
+          });
+          return result2;
+        }
+        function baseExtremum(array4, iteratee2, comparator) {
+          var index = -1, length = array4.length;
+          while (++index < length) {
+            var value = array4[index], current = iteratee2(value);
+            if (current != null && (computed === undefined2 ? current === current && !isSymbol2(current) : comparator(current, computed))) {
+              var computed = current, result2 = value;
+            }
+          }
+          return result2;
+        }
+        function baseFill(array4, value, start, end) {
+          var length = array4.length;
+          start = toInteger(start);
+          if (start < 0) {
+            start = -start > length ? 0 : length + start;
+          }
+          end = end === undefined2 || end > length ? length : toInteger(end);
+          if (end < 0) {
+            end += length;
+          }
+          end = start > end ? 0 : toLength(end);
+          while (start < end) {
+            array4[start++] = value;
+          }
+          return array4;
+        }
+        function baseFilter(collection, predicate) {
+          var result2 = [];
+          baseEach(collection, function(value, index, collection2) {
+            if (predicate(value, index, collection2)) {
+              result2.push(value);
+            }
+          });
+          return result2;
+        }
+        function baseFlatten(array4, depth, predicate, isStrict, result2) {
+          var index = -1, length = array4.length;
+          predicate || (predicate = isFlattenable);
+          result2 || (result2 = []);
+          while (++index < length) {
+            var value = array4[index];
+            if (depth > 0 && predicate(value)) {
+              if (depth > 1) {
+                baseFlatten(value, depth - 1, predicate, isStrict, result2);
+              } else {
+                arrayPush2(result2, value);
+              }
+            } else if (!isStrict) {
+              result2[result2.length] = value;
+            }
+          }
+          return result2;
+        }
+        var baseFor = createBaseFor();
+        var baseForRight = createBaseFor(true);
+        function baseForOwn(object4, iteratee2) {
+          return object4 && baseFor(object4, iteratee2, keys2);
+        }
+        function baseForOwnRight(object4, iteratee2) {
+          return object4 && baseForRight(object4, iteratee2, keys2);
+        }
+        function baseFunctions(object4, props) {
+          return arrayFilter2(props, function(key) {
+            return isFunction4(object4[key]);
+          });
+        }
+        function baseGet2(object4, path35) {
+          path35 = castPath2(path35, object4);
+          var index = 0, length = path35.length;
+          while (object4 != null && index < length) {
+            object4 = object4[toKey2(path35[index++])];
+          }
+          return index && index == length ? object4 : undefined2;
+        }
+        function baseGetAllKeys2(object4, keysFunc, symbolsFunc) {
+          var result2 = keysFunc(object4);
+          return isArray3(object4) ? result2 : arrayPush2(result2, symbolsFunc(object4));
+        }
+        function baseGetTag2(value) {
+          if (value == null) {
+            return value === undefined2 ? undefinedTag2 : nullTag2;
+          }
+          return symToStringTag3 && symToStringTag3 in Object2(value) ? getRawTag2(value) : objectToString2(value);
+        }
+        function baseGt(value, other) {
+          return value > other;
+        }
+        function baseHas(object4, key) {
+          return object4 != null && hasOwnProperty11.call(object4, key);
+        }
+        function baseHasIn2(object4, key) {
+          return object4 != null && key in Object2(object4);
+        }
+        function baseInRange(number6, start, end) {
+          return number6 >= nativeMin(start, end) && number6 < nativeMax(start, end);
+        }
+        function baseIntersection(arrays, iteratee2, comparator) {
+          var includes2 = comparator ? arrayIncludesWith2 : arrayIncludes2, length = arrays[0].length, othLength = arrays.length, othIndex = othLength, caches = Array2(othLength), maxLength = Infinity, result2 = [];
+          while (othIndex--) {
+            var array4 = arrays[othIndex];
+            if (othIndex && iteratee2) {
+              array4 = arrayMap2(array4, baseUnary2(iteratee2));
+            }
+            maxLength = nativeMin(array4.length, maxLength);
+            caches[othIndex] = !comparator && (iteratee2 || length >= 120 && array4.length >= 120) ? new SetCache2(othIndex && array4) : undefined2;
+          }
+          array4 = arrays[0];
+          var index = -1, seen = caches[0];
+          outer:
+            while (++index < length && result2.length < maxLength) {
+              var value = array4[index], computed = iteratee2 ? iteratee2(value) : value;
+              value = comparator || value !== 0 ? value : 0;
+              if (!(seen ? cacheHas2(seen, computed) : includes2(result2, computed, comparator))) {
+                othIndex = othLength;
+                while (--othIndex) {
+                  var cache = caches[othIndex];
+                  if (!(cache ? cacheHas2(cache, computed) : includes2(arrays[othIndex], computed, comparator))) {
+                    continue outer;
+                  }
+                }
+                if (seen) {
+                  seen.push(computed);
+                }
+                result2.push(value);
+              }
+            }
+          return result2;
+        }
+        function baseInverter(object4, setter, iteratee2, accumulator) {
+          baseForOwn(object4, function(value, key, object5) {
+            setter(accumulator, iteratee2(value), key, object5);
+          });
+          return accumulator;
+        }
+        function baseInvoke(object4, path35, args) {
+          path35 = castPath2(path35, object4);
+          object4 = parent(object4, path35);
+          var func = object4 == null ? object4 : object4[toKey2(last(path35))];
+          return func == null ? undefined2 : apply(func, object4, args);
+        }
+        function baseIsArguments2(value) {
+          return isObjectLike2(value) && baseGetTag2(value) == argsTag4;
+        }
+        function baseIsArrayBuffer(value) {
+          return isObjectLike2(value) && baseGetTag2(value) == arrayBufferTag3;
+        }
+        function baseIsDate(value) {
+          return isObjectLike2(value) && baseGetTag2(value) == dateTag3;
+        }
+        function baseIsEqual2(value, other, bitmask, customizer, stack) {
+          if (value === other) {
+            return true;
+          }
+          if (value == null || other == null || !isObjectLike2(value) && !isObjectLike2(other)) {
+            return value !== value && other !== other;
+          }
+          return baseIsEqualDeep2(value, other, bitmask, customizer, baseIsEqual2, stack);
+        }
+        function baseIsEqualDeep2(object4, other, bitmask, customizer, equalFunc, stack) {
+          var objIsArr = isArray3(object4), othIsArr = isArray3(other), objTag = objIsArr ? arrayTag3 : getTag2(object4), othTag = othIsArr ? arrayTag3 : getTag2(other);
+          objTag = objTag == argsTag4 ? objectTag4 : objTag;
+          othTag = othTag == argsTag4 ? objectTag4 : othTag;
+          var objIsObj = objTag == objectTag4, othIsObj = othTag == objectTag4, isSameTag = objTag == othTag;
+          if (isSameTag && isBuffer3(object4)) {
+            if (!isBuffer3(other)) {
+              return false;
+            }
+            objIsArr = true;
+            objIsObj = false;
+          }
+          if (isSameTag && !objIsObj) {
+            stack || (stack = new Stack2());
+            return objIsArr || isTypedArray3(object4) ? equalArrays2(object4, other, bitmask, customizer, equalFunc, stack) : equalByTag2(object4, other, objTag, bitmask, customizer, equalFunc, stack);
+          }
+          if (!(bitmask & COMPARE_PARTIAL_FLAG7)) {
+            var objIsWrapped = objIsObj && hasOwnProperty11.call(object4, "__wrapped__"), othIsWrapped = othIsObj && hasOwnProperty11.call(other, "__wrapped__");
+            if (objIsWrapped || othIsWrapped) {
+              var objUnwrapped = objIsWrapped ? object4.value() : object4, othUnwrapped = othIsWrapped ? other.value() : other;
+              stack || (stack = new Stack2());
+              return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+            }
+          }
+          if (!isSameTag) {
+            return false;
+          }
+          stack || (stack = new Stack2());
+          return equalObjects2(object4, other, bitmask, customizer, equalFunc, stack);
+        }
+        function baseIsMap(value) {
+          return isObjectLike2(value) && getTag2(value) == mapTag4;
+        }
+        function baseIsMatch2(object4, source, matchData, customizer) {
+          var index = matchData.length, length = index, noCustomizer = !customizer;
+          if (object4 == null) {
+            return !length;
+          }
+          object4 = Object2(object4);
+          while (index--) {
+            var data = matchData[index];
+            if (noCustomizer && data[2] ? data[1] !== object4[data[0]] : !(data[0] in object4)) {
+              return false;
+            }
+          }
+          while (++index < length) {
+            data = matchData[index];
+            var key = data[0], objValue = object4[key], srcValue = data[1];
+            if (noCustomizer && data[2]) {
+              if (objValue === undefined2 && !(key in object4)) {
+                return false;
+              }
+            } else {
+              var stack = new Stack2();
+              if (customizer) {
+                var result2 = customizer(objValue, srcValue, key, object4, source, stack);
+              }
+              if (!(result2 === undefined2 ? baseIsEqual2(srcValue, objValue, COMPARE_PARTIAL_FLAG7 | COMPARE_UNORDERED_FLAG5, customizer, stack) : result2)) {
+                return false;
+              }
+            }
+          }
+          return true;
+        }
+        function baseIsNative2(value) {
+          if (!isObject5(value) || isMasked2(value)) {
+            return false;
+          }
+          var pattern = isFunction4(value) ? reIsNative2 : reIsHostCtor2;
+          return pattern.test(toSource2(value));
+        }
+        function baseIsRegExp(value) {
+          return isObjectLike2(value) && baseGetTag2(value) == regexpTag3;
+        }
+        function baseIsSet(value) {
+          return isObjectLike2(value) && getTag2(value) == setTag4;
+        }
+        function baseIsTypedArray2(value) {
+          return isObjectLike2(value) && isLength2(value.length) && !!typedArrayTags2[baseGetTag2(value)];
+        }
+        function baseIteratee2(value) {
+          if (typeof value == "function") {
+            return value;
+          }
+          if (value == null) {
+            return identity2;
+          }
+          if (typeof value == "object") {
+            return isArray3(value) ? baseMatchesProperty2(value[0], value[1]) : baseMatches2(value);
+          }
+          return property2(value);
+        }
+        function baseKeys2(object4) {
+          if (!isPrototype2(object4)) {
+            return nativeKeys2(object4);
+          }
+          var result2 = [];
+          for (var key in Object2(object4)) {
+            if (hasOwnProperty11.call(object4, key) && key != "constructor") {
+              result2.push(key);
+            }
+          }
+          return result2;
+        }
+        function baseKeysIn(object4) {
+          if (!isObject5(object4)) {
+            return nativeKeysIn(object4);
+          }
+          var isProto = isPrototype2(object4), result2 = [];
+          for (var key in object4) {
+            if (!(key == "constructor" && (isProto || !hasOwnProperty11.call(object4, key)))) {
+              result2.push(key);
+            }
+          }
+          return result2;
+        }
+        function baseLt(value, other) {
+          return value < other;
+        }
+        function baseMap(collection, iteratee2) {
+          var index = -1, result2 = isArrayLike2(collection) ? Array2(collection.length) : [];
+          baseEach(collection, function(value, key, collection2) {
+            result2[++index] = iteratee2(value, key, collection2);
+          });
+          return result2;
+        }
+        function baseMatches2(source) {
+          var matchData = getMatchData2(source);
+          if (matchData.length == 1 && matchData[0][2]) {
+            return matchesStrictComparable2(matchData[0][0], matchData[0][1]);
+          }
+          return function(object4) {
+            return object4 === source || baseIsMatch2(object4, source, matchData);
+          };
+        }
+        function baseMatchesProperty2(path35, srcValue) {
+          if (isKey2(path35) && isStrictComparable2(srcValue)) {
+            return matchesStrictComparable2(toKey2(path35), srcValue);
+          }
+          return function(object4) {
+            var objValue = get2(object4, path35);
+            return objValue === undefined2 && objValue === srcValue ? hasIn2(object4, path35) : baseIsEqual2(srcValue, objValue, COMPARE_PARTIAL_FLAG7 | COMPARE_UNORDERED_FLAG5);
+          };
+        }
+        function baseMerge(object4, source, srcIndex, customizer, stack) {
+          if (object4 === source) {
+            return;
+          }
+          baseFor(source, function(srcValue, key) {
+            stack || (stack = new Stack2());
+            if (isObject5(srcValue)) {
+              baseMergeDeep(object4, source, key, srcIndex, baseMerge, customizer, stack);
+            } else {
+              var newValue = customizer ? customizer(safeGet(object4, key), srcValue, key + "", object4, source, stack) : undefined2;
+              if (newValue === undefined2) {
+                newValue = srcValue;
+              }
+              assignMergeValue(object4, key, newValue);
+            }
+          }, keysIn);
+        }
+        function baseMergeDeep(object4, source, key, srcIndex, mergeFunc, customizer, stack) {
+          var objValue = safeGet(object4, key), srcValue = safeGet(source, key), stacked = stack.get(srcValue);
+          if (stacked) {
+            assignMergeValue(object4, key, stacked);
+            return;
+          }
+          var newValue = customizer ? customizer(objValue, srcValue, key + "", object4, source, stack) : undefined2;
+          var isCommon = newValue === undefined2;
+          if (isCommon) {
+            var isArr = isArray3(srcValue), isBuff = !isArr && isBuffer3(srcValue), isTyped = !isArr && !isBuff && isTypedArray3(srcValue);
+            newValue = srcValue;
+            if (isArr || isBuff || isTyped) {
+              if (isArray3(objValue)) {
+                newValue = objValue;
+              } else if (isArrayLikeObject(objValue)) {
+                newValue = copyArray(objValue);
+              } else if (isBuff) {
+                isCommon = false;
+                newValue = cloneBuffer(srcValue, true);
+              } else if (isTyped) {
+                isCommon = false;
+                newValue = cloneTypedArray(srcValue, true);
+              } else {
+                newValue = [];
+              }
+            } else if (isPlainObject4(srcValue) || isArguments2(srcValue)) {
+              newValue = objValue;
+              if (isArguments2(objValue)) {
+                newValue = toPlainObject(objValue);
+              } else if (!isObject5(objValue) || isFunction4(objValue)) {
+                newValue = initCloneObject(srcValue);
+              }
+            } else {
+              isCommon = false;
+            }
+          }
+          if (isCommon) {
+            stack.set(srcValue, newValue);
+            mergeFunc(newValue, srcValue, srcIndex, customizer, stack);
+            stack["delete"](srcValue);
+          }
+          assignMergeValue(object4, key, newValue);
+        }
+        function baseNth(array4, n) {
+          var length = array4.length;
+          if (!length) {
+            return;
+          }
+          n += n < 0 ? length : 0;
+          return isIndex2(n, length) ? array4[n] : undefined2;
+        }
+        function baseOrderBy(collection, iteratees, orders) {
+          if (iteratees.length) {
+            iteratees = arrayMap2(iteratees, function(iteratee2) {
+              if (isArray3(iteratee2)) {
+                return function(value) {
+                  return baseGet2(value, iteratee2.length === 1 ? iteratee2[0] : iteratee2);
+                };
+              }
+              return iteratee2;
+            });
+          } else {
+            iteratees = [identity2];
+          }
+          var index = -1;
+          iteratees = arrayMap2(iteratees, baseUnary2(getIteratee()));
+          var result2 = baseMap(collection, function(value, key, collection2) {
+            var criteria = arrayMap2(iteratees, function(iteratee2) {
+              return iteratee2(value);
+            });
+            return { "criteria": criteria, "index": ++index, "value": value };
+          });
+          return baseSortBy(result2, function(object4, other) {
+            return compareMultiple(object4, other, orders);
+          });
+        }
+        function basePick(object4, paths) {
+          return basePickBy(object4, paths, function(value, path35) {
+            return hasIn2(object4, path35);
+          });
+        }
+        function basePickBy(object4, paths, predicate) {
+          var index = -1, length = paths.length, result2 = {};
+          while (++index < length) {
+            var path35 = paths[index], value = baseGet2(object4, path35);
+            if (predicate(value, path35)) {
+              baseSet(result2, castPath2(path35, object4), value);
+            }
+          }
+          return result2;
+        }
+        function basePropertyDeep2(path35) {
+          return function(object4) {
+            return baseGet2(object4, path35);
+          };
+        }
+        function basePullAll(array4, values2, iteratee2, comparator) {
+          var indexOf2 = comparator ? baseIndexOfWith : baseIndexOf2, index = -1, length = values2.length, seen = array4;
+          if (array4 === values2) {
+            values2 = copyArray(values2);
+          }
+          if (iteratee2) {
+            seen = arrayMap2(array4, baseUnary2(iteratee2));
+          }
+          while (++index < length) {
+            var fromIndex = 0, value = values2[index], computed = iteratee2 ? iteratee2(value) : value;
+            while ((fromIndex = indexOf2(seen, computed, fromIndex, comparator)) > -1) {
+              if (seen !== array4) {
+                splice2.call(seen, fromIndex, 1);
+              }
+              splice2.call(array4, fromIndex, 1);
+            }
+          }
+          return array4;
+        }
+        function basePullAt(array4, indexes) {
+          var length = array4 ? indexes.length : 0, lastIndex = length - 1;
+          while (length--) {
+            var index = indexes[length];
+            if (length == lastIndex || index !== previous) {
+              var previous = index;
+              if (isIndex2(index)) {
+                splice2.call(array4, index, 1);
+              } else {
+                baseUnset(array4, index);
+              }
+            }
+          }
+          return array4;
+        }
+        function baseRandom(lower, upper) {
+          return lower + nativeFloor(nativeRandom() * (upper - lower + 1));
+        }
+        function baseRange(start, end, step, fromRight) {
+          var index = -1, length = nativeMax(nativeCeil((end - start) / (step || 1)), 0), result2 = Array2(length);
+          while (length--) {
+            result2[fromRight ? length : ++index] = start;
+            start += step;
+          }
+          return result2;
+        }
+        function baseRepeat(string5, n) {
+          var result2 = "";
+          if (!string5 || n < 1 || n > MAX_SAFE_INTEGER3) {
+            return result2;
+          }
+          do {
+            if (n % 2) {
+              result2 += string5;
+            }
+            n = nativeFloor(n / 2);
+            if (n) {
+              string5 += string5;
+            }
+          } while (n);
+          return result2;
+        }
+        function baseRest(func, start) {
+          return setToString(overRest(func, start, identity2), func + "");
+        }
+        function baseSample(collection) {
+          return arraySample(values(collection));
+        }
+        function baseSampleSize(collection, n) {
+          var array4 = values(collection);
+          return shuffleSelf(array4, baseClamp(n, 0, array4.length));
+        }
+        function baseSet(object4, path35, value, customizer) {
+          if (!isObject5(object4)) {
+            return object4;
+          }
+          path35 = castPath2(path35, object4);
+          var index = -1, length = path35.length, lastIndex = length - 1, nested = object4;
+          while (nested != null && ++index < length) {
+            var key = toKey2(path35[index]), newValue = value;
+            if (key === "__proto__" || key === "constructor" || key === "prototype") {
+              return object4;
+            }
+            if (index != lastIndex) {
+              var objValue = nested[key];
+              newValue = customizer ? customizer(objValue, key, nested) : undefined2;
+              if (newValue === undefined2) {
+                newValue = isObject5(objValue) ? objValue : isIndex2(path35[index + 1]) ? [] : {};
+              }
+            }
+            assignValue(nested, key, newValue);
+            nested = nested[key];
+          }
+          return object4;
+        }
+        var baseSetData = !metaMap ? identity2 : function(func, data) {
+          metaMap.set(func, data);
+          return func;
+        };
+        var baseSetToString = !defineProperty2 ? identity2 : function(func, string5) {
+          return defineProperty2(func, "toString", {
+            "configurable": true,
+            "enumerable": false,
+            "value": constant(string5),
+            "writable": true
+          });
+        };
+        function baseShuffle(collection) {
+          return shuffleSelf(values(collection));
+        }
+        function baseSlice(array4, start, end) {
+          var index = -1, length = array4.length;
+          if (start < 0) {
+            start = -start > length ? 0 : length + start;
+          }
+          end = end > length ? length : end;
+          if (end < 0) {
+            end += length;
+          }
+          length = start > end ? 0 : end - start >>> 0;
+          start >>>= 0;
+          var result2 = Array2(length);
+          while (++index < length) {
+            result2[index] = array4[index + start];
+          }
+          return result2;
+        }
+        function baseSome(collection, predicate) {
+          var result2;
+          baseEach(collection, function(value, index, collection2) {
+            result2 = predicate(value, index, collection2);
+            return !result2;
+          });
+          return !!result2;
+        }
+        function baseSortedIndex(array4, value, retHighest) {
+          var low = 0, high = array4 == null ? low : array4.length;
+          if (typeof value == "number" && value === value && high <= HALF_MAX_ARRAY_LENGTH) {
+            while (low < high) {
+              var mid = low + high >>> 1, computed = array4[mid];
+              if (computed !== null && !isSymbol2(computed) && (retHighest ? computed <= value : computed < value)) {
+                low = mid + 1;
+              } else {
+                high = mid;
+              }
+            }
+            return high;
+          }
+          return baseSortedIndexBy(array4, value, identity2, retHighest);
+        }
+        function baseSortedIndexBy(array4, value, iteratee2, retHighest) {
+          var low = 0, high = array4 == null ? 0 : array4.length;
+          if (high === 0) {
+            return 0;
+          }
+          value = iteratee2(value);
+          var valIsNaN = value !== value, valIsNull = value === null, valIsSymbol = isSymbol2(value), valIsUndefined = value === undefined2;
+          while (low < high) {
+            var mid = nativeFloor((low + high) / 2), computed = iteratee2(array4[mid]), othIsDefined = computed !== undefined2, othIsNull = computed === null, othIsReflexive = computed === computed, othIsSymbol = isSymbol2(computed);
+            if (valIsNaN) {
+              var setLow = retHighest || othIsReflexive;
+            } else if (valIsUndefined) {
+              setLow = othIsReflexive && (retHighest || othIsDefined);
+            } else if (valIsNull) {
+              setLow = othIsReflexive && othIsDefined && (retHighest || !othIsNull);
+            } else if (valIsSymbol) {
+              setLow = othIsReflexive && othIsDefined && !othIsNull && (retHighest || !othIsSymbol);
+            } else if (othIsNull || othIsSymbol) {
+              setLow = false;
+            } else {
+              setLow = retHighest ? computed <= value : computed < value;
+            }
+            if (setLow) {
+              low = mid + 1;
+            } else {
+              high = mid;
+            }
+          }
+          return nativeMin(high, MAX_ARRAY_INDEX);
+        }
+        function baseSortedUniq(array4, iteratee2) {
+          var index = -1, length = array4.length, resIndex = 0, result2 = [];
+          while (++index < length) {
+            var value = array4[index], computed = iteratee2 ? iteratee2(value) : value;
+            if (!index || !eq2(computed, seen)) {
+              var seen = computed;
+              result2[resIndex++] = value === 0 ? 0 : value;
+            }
+          }
+          return result2;
+        }
+        function baseToNumber(value) {
+          if (typeof value == "number") {
+            return value;
+          }
+          if (isSymbol2(value)) {
+            return NAN;
+          }
+          return +value;
+        }
+        function baseToString2(value) {
+          if (typeof value == "string") {
+            return value;
+          }
+          if (isArray3(value)) {
+            return arrayMap2(value, baseToString2) + "";
+          }
+          if (isSymbol2(value)) {
+            return symbolToString2 ? symbolToString2.call(value) : "";
+          }
+          var result2 = value + "";
+          return result2 == "0" && 1 / value == -INFINITY4 ? "-0" : result2;
+        }
+        function baseUniq2(array4, iteratee2, comparator) {
+          var index = -1, includes2 = arrayIncludes2, length = array4.length, isCommon = true, result2 = [], seen = result2;
+          if (comparator) {
+            isCommon = false;
+            includes2 = arrayIncludesWith2;
+          } else if (length >= LARGE_ARRAY_SIZE3) {
+            var set4 = iteratee2 ? null : createSet2(array4);
+            if (set4) {
+              return setToArray2(set4);
+            }
+            isCommon = false;
+            includes2 = cacheHas2;
+            seen = new SetCache2();
+          } else {
+            seen = iteratee2 ? [] : result2;
+          }
+          outer:
+            while (++index < length) {
+              var value = array4[index], computed = iteratee2 ? iteratee2(value) : value;
+              value = comparator || value !== 0 ? value : 0;
+              if (isCommon && computed === computed) {
+                var seenIndex = seen.length;
+                while (seenIndex--) {
+                  if (seen[seenIndex] === computed) {
+                    continue outer;
+                  }
+                }
+                if (iteratee2) {
+                  seen.push(computed);
+                }
+                result2.push(value);
+              } else if (!includes2(seen, computed, comparator)) {
+                if (seen !== result2) {
+                  seen.push(computed);
+                }
+                result2.push(value);
+              }
+            }
+          return result2;
+        }
+        function baseUnset(object4, path35) {
+          path35 = castPath2(path35, object4);
+          var index = -1, length = path35.length;
+          if (!length) {
+            return true;
+          }
+          var isRootPrimitive = object4 == null || typeof object4 !== "object" && typeof object4 !== "function";
+          while (++index < length) {
+            var key = path35[index];
+            if (typeof key !== "string") {
+              continue;
+            }
+            if (key === "__proto__" && !hasOwnProperty11.call(object4, "__proto__")) {
+              return false;
+            }
+            if (key === "constructor" && index + 1 < length && typeof path35[index + 1] === "string" && path35[index + 1] === "prototype") {
+              if (isRootPrimitive && index === 0) {
+                continue;
+              }
+              return false;
+            }
+          }
+          var obj = parent(object4, path35);
+          return obj == null || delete obj[toKey2(last(path35))];
+        }
+        function baseUpdate(object4, path35, updater, customizer) {
+          return baseSet(object4, path35, updater(baseGet2(object4, path35)), customizer);
+        }
+        function baseWhile(array4, predicate, isDrop, fromRight) {
+          var length = array4.length, index = fromRight ? length : -1;
+          while ((fromRight ? index-- : ++index < length) && predicate(array4[index], index, array4)) {
+          }
+          return isDrop ? baseSlice(array4, fromRight ? 0 : index, fromRight ? index + 1 : length) : baseSlice(array4, fromRight ? index + 1 : 0, fromRight ? length : index);
+        }
+        function baseWrapperValue(value, actions) {
+          var result2 = value;
+          if (result2 instanceof LazyWrapper) {
+            result2 = result2.value();
+          }
+          return arrayReduce(actions, function(result3, action) {
+            return action.func.apply(action.thisArg, arrayPush2([result3], action.args));
+          }, result2);
+        }
+        function baseXor(arrays, iteratee2, comparator) {
+          var length = arrays.length;
+          if (length < 2) {
+            return length ? baseUniq2(arrays[0]) : [];
+          }
+          var index = -1, result2 = Array2(length);
+          while (++index < length) {
+            var array4 = arrays[index], othIndex = -1;
+            while (++othIndex < length) {
+              if (othIndex != index) {
+                result2[index] = baseDifference(result2[index] || array4, arrays[othIndex], iteratee2, comparator);
+              }
+            }
+          }
+          return baseUniq2(baseFlatten(result2, 1), iteratee2, comparator);
+        }
+        function baseZipObject(props, values2, assignFunc) {
+          var index = -1, length = props.length, valsLength = values2.length, result2 = {};
+          while (++index < length) {
+            var value = index < valsLength ? values2[index] : undefined2;
+            assignFunc(result2, props[index], value);
+          }
+          return result2;
+        }
+        function castArrayLikeObject(value) {
+          return isArrayLikeObject(value) ? value : [];
+        }
+        function castFunction(value) {
+          return typeof value == "function" ? value : identity2;
+        }
+        function castPath2(value, object4) {
+          if (isArray3(value)) {
+            return value;
+          }
+          return isKey2(value, object4) ? [value] : stringToPath2(toString4(value));
+        }
+        var castRest = baseRest;
+        function castSlice(array4, start, end) {
+          var length = array4.length;
+          end = end === undefined2 ? length : end;
+          return !start && end >= length ? array4 : baseSlice(array4, start, end);
+        }
+        var clearTimeout2 = ctxClearTimeout || function(id) {
+          return root2.clearTimeout(id);
+        };
+        function cloneBuffer(buffer, isDeep) {
+          if (isDeep) {
+            return buffer.slice();
+          }
+          var length = buffer.length, result2 = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
+          buffer.copy(result2);
+          return result2;
+        }
+        function cloneArrayBuffer(arrayBuffer) {
+          var result2 = new arrayBuffer.constructor(arrayBuffer.byteLength);
+          new Uint8Array3(result2).set(new Uint8Array3(arrayBuffer));
+          return result2;
+        }
+        function cloneDataView(dataView, isDeep) {
+          var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
+          return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
+        }
+        function cloneRegExp(regexp) {
+          var result2 = new regexp.constructor(regexp.source, reFlags.exec(regexp));
+          result2.lastIndex = regexp.lastIndex;
+          return result2;
+        }
+        function cloneSymbol(symbol30) {
+          return symbolValueOf2 ? Object2(symbolValueOf2.call(symbol30)) : {};
+        }
+        function cloneTypedArray(typedArray, isDeep) {
+          var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+          return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
+        }
+        function compareAscending(value, other) {
+          if (value !== other) {
+            var valIsDefined = value !== undefined2, valIsNull = value === null, valIsReflexive = value === value, valIsSymbol = isSymbol2(value);
+            var othIsDefined = other !== undefined2, othIsNull = other === null, othIsReflexive = other === other, othIsSymbol = isSymbol2(other);
+            if (!othIsNull && !othIsSymbol && !valIsSymbol && value > other || valIsSymbol && othIsDefined && othIsReflexive && !othIsNull && !othIsSymbol || valIsNull && othIsDefined && othIsReflexive || !valIsDefined && othIsReflexive || !valIsReflexive) {
+              return 1;
+            }
+            if (!valIsNull && !valIsSymbol && !othIsSymbol && value < other || othIsSymbol && valIsDefined && valIsReflexive && !valIsNull && !valIsSymbol || othIsNull && valIsDefined && valIsReflexive || !othIsDefined && valIsReflexive || !othIsReflexive) {
+              return -1;
+            }
+          }
+          return 0;
+        }
+        function compareMultiple(object4, other, orders) {
+          var index = -1, objCriteria = object4.criteria, othCriteria = other.criteria, length = objCriteria.length, ordersLength = orders.length;
+          while (++index < length) {
+            var result2 = compareAscending(objCriteria[index], othCriteria[index]);
+            if (result2) {
+              if (index >= ordersLength) {
+                return result2;
+              }
+              var order = orders[index];
+              return result2 * (order == "desc" ? -1 : 1);
+            }
+          }
+          return object4.index - other.index;
+        }
+        function composeArgs(args, partials, holders, isCurried) {
+          var argsIndex = -1, argsLength = args.length, holdersLength = holders.length, leftIndex = -1, leftLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result2 = Array2(leftLength + rangeLength), isUncurried = !isCurried;
+          while (++leftIndex < leftLength) {
+            result2[leftIndex] = partials[leftIndex];
+          }
+          while (++argsIndex < holdersLength) {
+            if (isUncurried || argsIndex < argsLength) {
+              result2[holders[argsIndex]] = args[argsIndex];
+            }
+          }
+          while (rangeLength--) {
+            result2[leftIndex++] = args[argsIndex++];
+          }
+          return result2;
+        }
+        function composeArgsRight(args, partials, holders, isCurried) {
+          var argsIndex = -1, argsLength = args.length, holdersIndex = -1, holdersLength = holders.length, rightIndex = -1, rightLength = partials.length, rangeLength = nativeMax(argsLength - holdersLength, 0), result2 = Array2(rangeLength + rightLength), isUncurried = !isCurried;
+          while (++argsIndex < rangeLength) {
+            result2[argsIndex] = args[argsIndex];
+          }
+          var offset = argsIndex;
+          while (++rightIndex < rightLength) {
+            result2[offset + rightIndex] = partials[rightIndex];
+          }
+          while (++holdersIndex < holdersLength) {
+            if (isUncurried || argsIndex < argsLength) {
+              result2[offset + holders[holdersIndex]] = args[argsIndex++];
+            }
+          }
+          return result2;
+        }
+        function copyArray(source, array4) {
+          var index = -1, length = source.length;
+          array4 || (array4 = Array2(length));
+          while (++index < length) {
+            array4[index] = source[index];
+          }
+          return array4;
+        }
+        function copyObject(source, props, object4, customizer) {
+          var isNew = !object4;
+          object4 || (object4 = {});
+          var index = -1, length = props.length;
+          while (++index < length) {
+            var key = props[index];
+            var newValue = customizer ? customizer(object4[key], source[key], key, object4, source) : undefined2;
+            if (newValue === undefined2) {
+              newValue = source[key];
+            }
+            if (isNew) {
+              baseAssignValue(object4, key, newValue);
+            } else {
+              assignValue(object4, key, newValue);
+            }
+          }
+          return object4;
+        }
+        function copySymbols(source, object4) {
+          return copyObject(source, getSymbols2(source), object4);
+        }
+        function copySymbolsIn(source, object4) {
+          return copyObject(source, getSymbolsIn(source), object4);
+        }
+        function createAggregator(setter, initializer4) {
+          return function(collection, iteratee2) {
+            var func = isArray3(collection) ? arrayAggregator : baseAggregator, accumulator = initializer4 ? initializer4() : {};
+            return func(collection, setter, getIteratee(iteratee2, 2), accumulator);
+          };
+        }
+        function createAssigner(assigner) {
+          return baseRest(function(object4, sources) {
+            var index = -1, length = sources.length, customizer = length > 1 ? sources[length - 1] : undefined2, guard = length > 2 ? sources[2] : undefined2;
+            customizer = assigner.length > 3 && typeof customizer == "function" ? (length--, customizer) : undefined2;
+            if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+              customizer = length < 3 ? undefined2 : customizer;
+              length = 1;
+            }
+            object4 = Object2(object4);
+            while (++index < length) {
+              var source = sources[index];
+              if (source) {
+                assigner(object4, source, index, customizer);
+              }
+            }
+            return object4;
+          });
+        }
+        function createBaseEach(eachFunc, fromRight) {
+          return function(collection, iteratee2) {
+            if (collection == null) {
+              return collection;
+            }
+            if (!isArrayLike2(collection)) {
+              return eachFunc(collection, iteratee2);
+            }
+            var length = collection.length, index = fromRight ? length : -1, iterable = Object2(collection);
+            while (fromRight ? index-- : ++index < length) {
+              if (iteratee2(iterable[index], index, iterable) === false) {
+                break;
+              }
+            }
+            return collection;
+          };
+        }
+        function createBaseFor(fromRight) {
+          return function(object4, iteratee2, keysFunc) {
+            var index = -1, iterable = Object2(object4), props = keysFunc(object4), length = props.length;
+            while (length--) {
+              var key = props[fromRight ? length : ++index];
+              if (iteratee2(iterable[key], key, iterable) === false) {
+                break;
+              }
+            }
+            return object4;
+          };
+        }
+        function createBind(func, bitmask, thisArg) {
+          var isBind = bitmask & WRAP_BIND_FLAG, Ctor = createCtor(func);
+          function wrapper() {
+            var fn = this && this !== root2 && this instanceof wrapper ? Ctor : func;
+            return fn.apply(isBind ? thisArg : this, arguments);
+          }
+          return wrapper;
+        }
+        function createCaseFirst(methodName) {
+          return function(string5) {
+            string5 = toString4(string5);
+            var strSymbols = hasUnicode(string5) ? stringToArray(string5) : undefined2;
+            var chr = strSymbols ? strSymbols[0] : string5.charAt(0);
+            var trailing = strSymbols ? castSlice(strSymbols, 1).join("") : string5.slice(1);
+            return chr[methodName]() + trailing;
+          };
+        }
+        function createCompounder(callback) {
+          return function(string5) {
+            return arrayReduce(words(deburr(string5).replace(reApos, "")), callback, "");
+          };
+        }
+        function createCtor(Ctor) {
+          return function() {
+            var args = arguments;
+            switch (args.length) {
+              case 0:
+                return new Ctor();
+              case 1:
+                return new Ctor(args[0]);
+              case 2:
+                return new Ctor(args[0], args[1]);
+              case 3:
+                return new Ctor(args[0], args[1], args[2]);
+              case 4:
+                return new Ctor(args[0], args[1], args[2], args[3]);
+              case 5:
+                return new Ctor(args[0], args[1], args[2], args[3], args[4]);
+              case 6:
+                return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5]);
+              case 7:
+                return new Ctor(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+            }
+            var thisBinding = baseCreate(Ctor.prototype), result2 = Ctor.apply(thisBinding, args);
+            return isObject5(result2) ? result2 : thisBinding;
+          };
+        }
+        function createCurry(func, bitmask, arity) {
+          var Ctor = createCtor(func);
+          function wrapper() {
+            var length = arguments.length, args = Array2(length), index = length, placeholder = getHolder(wrapper);
+            while (index--) {
+              args[index] = arguments[index];
+            }
+            var holders = length < 3 && args[0] !== placeholder && args[length - 1] !== placeholder ? [] : replaceHolders(args, placeholder);
+            length -= holders.length;
+            if (length < arity) {
+              return createRecurry(
+                func,
+                bitmask,
+                createHybrid,
+                wrapper.placeholder,
+                undefined2,
+                args,
+                holders,
+                undefined2,
+                undefined2,
+                arity - length
+              );
+            }
+            var fn = this && this !== root2 && this instanceof wrapper ? Ctor : func;
+            return apply(fn, this, args);
+          }
+          return wrapper;
+        }
+        function createFind(findIndexFunc) {
+          return function(collection, predicate, fromIndex) {
+            var iterable = Object2(collection);
+            if (!isArrayLike2(collection)) {
+              var iteratee2 = getIteratee(predicate, 3);
+              collection = keys2(collection);
+              predicate = function(key) {
+                return iteratee2(iterable[key], key, iterable);
+              };
+            }
+            var index = findIndexFunc(collection, predicate, fromIndex);
+            return index > -1 ? iterable[iteratee2 ? collection[index] : index] : undefined2;
+          };
+        }
+        function createFlow(fromRight) {
+          return flatRest(function(funcs) {
+            var length = funcs.length, index = length, prereq = LodashWrapper.prototype.thru;
+            if (fromRight) {
+              funcs.reverse();
+            }
+            while (index--) {
+              var func = funcs[index];
+              if (typeof func != "function") {
+                throw new TypeError2(FUNC_ERROR_TEXT2);
+              }
+              if (prereq && !wrapper && getFuncName(func) == "wrapper") {
+                var wrapper = new LodashWrapper([], true);
+              }
+            }
+            index = wrapper ? index : length;
+            while (++index < length) {
+              func = funcs[index];
+              var funcName = getFuncName(func), data = funcName == "wrapper" ? getData(func) : undefined2;
+              if (data && isLaziable(data[0]) && data[1] == (WRAP_ARY_FLAG | WRAP_CURRY_FLAG | WRAP_PARTIAL_FLAG | WRAP_REARG_FLAG) && !data[4].length && data[9] == 1) {
+                wrapper = wrapper[getFuncName(data[0])].apply(wrapper, data[3]);
+              } else {
+                wrapper = func.length == 1 && isLaziable(func) ? wrapper[funcName]() : wrapper.thru(func);
+              }
+            }
+            return function() {
+              var args = arguments, value = args[0];
+              if (wrapper && args.length == 1 && isArray3(value)) {
+                return wrapper.plant(value).value();
+              }
+              var index2 = 0, result2 = length ? funcs[index2].apply(this, args) : value;
+              while (++index2 < length) {
+                result2 = funcs[index2].call(this, result2);
+              }
+              return result2;
+            };
+          });
+        }
+        function createHybrid(func, bitmask, thisArg, partials, holders, partialsRight, holdersRight, argPos, ary2, arity) {
+          var isAry = bitmask & WRAP_ARY_FLAG, isBind = bitmask & WRAP_BIND_FLAG, isBindKey = bitmask & WRAP_BIND_KEY_FLAG, isCurried = bitmask & (WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG), isFlip = bitmask & WRAP_FLIP_FLAG, Ctor = isBindKey ? undefined2 : createCtor(func);
+          function wrapper() {
+            var length = arguments.length, args = Array2(length), index = length;
+            while (index--) {
+              args[index] = arguments[index];
+            }
+            if (isCurried) {
+              var placeholder = getHolder(wrapper), holdersCount = countHolders(args, placeholder);
+            }
+            if (partials) {
+              args = composeArgs(args, partials, holders, isCurried);
+            }
+            if (partialsRight) {
+              args = composeArgsRight(args, partialsRight, holdersRight, isCurried);
+            }
+            length -= holdersCount;
+            if (isCurried && length < arity) {
+              var newHolders = replaceHolders(args, placeholder);
+              return createRecurry(
+                func,
+                bitmask,
+                createHybrid,
+                wrapper.placeholder,
+                thisArg,
+                args,
+                newHolders,
+                argPos,
+                ary2,
+                arity - length
+              );
+            }
+            var thisBinding = isBind ? thisArg : this, fn = isBindKey ? thisBinding[func] : func;
+            length = args.length;
+            if (argPos) {
+              args = reorder(args, argPos);
+            } else if (isFlip && length > 1) {
+              args.reverse();
+            }
+            if (isAry && ary2 < length) {
+              args.length = ary2;
+            }
+            if (this && this !== root2 && this instanceof wrapper) {
+              fn = Ctor || createCtor(fn);
+            }
+            return fn.apply(thisBinding, args);
+          }
+          return wrapper;
+        }
+        function createInverter(setter, toIteratee) {
+          return function(object4, iteratee2) {
+            return baseInverter(object4, setter, toIteratee(iteratee2), {});
+          };
+        }
+        function createMathOperation(operator, defaultValue) {
+          return function(value, other) {
+            var result2;
+            if (value === undefined2 && other === undefined2) {
+              return defaultValue;
+            }
+            if (value !== undefined2) {
+              result2 = value;
+            }
+            if (other !== undefined2) {
+              if (result2 === undefined2) {
+                return other;
+              }
+              if (typeof value == "string" || typeof other == "string") {
+                value = baseToString2(value);
+                other = baseToString2(other);
+              } else {
+                value = baseToNumber(value);
+                other = baseToNumber(other);
+              }
+              result2 = operator(value, other);
+            }
+            return result2;
+          };
+        }
+        function createOver(arrayFunc) {
+          return flatRest(function(iteratees) {
+            iteratees = arrayMap2(iteratees, baseUnary2(getIteratee()));
+            return baseRest(function(args) {
+              var thisArg = this;
+              return arrayFunc(iteratees, function(iteratee2) {
+                return apply(iteratee2, thisArg, args);
+              });
+            });
+          });
+        }
+        function createPadding(length, chars) {
+          chars = chars === undefined2 ? " " : baseToString2(chars);
+          var charsLength = chars.length;
+          if (charsLength < 2) {
+            return charsLength ? baseRepeat(chars, length) : chars;
+          }
+          var result2 = baseRepeat(chars, nativeCeil(length / stringSize(chars)));
+          return hasUnicode(chars) ? castSlice(stringToArray(result2), 0, length).join("") : result2.slice(0, length);
+        }
+        function createPartial(func, bitmask, thisArg, partials) {
+          var isBind = bitmask & WRAP_BIND_FLAG, Ctor = createCtor(func);
+          function wrapper() {
+            var argsIndex = -1, argsLength = arguments.length, leftIndex = -1, leftLength = partials.length, args = Array2(leftLength + argsLength), fn = this && this !== root2 && this instanceof wrapper ? Ctor : func;
+            while (++leftIndex < leftLength) {
+              args[leftIndex] = partials[leftIndex];
+            }
+            while (argsLength--) {
+              args[leftIndex++] = arguments[++argsIndex];
+            }
+            return apply(fn, isBind ? thisArg : this, args);
+          }
+          return wrapper;
+        }
+        function createRange(fromRight) {
+          return function(start, end, step) {
+            if (step && typeof step != "number" && isIterateeCall(start, end, step)) {
+              end = step = undefined2;
+            }
+            start = toFinite(start);
+            if (end === undefined2) {
+              end = start;
+              start = 0;
+            } else {
+              end = toFinite(end);
+            }
+            step = step === undefined2 ? start < end ? 1 : -1 : toFinite(step);
+            return baseRange(start, end, step, fromRight);
+          };
+        }
+        function createRelationalOperation(operator) {
+          return function(value, other) {
+            if (!(typeof value == "string" && typeof other == "string")) {
+              value = toNumber(value);
+              other = toNumber(other);
+            }
+            return operator(value, other);
+          };
+        }
+        function createRecurry(func, bitmask, wrapFunc, placeholder, thisArg, partials, holders, argPos, ary2, arity) {
+          var isCurry = bitmask & WRAP_CURRY_FLAG, newHolders = isCurry ? holders : undefined2, newHoldersRight = isCurry ? undefined2 : holders, newPartials = isCurry ? partials : undefined2, newPartialsRight = isCurry ? undefined2 : partials;
+          bitmask |= isCurry ? WRAP_PARTIAL_FLAG : WRAP_PARTIAL_RIGHT_FLAG;
+          bitmask &= ~(isCurry ? WRAP_PARTIAL_RIGHT_FLAG : WRAP_PARTIAL_FLAG);
+          if (!(bitmask & WRAP_CURRY_BOUND_FLAG)) {
+            bitmask &= ~(WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG);
+          }
+          var newData = [
+            func,
+            bitmask,
+            thisArg,
+            newPartials,
+            newHolders,
+            newPartialsRight,
+            newHoldersRight,
+            argPos,
+            ary2,
+            arity
+          ];
+          var result2 = wrapFunc.apply(undefined2, newData);
+          if (isLaziable(func)) {
+            setData(result2, newData);
+          }
+          result2.placeholder = placeholder;
+          return setWrapToString(result2, func, bitmask);
+        }
+        function createRound(methodName) {
+          var func = Math2[methodName];
+          return function(number6, precision) {
+            number6 = toNumber(number6);
+            precision = precision == null ? 0 : nativeMin(toInteger(precision), 292);
+            if (precision && nativeIsFinite(number6)) {
+              var pair = (toString4(number6) + "e").split("e"), value = func(pair[0] + "e" + (+pair[1] + precision));
+              pair = (toString4(value) + "e").split("e");
+              return +(pair[0] + "e" + (+pair[1] - precision));
+            }
+            return func(number6);
+          };
+        }
+        var createSet2 = !(Set3 && 1 / setToArray2(new Set3([, -0]))[1] == INFINITY4) ? noop4 : function(values2) {
+          return new Set3(values2);
+        };
+        function createToPairs(keysFunc) {
+          return function(object4) {
+            var tag = getTag2(object4);
+            if (tag == mapTag4) {
+              return mapToArray2(object4);
+            }
+            if (tag == setTag4) {
+              return setToPairs(object4);
+            }
+            return baseToPairs(object4, keysFunc(object4));
+          };
+        }
+        function createWrap(func, bitmask, thisArg, partials, holders, argPos, ary2, arity) {
+          var isBindKey = bitmask & WRAP_BIND_KEY_FLAG;
+          if (!isBindKey && typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          var length = partials ? partials.length : 0;
+          if (!length) {
+            bitmask &= ~(WRAP_PARTIAL_FLAG | WRAP_PARTIAL_RIGHT_FLAG);
+            partials = holders = undefined2;
+          }
+          ary2 = ary2 === undefined2 ? ary2 : nativeMax(toInteger(ary2), 0);
+          arity = arity === undefined2 ? arity : toInteger(arity);
+          length -= holders ? holders.length : 0;
+          if (bitmask & WRAP_PARTIAL_RIGHT_FLAG) {
+            var partialsRight = partials, holdersRight = holders;
+            partials = holders = undefined2;
+          }
+          var data = isBindKey ? undefined2 : getData(func);
+          var newData = [
+            func,
+            bitmask,
+            thisArg,
+            partials,
+            holders,
+            partialsRight,
+            holdersRight,
+            argPos,
+            ary2,
+            arity
+          ];
+          if (data) {
+            mergeData(newData, data);
+          }
+          func = newData[0];
+          bitmask = newData[1];
+          thisArg = newData[2];
+          partials = newData[3];
+          holders = newData[4];
+          arity = newData[9] = newData[9] === undefined2 ? isBindKey ? 0 : func.length : nativeMax(newData[9] - length, 0);
+          if (!arity && bitmask & (WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG)) {
+            bitmask &= ~(WRAP_CURRY_FLAG | WRAP_CURRY_RIGHT_FLAG);
+          }
+          if (!bitmask || bitmask == WRAP_BIND_FLAG) {
+            var result2 = createBind(func, bitmask, thisArg);
+          } else if (bitmask == WRAP_CURRY_FLAG || bitmask == WRAP_CURRY_RIGHT_FLAG) {
+            result2 = createCurry(func, bitmask, arity);
+          } else if ((bitmask == WRAP_PARTIAL_FLAG || bitmask == (WRAP_BIND_FLAG | WRAP_PARTIAL_FLAG)) && !holders.length) {
+            result2 = createPartial(func, bitmask, thisArg, partials);
+          } else {
+            result2 = createHybrid.apply(undefined2, newData);
+          }
+          var setter = data ? baseSetData : setData;
+          return setWrapToString(setter(result2, newData), func, bitmask);
+        }
+        function customDefaultsAssignIn(objValue, srcValue, key, object4) {
+          if (objValue === undefined2 || eq2(objValue, objectProto13[key]) && !hasOwnProperty11.call(object4, key)) {
+            return srcValue;
+          }
+          return objValue;
+        }
+        function customDefaultsMerge(objValue, srcValue, key, object4, source, stack) {
+          if (isObject5(objValue) && isObject5(srcValue)) {
+            stack.set(srcValue, objValue);
+            baseMerge(objValue, srcValue, undefined2, customDefaultsMerge, stack);
+            stack["delete"](srcValue);
+          }
+          return objValue;
+        }
+        function customOmitClone(value) {
+          return isPlainObject4(value) ? undefined2 : value;
+        }
+        function equalArrays2(array4, other, bitmask, customizer, equalFunc, stack) {
+          var isPartial = bitmask & COMPARE_PARTIAL_FLAG7, arrLength = array4.length, othLength = other.length;
+          if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+            return false;
+          }
+          var arrStacked = stack.get(array4);
+          var othStacked = stack.get(other);
+          if (arrStacked && othStacked) {
+            return arrStacked == other && othStacked == array4;
+          }
+          var index = -1, result2 = true, seen = bitmask & COMPARE_UNORDERED_FLAG5 ? new SetCache2() : undefined2;
+          stack.set(array4, other);
+          stack.set(other, array4);
+          while (++index < arrLength) {
+            var arrValue = array4[index], othValue = other[index];
+            if (customizer) {
+              var compared = isPartial ? customizer(othValue, arrValue, index, other, array4, stack) : customizer(arrValue, othValue, index, array4, other, stack);
+            }
+            if (compared !== undefined2) {
+              if (compared) {
+                continue;
+              }
+              result2 = false;
+              break;
+            }
+            if (seen) {
+              if (!arraySome2(other, function(othValue2, othIndex) {
+                if (!cacheHas2(seen, othIndex) && (arrValue === othValue2 || equalFunc(arrValue, othValue2, bitmask, customizer, stack))) {
+                  return seen.push(othIndex);
+                }
+              })) {
+                result2 = false;
+                break;
+              }
+            } else if (!(arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+              result2 = false;
+              break;
+            }
+          }
+          stack["delete"](array4);
+          stack["delete"](other);
+          return result2;
+        }
+        function equalByTag2(object4, other, tag, bitmask, customizer, equalFunc, stack) {
+          switch (tag) {
+            case dataViewTag4:
+              if (object4.byteLength != other.byteLength || object4.byteOffset != other.byteOffset) {
+                return false;
+              }
+              object4 = object4.buffer;
+              other = other.buffer;
+            case arrayBufferTag3:
+              if (object4.byteLength != other.byteLength || !equalFunc(new Uint8Array3(object4), new Uint8Array3(other))) {
+                return false;
+              }
+              return true;
+            case boolTag3:
+            case dateTag3:
+            case numberTag3:
+              return eq2(+object4, +other);
+            case errorTag3:
+              return object4.name == other.name && object4.message == other.message;
+            case regexpTag3:
+            case stringTag3:
+              return object4 == other + "";
+            case mapTag4:
+              var convert = mapToArray2;
+            case setTag4:
+              var isPartial = bitmask & COMPARE_PARTIAL_FLAG7;
+              convert || (convert = setToArray2);
+              if (object4.size != other.size && !isPartial) {
+                return false;
+              }
+              var stacked = stack.get(object4);
+              if (stacked) {
+                return stacked == other;
+              }
+              bitmask |= COMPARE_UNORDERED_FLAG5;
+              stack.set(object4, other);
+              var result2 = equalArrays2(convert(object4), convert(other), bitmask, customizer, equalFunc, stack);
+              stack["delete"](object4);
+              return result2;
+            case symbolTag3:
+              if (symbolValueOf2) {
+                return symbolValueOf2.call(object4) == symbolValueOf2.call(other);
+              }
+          }
+          return false;
+        }
+        function equalObjects2(object4, other, bitmask, customizer, equalFunc, stack) {
+          var isPartial = bitmask & COMPARE_PARTIAL_FLAG7, objProps = getAllKeys2(object4), objLength = objProps.length, othProps = getAllKeys2(other), othLength = othProps.length;
+          if (objLength != othLength && !isPartial) {
+            return false;
+          }
+          var index = objLength;
+          while (index--) {
+            var key = objProps[index];
+            if (!(isPartial ? key in other : hasOwnProperty11.call(other, key))) {
+              return false;
+            }
+          }
+          var objStacked = stack.get(object4);
+          var othStacked = stack.get(other);
+          if (objStacked && othStacked) {
+            return objStacked == other && othStacked == object4;
+          }
+          var result2 = true;
+          stack.set(object4, other);
+          stack.set(other, object4);
+          var skipCtor = isPartial;
+          while (++index < objLength) {
+            key = objProps[index];
+            var objValue = object4[key], othValue = other[key];
+            if (customizer) {
+              var compared = isPartial ? customizer(othValue, objValue, key, other, object4, stack) : customizer(objValue, othValue, key, object4, other, stack);
+            }
+            if (!(compared === undefined2 ? objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack) : compared)) {
+              result2 = false;
+              break;
+            }
+            skipCtor || (skipCtor = key == "constructor");
+          }
+          if (result2 && !skipCtor) {
+            var objCtor = object4.constructor, othCtor = other.constructor;
+            if (objCtor != othCtor && ("constructor" in object4 && "constructor" in other) && !(typeof objCtor == "function" && objCtor instanceof objCtor && typeof othCtor == "function" && othCtor instanceof othCtor)) {
+              result2 = false;
+            }
+          }
+          stack["delete"](object4);
+          stack["delete"](other);
+          return result2;
+        }
+        function flatRest(func) {
+          return setToString(overRest(func, undefined2, flatten), func + "");
+        }
+        function getAllKeys2(object4) {
+          return baseGetAllKeys2(object4, keys2, getSymbols2);
+        }
+        function getAllKeysIn(object4) {
+          return baseGetAllKeys2(object4, keysIn, getSymbolsIn);
+        }
+        var getData = !metaMap ? noop4 : function(func) {
+          return metaMap.get(func);
+        };
+        function getFuncName(func) {
+          var result2 = func.name + "", array4 = realNames[result2], length = hasOwnProperty11.call(realNames, result2) ? array4.length : 0;
+          while (length--) {
+            var data = array4[length], otherFunc = data.func;
+            if (otherFunc == null || otherFunc == func) {
+              return data.name;
+            }
+          }
+          return result2;
+        }
+        function getHolder(func) {
+          var object4 = hasOwnProperty11.call(lodash, "placeholder") ? lodash : func;
+          return object4.placeholder;
+        }
+        function getIteratee() {
+          var result2 = lodash.iteratee || iteratee;
+          result2 = result2 === iteratee ? baseIteratee2 : result2;
+          return arguments.length ? result2(arguments[0], arguments[1]) : result2;
+        }
+        function getMapData2(map4, key) {
+          var data = map4.__data__;
+          return isKeyable2(key) ? data[typeof key == "string" ? "string" : "hash"] : data.map;
+        }
+        function getMatchData2(object4) {
+          var result2 = keys2(object4), length = result2.length;
+          while (length--) {
+            var key = result2[length], value = object4[key];
+            result2[length] = [key, value, isStrictComparable2(value)];
+          }
+          return result2;
+        }
+        function getNative2(object4, key) {
+          var value = getValue2(object4, key);
+          return baseIsNative2(value) ? value : undefined2;
+        }
+        function getRawTag2(value) {
+          var isOwn = hasOwnProperty11.call(value, symToStringTag3), tag = value[symToStringTag3];
+          try {
+            value[symToStringTag3] = undefined2;
+            var unmasked = true;
+          } catch (e) {
+          }
+          var result2 = nativeObjectToString3.call(value);
+          if (unmasked) {
+            if (isOwn) {
+              value[symToStringTag3] = tag;
+            } else {
+              delete value[symToStringTag3];
+            }
+          }
+          return result2;
+        }
+        var getSymbols2 = !nativeGetSymbols2 ? stubArray2 : function(object4) {
+          if (object4 == null) {
+            return [];
+          }
+          object4 = Object2(object4);
+          return arrayFilter2(nativeGetSymbols2(object4), function(symbol30) {
+            return propertyIsEnumerable3.call(object4, symbol30);
+          });
+        };
+        var getSymbolsIn = !nativeGetSymbols2 ? stubArray2 : function(object4) {
+          var result2 = [];
+          while (object4) {
+            arrayPush2(result2, getSymbols2(object4));
+            object4 = getPrototype(object4);
+          }
+          return result2;
+        };
+        var getTag2 = baseGetTag2;
+        if (DataView3 && getTag2(new DataView3(new ArrayBuffer(1))) != dataViewTag4 || Map3 && getTag2(new Map3()) != mapTag4 || Promise3 && getTag2(Promise3.resolve()) != promiseTag2 || Set3 && getTag2(new Set3()) != setTag4 || WeakMap3 && getTag2(new WeakMap3()) != weakMapTag3) {
+          getTag2 = function(value) {
+            var result2 = baseGetTag2(value), Ctor = result2 == objectTag4 ? value.constructor : undefined2, ctorString = Ctor ? toSource2(Ctor) : "";
+            if (ctorString) {
+              switch (ctorString) {
+                case dataViewCtorString2:
+                  return dataViewTag4;
+                case mapCtorString2:
+                  return mapTag4;
+                case promiseCtorString2:
+                  return promiseTag2;
+                case setCtorString2:
+                  return setTag4;
+                case weakMapCtorString2:
+                  return weakMapTag3;
+              }
+            }
+            return result2;
+          };
+        }
+        function getView(start, end, transforms) {
+          var index = -1, length = transforms.length;
+          while (++index < length) {
+            var data = transforms[index], size2 = data.size;
+            switch (data.type) {
+              case "drop":
+                start += size2;
+                break;
+              case "dropRight":
+                end -= size2;
+                break;
+              case "take":
+                end = nativeMin(end, start + size2);
+                break;
+              case "takeRight":
+                start = nativeMax(start, end - size2);
+                break;
+            }
+          }
+          return { "start": start, "end": end };
+        }
+        function getWrapDetails(source) {
+          var match = source.match(reWrapDetails);
+          return match ? match[1].split(reSplitDetails) : [];
+        }
+        function hasPath2(object4, path35, hasFunc) {
+          path35 = castPath2(path35, object4);
+          var index = -1, length = path35.length, result2 = false;
+          while (++index < length) {
+            var key = toKey2(path35[index]);
+            if (!(result2 = object4 != null && hasFunc(object4, key))) {
+              break;
+            }
+            object4 = object4[key];
+          }
+          if (result2 || ++index != length) {
+            return result2;
+          }
+          length = object4 == null ? 0 : object4.length;
+          return !!length && isLength2(length) && isIndex2(key, length) && (isArray3(object4) || isArguments2(object4));
+        }
+        function initCloneArray(array4) {
+          var length = array4.length, result2 = new array4.constructor(length);
+          if (length && typeof array4[0] == "string" && hasOwnProperty11.call(array4, "index")) {
+            result2.index = array4.index;
+            result2.input = array4.input;
+          }
+          return result2;
+        }
+        function initCloneObject(object4) {
+          return typeof object4.constructor == "function" && !isPrototype2(object4) ? baseCreate(getPrototype(object4)) : {};
+        }
+        function initCloneByTag(object4, tag, isDeep) {
+          var Ctor = object4.constructor;
+          switch (tag) {
+            case arrayBufferTag3:
+              return cloneArrayBuffer(object4);
+            case boolTag3:
+            case dateTag3:
+              return new Ctor(+object4);
+            case dataViewTag4:
+              return cloneDataView(object4, isDeep);
+            case float32Tag2:
+            case float64Tag2:
+            case int8Tag2:
+            case int16Tag2:
+            case int32Tag2:
+            case uint8Tag2:
+            case uint8ClampedTag2:
+            case uint16Tag2:
+            case uint32Tag2:
+              return cloneTypedArray(object4, isDeep);
+            case mapTag4:
+              return new Ctor();
+            case numberTag3:
+            case stringTag3:
+              return new Ctor(object4);
+            case regexpTag3:
+              return cloneRegExp(object4);
+            case setTag4:
+              return new Ctor();
+            case symbolTag3:
+              return cloneSymbol(object4);
+          }
+        }
+        function insertWrapDetails(source, details) {
+          var length = details.length;
+          if (!length) {
+            return source;
+          }
+          var lastIndex = length - 1;
+          details[lastIndex] = (length > 1 ? "& " : "") + details[lastIndex];
+          details = details.join(length > 2 ? ", " : " ");
+          return source.replace(reWrapComment, "{\n/* [wrapped with " + details + "] */\n");
+        }
+        function isFlattenable(value) {
+          return isArray3(value) || isArguments2(value) || !!(spreadableSymbol && value && value[spreadableSymbol]);
+        }
+        function isIndex2(value, length) {
+          var type = typeof value;
+          length = length == null ? MAX_SAFE_INTEGER3 : length;
+          return !!length && (type == "number" || type != "symbol" && reIsUint2.test(value)) && (value > -1 && value % 1 == 0 && value < length);
+        }
+        function isIterateeCall(value, index, object4) {
+          if (!isObject5(object4)) {
+            return false;
+          }
+          var type = typeof index;
+          if (type == "number" ? isArrayLike2(object4) && isIndex2(index, object4.length) : type == "string" && index in object4) {
+            return eq2(object4[index], value);
+          }
+          return false;
+        }
+        function isKey2(value, object4) {
+          if (isArray3(value)) {
+            return false;
+          }
+          var type = typeof value;
+          if (type == "number" || type == "symbol" || type == "boolean" || value == null || isSymbol2(value)) {
+            return true;
+          }
+          return reIsPlainProp2.test(value) || !reIsDeepProp2.test(value) || object4 != null && value in Object2(object4);
+        }
+        function isKeyable2(value) {
+          var type = typeof value;
+          return type == "string" || type == "number" || type == "symbol" || type == "boolean" ? value !== "__proto__" : value === null;
+        }
+        function isLaziable(func) {
+          var funcName = getFuncName(func), other = lodash[funcName];
+          if (typeof other != "function" || !(funcName in LazyWrapper.prototype)) {
+            return false;
+          }
+          if (func === other) {
+            return true;
+          }
+          var data = getData(other);
+          return !!data && func === data[0];
+        }
+        function isMasked2(func) {
+          return !!maskSrcKey2 && maskSrcKey2 in func;
+        }
+        var isMaskable = coreJsData2 ? isFunction4 : stubFalse2;
+        function isPrototype2(value) {
+          var Ctor = value && value.constructor, proto = typeof Ctor == "function" && Ctor.prototype || objectProto13;
+          return value === proto;
+        }
+        function isStrictComparable2(value) {
+          return value === value && !isObject5(value);
+        }
+        function matchesStrictComparable2(key, srcValue) {
+          return function(object4) {
+            if (object4 == null) {
+              return false;
+            }
+            return object4[key] === srcValue && (srcValue !== undefined2 || key in Object2(object4));
+          };
+        }
+        function memoizeCapped2(func) {
+          var result2 = memoize2(func, function(key) {
+            if (cache.size === MAX_MEMOIZE_SIZE2) {
+              cache.clear();
+            }
+            return key;
+          });
+          var cache = result2.cache;
+          return result2;
+        }
+        function mergeData(data, source) {
+          var bitmask = data[1], srcBitmask = source[1], newBitmask = bitmask | srcBitmask, isCommon = newBitmask < (WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG | WRAP_ARY_FLAG);
+          var isCombo = srcBitmask == WRAP_ARY_FLAG && bitmask == WRAP_CURRY_FLAG || srcBitmask == WRAP_ARY_FLAG && bitmask == WRAP_REARG_FLAG && data[7].length <= source[8] || srcBitmask == (WRAP_ARY_FLAG | WRAP_REARG_FLAG) && source[7].length <= source[8] && bitmask == WRAP_CURRY_FLAG;
+          if (!(isCommon || isCombo)) {
+            return data;
+          }
+          if (srcBitmask & WRAP_BIND_FLAG) {
+            data[2] = source[2];
+            newBitmask |= bitmask & WRAP_BIND_FLAG ? 0 : WRAP_CURRY_BOUND_FLAG;
+          }
+          var value = source[3];
+          if (value) {
+            var partials = data[3];
+            data[3] = partials ? composeArgs(partials, value, source[4]) : value;
+            data[4] = partials ? replaceHolders(data[3], PLACEHOLDER) : source[4];
+          }
+          value = source[5];
+          if (value) {
+            partials = data[5];
+            data[5] = partials ? composeArgsRight(partials, value, source[6]) : value;
+            data[6] = partials ? replaceHolders(data[5], PLACEHOLDER) : source[6];
+          }
+          value = source[7];
+          if (value) {
+            data[7] = value;
+          }
+          if (srcBitmask & WRAP_ARY_FLAG) {
+            data[8] = data[8] == null ? source[8] : nativeMin(data[8], source[8]);
+          }
+          if (data[9] == null) {
+            data[9] = source[9];
+          }
+          data[0] = source[0];
+          data[1] = newBitmask;
+          return data;
+        }
+        function nativeKeysIn(object4) {
+          var result2 = [];
+          if (object4 != null) {
+            for (var key in Object2(object4)) {
+              result2.push(key);
+            }
+          }
+          return result2;
+        }
+        function objectToString2(value) {
+          return nativeObjectToString3.call(value);
+        }
+        function overRest(func, start, transform9) {
+          start = nativeMax(start === undefined2 ? func.length - 1 : start, 0);
+          return function() {
+            var args = arguments, index = -1, length = nativeMax(args.length - start, 0), array4 = Array2(length);
+            while (++index < length) {
+              array4[index] = args[start + index];
+            }
+            index = -1;
+            var otherArgs = Array2(start + 1);
+            while (++index < start) {
+              otherArgs[index] = args[index];
+            }
+            otherArgs[start] = transform9(array4);
+            return apply(func, this, otherArgs);
+          };
+        }
+        function parent(object4, path35) {
+          return path35.length < 2 ? object4 : baseGet2(object4, baseSlice(path35, 0, -1));
+        }
+        function reorder(array4, indexes) {
+          var arrLength = array4.length, length = nativeMin(indexes.length, arrLength), oldArray = copyArray(array4);
+          while (length--) {
+            var index = indexes[length];
+            array4[length] = isIndex2(index, arrLength) ? oldArray[index] : undefined2;
+          }
+          return array4;
+        }
+        function safeGet(object4, key) {
+          if (key === "constructor" && typeof object4[key] === "function") {
+            return;
+          }
+          if (key == "__proto__") {
+            return;
+          }
+          return object4[key];
+        }
+        var setData = shortOut(baseSetData);
+        var setTimeout2 = ctxSetTimeout || function(func, wait) {
+          return root2.setTimeout(func, wait);
+        };
+        var setToString = shortOut(baseSetToString);
+        function setWrapToString(wrapper, reference, bitmask) {
+          var source = reference + "";
+          return setToString(wrapper, insertWrapDetails(source, updateWrapDetails(getWrapDetails(source), bitmask)));
+        }
+        function shortOut(func) {
+          var count = 0, lastCalled = 0;
+          return function() {
+            var stamp = nativeNow(), remaining = HOT_SPAN - (stamp - lastCalled);
+            lastCalled = stamp;
+            if (remaining > 0) {
+              if (++count >= HOT_COUNT) {
+                return arguments[0];
+              }
+            } else {
+              count = 0;
+            }
+            return func.apply(undefined2, arguments);
+          };
+        }
+        function shuffleSelf(array4, size2) {
+          var index = -1, length = array4.length, lastIndex = length - 1;
+          size2 = size2 === undefined2 ? length : size2;
+          while (++index < size2) {
+            var rand = baseRandom(index, lastIndex), value = array4[rand];
+            array4[rand] = array4[index];
+            array4[index] = value;
+          }
+          array4.length = size2;
+          return array4;
+        }
+        var stringToPath2 = memoizeCapped2(function(string5) {
+          var result2 = [];
+          if (string5.charCodeAt(0) === 46) {
+            result2.push("");
+          }
+          string5.replace(rePropName2, function(match, number6, quote, subString) {
+            result2.push(quote ? subString.replace(reEscapeChar2, "$1") : number6 || match);
+          });
+          return result2;
+        });
+        function toKey2(value) {
+          if (typeof value == "string" || isSymbol2(value)) {
+            return value;
+          }
+          var result2 = value + "";
+          return result2 == "0" && 1 / value == -INFINITY4 ? "-0" : result2;
+        }
+        function toSource2(func) {
+          if (func != null) {
+            try {
+              return funcToString3.call(func);
+            } catch (e) {
+            }
+            try {
+              return func + "";
+            } catch (e) {
+            }
+          }
+          return "";
+        }
+        function updateWrapDetails(details, bitmask) {
+          arrayEach(wrapFlags, function(pair) {
+            var value = "_." + pair[0];
+            if (bitmask & pair[1] && !arrayIncludes2(details, value)) {
+              details.push(value);
+            }
+          });
+          return details.sort();
+        }
+        function wrapperClone(wrapper) {
+          if (wrapper instanceof LazyWrapper) {
+            return wrapper.clone();
+          }
+          var result2 = new LodashWrapper(wrapper.__wrapped__, wrapper.__chain__);
+          result2.__actions__ = copyArray(wrapper.__actions__);
+          result2.__index__ = wrapper.__index__;
+          result2.__values__ = wrapper.__values__;
+          return result2;
+        }
+        function chunk(array4, size2, guard) {
+          if (guard ? isIterateeCall(array4, size2, guard) : size2 === undefined2) {
+            size2 = 1;
+          } else {
+            size2 = nativeMax(toInteger(size2), 0);
+          }
+          var length = array4 == null ? 0 : array4.length;
+          if (!length || size2 < 1) {
+            return [];
+          }
+          var index = 0, resIndex = 0, result2 = Array2(nativeCeil(length / size2));
+          while (index < length) {
+            result2[resIndex++] = baseSlice(array4, index, index += size2);
+          }
+          return result2;
+        }
+        function compact(array4) {
+          var index = -1, length = array4 == null ? 0 : array4.length, resIndex = 0, result2 = [];
+          while (++index < length) {
+            var value = array4[index];
+            if (value) {
+              result2[resIndex++] = value;
+            }
+          }
+          return result2;
+        }
+        function concat() {
+          var length = arguments.length;
+          if (!length) {
+            return [];
+          }
+          var args = Array2(length - 1), array4 = arguments[0], index = length;
+          while (index--) {
+            args[index - 1] = arguments[index];
+          }
+          return arrayPush2(isArray3(array4) ? copyArray(array4) : [array4], baseFlatten(args, 1));
+        }
+        var difference = baseRest(function(array4, values2) {
+          return isArrayLikeObject(array4) ? baseDifference(array4, baseFlatten(values2, 1, isArrayLikeObject, true)) : [];
+        });
+        var differenceBy = baseRest(function(array4, values2) {
+          var iteratee2 = last(values2);
+          if (isArrayLikeObject(iteratee2)) {
+            iteratee2 = undefined2;
+          }
+          return isArrayLikeObject(array4) ? baseDifference(array4, baseFlatten(values2, 1, isArrayLikeObject, true), getIteratee(iteratee2, 2)) : [];
+        });
+        var differenceWith = baseRest(function(array4, values2) {
+          var comparator = last(values2);
+          if (isArrayLikeObject(comparator)) {
+            comparator = undefined2;
+          }
+          return isArrayLikeObject(array4) ? baseDifference(array4, baseFlatten(values2, 1, isArrayLikeObject, true), undefined2, comparator) : [];
+        });
+        function drop(array4, n, guard) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return [];
+          }
+          n = guard || n === undefined2 ? 1 : toInteger(n);
+          return baseSlice(array4, n < 0 ? 0 : n, length);
+        }
+        function dropRight(array4, n, guard) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return [];
+          }
+          n = guard || n === undefined2 ? 1 : toInteger(n);
+          n = length - n;
+          return baseSlice(array4, 0, n < 0 ? 0 : n);
+        }
+        function dropRightWhile(array4, predicate) {
+          return array4 && array4.length ? baseWhile(array4, getIteratee(predicate, 3), true, true) : [];
+        }
+        function dropWhile(array4, predicate) {
+          return array4 && array4.length ? baseWhile(array4, getIteratee(predicate, 3), true) : [];
+        }
+        function fill(array4, value, start, end) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return [];
+          }
+          if (start && typeof start != "number" && isIterateeCall(array4, value, start)) {
+            start = 0;
+            end = length;
+          }
+          return baseFill(array4, value, start, end);
+        }
+        function findIndex(array4, predicate, fromIndex) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return -1;
+          }
+          var index = fromIndex == null ? 0 : toInteger(fromIndex);
+          if (index < 0) {
+            index = nativeMax(length + index, 0);
+          }
+          return baseFindIndex2(array4, getIteratee(predicate, 3), index);
+        }
+        function findLastIndex(array4, predicate, fromIndex) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return -1;
+          }
+          var index = length - 1;
+          if (fromIndex !== undefined2) {
+            index = toInteger(fromIndex);
+            index = fromIndex < 0 ? nativeMax(length + index, 0) : nativeMin(index, length - 1);
+          }
+          return baseFindIndex2(array4, getIteratee(predicate, 3), index, true);
+        }
+        function flatten(array4) {
+          var length = array4 == null ? 0 : array4.length;
+          return length ? baseFlatten(array4, 1) : [];
+        }
+        function flattenDeep(array4) {
+          var length = array4 == null ? 0 : array4.length;
+          return length ? baseFlatten(array4, INFINITY4) : [];
+        }
+        function flattenDepth(array4, depth) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return [];
+          }
+          depth = depth === undefined2 ? 1 : toInteger(depth);
+          return baseFlatten(array4, depth);
+        }
+        function fromPairs(pairs) {
+          var index = -1, length = pairs == null ? 0 : pairs.length, result2 = {};
+          while (++index < length) {
+            var pair = pairs[index];
+            result2[pair[0]] = pair[1];
+          }
+          return result2;
+        }
+        function head(array4) {
+          return array4 && array4.length ? array4[0] : undefined2;
+        }
+        function indexOf(array4, value, fromIndex) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return -1;
+          }
+          var index = fromIndex == null ? 0 : toInteger(fromIndex);
+          if (index < 0) {
+            index = nativeMax(length + index, 0);
+          }
+          return baseIndexOf2(array4, value, index);
+        }
+        function initial(array4) {
+          var length = array4 == null ? 0 : array4.length;
+          return length ? baseSlice(array4, 0, -1) : [];
+        }
+        var intersection3 = baseRest(function(arrays) {
+          var mapped = arrayMap2(arrays, castArrayLikeObject);
+          return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped) : [];
+        });
+        var intersectionBy = baseRest(function(arrays) {
+          var iteratee2 = last(arrays), mapped = arrayMap2(arrays, castArrayLikeObject);
+          if (iteratee2 === last(mapped)) {
+            iteratee2 = undefined2;
+          } else {
+            mapped.pop();
+          }
+          return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, getIteratee(iteratee2, 2)) : [];
+        });
+        var intersectionWith = baseRest(function(arrays) {
+          var comparator = last(arrays), mapped = arrayMap2(arrays, castArrayLikeObject);
+          comparator = typeof comparator == "function" ? comparator : undefined2;
+          if (comparator) {
+            mapped.pop();
+          }
+          return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, undefined2, comparator) : [];
+        });
+        function join2(array4, separator) {
+          return array4 == null ? "" : nativeJoin.call(array4, separator);
+        }
+        function last(array4) {
+          var length = array4 == null ? 0 : array4.length;
+          return length ? array4[length - 1] : undefined2;
+        }
+        function lastIndexOf(array4, value, fromIndex) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return -1;
+          }
+          var index = length;
+          if (fromIndex !== undefined2) {
+            index = toInteger(fromIndex);
+            index = index < 0 ? nativeMax(length + index, 0) : nativeMin(index, length - 1);
+          }
+          return value === value ? strictLastIndexOf(array4, value, index) : baseFindIndex2(array4, baseIsNaN2, index, true);
+        }
+        function nth(array4, n) {
+          return array4 && array4.length ? baseNth(array4, toInteger(n)) : undefined2;
+        }
+        var pull = baseRest(pullAll);
+        function pullAll(array4, values2) {
+          return array4 && array4.length && values2 && values2.length ? basePullAll(array4, values2) : array4;
+        }
+        function pullAllBy(array4, values2, iteratee2) {
+          return array4 && array4.length && values2 && values2.length ? basePullAll(array4, values2, getIteratee(iteratee2, 2)) : array4;
+        }
+        function pullAllWith(array4, values2, comparator) {
+          return array4 && array4.length && values2 && values2.length ? basePullAll(array4, values2, undefined2, comparator) : array4;
+        }
+        var pullAt = flatRest(function(array4, indexes) {
+          var length = array4 == null ? 0 : array4.length, result2 = baseAt(array4, indexes);
+          basePullAt(array4, arrayMap2(indexes, function(index) {
+            return isIndex2(index, length) ? +index : index;
+          }).sort(compareAscending));
+          return result2;
+        });
+        function remove(array4, predicate) {
+          var result2 = [];
+          if (!(array4 && array4.length)) {
+            return result2;
+          }
+          var index = -1, indexes = [], length = array4.length;
+          predicate = getIteratee(predicate, 3);
+          while (++index < length) {
+            var value = array4[index];
+            if (predicate(value, index, array4)) {
+              result2.push(value);
+              indexes.push(index);
+            }
+          }
+          basePullAt(array4, indexes);
+          return result2;
+        }
+        function reverse(array4) {
+          return array4 == null ? array4 : nativeReverse.call(array4);
+        }
+        function slice(array4, start, end) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return [];
+          }
+          if (end && typeof end != "number" && isIterateeCall(array4, start, end)) {
+            start = 0;
+            end = length;
+          } else {
+            start = start == null ? 0 : toInteger(start);
+            end = end === undefined2 ? length : toInteger(end);
+          }
+          return baseSlice(array4, start, end);
+        }
+        function sortedIndex(array4, value) {
+          return baseSortedIndex(array4, value);
+        }
+        function sortedIndexBy(array4, value, iteratee2) {
+          return baseSortedIndexBy(array4, value, getIteratee(iteratee2, 2));
+        }
+        function sortedIndexOf(array4, value) {
+          var length = array4 == null ? 0 : array4.length;
+          if (length) {
+            var index = baseSortedIndex(array4, value);
+            if (index < length && eq2(array4[index], value)) {
+              return index;
+            }
+          }
+          return -1;
+        }
+        function sortedLastIndex(array4, value) {
+          return baseSortedIndex(array4, value, true);
+        }
+        function sortedLastIndexBy(array4, value, iteratee2) {
+          return baseSortedIndexBy(array4, value, getIteratee(iteratee2, 2), true);
+        }
+        function sortedLastIndexOf(array4, value) {
+          var length = array4 == null ? 0 : array4.length;
+          if (length) {
+            var index = baseSortedIndex(array4, value, true) - 1;
+            if (eq2(array4[index], value)) {
+              return index;
+            }
+          }
+          return -1;
+        }
+        function sortedUniq(array4) {
+          return array4 && array4.length ? baseSortedUniq(array4) : [];
+        }
+        function sortedUniqBy(array4, iteratee2) {
+          return array4 && array4.length ? baseSortedUniq(array4, getIteratee(iteratee2, 2)) : [];
+        }
+        function tail(array4) {
+          var length = array4 == null ? 0 : array4.length;
+          return length ? baseSlice(array4, 1, length) : [];
+        }
+        function take(array4, n, guard) {
+          if (!(array4 && array4.length)) {
+            return [];
+          }
+          n = guard || n === undefined2 ? 1 : toInteger(n);
+          return baseSlice(array4, 0, n < 0 ? 0 : n);
+        }
+        function takeRight(array4, n, guard) {
+          var length = array4 == null ? 0 : array4.length;
+          if (!length) {
+            return [];
+          }
+          n = guard || n === undefined2 ? 1 : toInteger(n);
+          n = length - n;
+          return baseSlice(array4, n < 0 ? 0 : n, length);
+        }
+        function takeRightWhile(array4, predicate) {
+          return array4 && array4.length ? baseWhile(array4, getIteratee(predicate, 3), false, true) : [];
+        }
+        function takeWhile(array4, predicate) {
+          return array4 && array4.length ? baseWhile(array4, getIteratee(predicate, 3)) : [];
+        }
+        var union3 = baseRest(function(arrays) {
+          return baseUniq2(baseFlatten(arrays, 1, isArrayLikeObject, true));
+        });
+        var unionBy = baseRest(function(arrays) {
+          var iteratee2 = last(arrays);
+          if (isArrayLikeObject(iteratee2)) {
+            iteratee2 = undefined2;
+          }
+          return baseUniq2(baseFlatten(arrays, 1, isArrayLikeObject, true), getIteratee(iteratee2, 2));
+        });
+        var unionWith = baseRest(function(arrays) {
+          var comparator = last(arrays);
+          comparator = typeof comparator == "function" ? comparator : undefined2;
+          return baseUniq2(baseFlatten(arrays, 1, isArrayLikeObject, true), undefined2, comparator);
+        });
+        function uniq(array4) {
+          return array4 && array4.length ? baseUniq2(array4) : [];
+        }
+        function uniqBy2(array4, iteratee2) {
+          return array4 && array4.length ? baseUniq2(array4, getIteratee(iteratee2, 2)) : [];
+        }
+        function uniqWith(array4, comparator) {
+          comparator = typeof comparator == "function" ? comparator : undefined2;
+          return array4 && array4.length ? baseUniq2(array4, undefined2, comparator) : [];
+        }
+        function unzip(array4) {
+          if (!(array4 && array4.length)) {
+            return [];
+          }
+          var length = 0;
+          array4 = arrayFilter2(array4, function(group) {
+            if (isArrayLikeObject(group)) {
+              length = nativeMax(group.length, length);
+              return true;
+            }
+          });
+          return baseTimes2(length, function(index) {
+            return arrayMap2(array4, baseProperty2(index));
+          });
+        }
+        function unzipWith(array4, iteratee2) {
+          if (!(array4 && array4.length)) {
+            return [];
+          }
+          var result2 = unzip(array4);
+          if (iteratee2 == null) {
+            return result2;
+          }
+          return arrayMap2(result2, function(group) {
+            return apply(iteratee2, undefined2, group);
+          });
+        }
+        var without = baseRest(function(array4, values2) {
+          return isArrayLikeObject(array4) ? baseDifference(array4, values2) : [];
+        });
+        var xor3 = baseRest(function(arrays) {
+          return baseXor(arrayFilter2(arrays, isArrayLikeObject));
+        });
+        var xorBy = baseRest(function(arrays) {
+          var iteratee2 = last(arrays);
+          if (isArrayLikeObject(iteratee2)) {
+            iteratee2 = undefined2;
+          }
+          return baseXor(arrayFilter2(arrays, isArrayLikeObject), getIteratee(iteratee2, 2));
+        });
+        var xorWith = baseRest(function(arrays) {
+          var comparator = last(arrays);
+          comparator = typeof comparator == "function" ? comparator : undefined2;
+          return baseXor(arrayFilter2(arrays, isArrayLikeObject), undefined2, comparator);
+        });
+        var zip = baseRest(unzip);
+        function zipObject(props, values2) {
+          return baseZipObject(props || [], values2 || [], assignValue);
+        }
+        function zipObjectDeep(props, values2) {
+          return baseZipObject(props || [], values2 || [], baseSet);
+        }
+        var zipWith = baseRest(function(arrays) {
+          var length = arrays.length, iteratee2 = length > 1 ? arrays[length - 1] : undefined2;
+          iteratee2 = typeof iteratee2 == "function" ? (arrays.pop(), iteratee2) : undefined2;
+          return unzipWith(arrays, iteratee2);
+        });
+        function chain(value) {
+          var result2 = lodash(value);
+          result2.__chain__ = true;
+          return result2;
+        }
+        function tap(value, interceptor) {
+          interceptor(value);
+          return value;
+        }
+        function thru(value, interceptor) {
+          return interceptor(value);
+        }
+        var wrapperAt = flatRest(function(paths) {
+          var length = paths.length, start = length ? paths[0] : 0, value = this.__wrapped__, interceptor = function(object4) {
+            return baseAt(object4, paths);
+          };
+          if (length > 1 || this.__actions__.length || !(value instanceof LazyWrapper) || !isIndex2(start)) {
+            return this.thru(interceptor);
+          }
+          value = value.slice(start, +start + (length ? 1 : 0));
+          value.__actions__.push({
+            "func": thru,
+            "args": [interceptor],
+            "thisArg": undefined2
+          });
+          return new LodashWrapper(value, this.__chain__).thru(function(array4) {
+            if (length && !array4.length) {
+              array4.push(undefined2);
+            }
+            return array4;
+          });
+        });
+        function wrapperChain() {
+          return chain(this);
+        }
+        function wrapperCommit() {
+          return new LodashWrapper(this.value(), this.__chain__);
+        }
+        function wrapperNext() {
+          if (this.__values__ === undefined2) {
+            this.__values__ = toArray2(this.value());
+          }
+          var done = this.__index__ >= this.__values__.length, value = done ? undefined2 : this.__values__[this.__index__++];
+          return { "done": done, "value": value };
+        }
+        function wrapperToIterator() {
+          return this;
+        }
+        function wrapperPlant(value) {
+          var result2, parent2 = this;
+          while (parent2 instanceof baseLodash) {
+            var clone4 = wrapperClone(parent2);
+            clone4.__index__ = 0;
+            clone4.__values__ = undefined2;
+            if (result2) {
+              previous.__wrapped__ = clone4;
+            } else {
+              result2 = clone4;
+            }
+            var previous = clone4;
+            parent2 = parent2.__wrapped__;
+          }
+          previous.__wrapped__ = value;
+          return result2;
+        }
+        function wrapperReverse() {
+          var value = this.__wrapped__;
+          if (value instanceof LazyWrapper) {
+            var wrapped = value;
+            if (this.__actions__.length) {
+              wrapped = new LazyWrapper(this);
+            }
+            wrapped = wrapped.reverse();
+            wrapped.__actions__.push({
+              "func": thru,
+              "args": [reverse],
+              "thisArg": undefined2
+            });
+            return new LodashWrapper(wrapped, this.__chain__);
+          }
+          return this.thru(reverse);
+        }
+        function wrapperValue() {
+          return baseWrapperValue(this.__wrapped__, this.__actions__);
+        }
+        var countBy = createAggregator(function(result2, value, key) {
+          if (hasOwnProperty11.call(result2, key)) {
+            ++result2[key];
+          } else {
+            baseAssignValue(result2, key, 1);
+          }
+        });
+        function every(collection, predicate, guard) {
+          var func = isArray3(collection) ? arrayEvery : baseEvery;
+          if (guard && isIterateeCall(collection, predicate, guard)) {
+            predicate = undefined2;
+          }
+          return func(collection, getIteratee(predicate, 3));
+        }
+        function filter6(collection, predicate) {
+          var func = isArray3(collection) ? arrayFilter2 : baseFilter;
+          return func(collection, getIteratee(predicate, 3));
+        }
+        var find = createFind(findIndex);
+        var findLast = createFind(findLastIndex);
+        function flatMap(collection, iteratee2) {
+          return baseFlatten(map3(collection, iteratee2), 1);
+        }
+        function flatMapDeep(collection, iteratee2) {
+          return baseFlatten(map3(collection, iteratee2), INFINITY4);
+        }
+        function flatMapDepth(collection, iteratee2, depth) {
+          depth = depth === undefined2 ? 1 : toInteger(depth);
+          return baseFlatten(map3(collection, iteratee2), depth);
+        }
+        function forEach2(collection, iteratee2) {
+          var func = isArray3(collection) ? arrayEach : baseEach;
+          return func(collection, getIteratee(iteratee2, 3));
+        }
+        function forEachRight(collection, iteratee2) {
+          var func = isArray3(collection) ? arrayEachRight : baseEachRight;
+          return func(collection, getIteratee(iteratee2, 3));
+        }
+        var groupBy = createAggregator(function(result2, value, key) {
+          if (hasOwnProperty11.call(result2, key)) {
+            result2[key].push(value);
+          } else {
+            baseAssignValue(result2, key, [value]);
+          }
+        });
+        function includes(collection, value, fromIndex, guard) {
+          collection = isArrayLike2(collection) ? collection : values(collection);
+          fromIndex = fromIndex && !guard ? toInteger(fromIndex) : 0;
+          var length = collection.length;
+          if (fromIndex < 0) {
+            fromIndex = nativeMax(length + fromIndex, 0);
+          }
+          return isString2(collection) ? fromIndex <= length && collection.indexOf(value, fromIndex) > -1 : !!length && baseIndexOf2(collection, value, fromIndex) > -1;
+        }
+        var invokeMap = baseRest(function(collection, path35, args) {
+          var index = -1, isFunc = typeof path35 == "function", result2 = isArrayLike2(collection) ? Array2(collection.length) : [];
+          baseEach(collection, function(value) {
+            result2[++index] = isFunc ? apply(path35, value, args) : baseInvoke(value, path35, args);
+          });
+          return result2;
+        });
+        var keyBy = createAggregator(function(result2, value, key) {
+          baseAssignValue(result2, key, value);
+        });
+        function map3(collection, iteratee2) {
+          var func = isArray3(collection) ? arrayMap2 : baseMap;
+          return func(collection, getIteratee(iteratee2, 3));
+        }
+        function orderBy(collection, iteratees, orders, guard) {
+          if (collection == null) {
+            return [];
+          }
+          if (!isArray3(iteratees)) {
+            iteratees = iteratees == null ? [] : [iteratees];
+          }
+          orders = guard ? undefined2 : orders;
+          if (!isArray3(orders)) {
+            orders = orders == null ? [] : [orders];
+          }
+          return baseOrderBy(collection, iteratees, orders);
+        }
+        var partition = createAggregator(function(result2, value, key) {
+          result2[key ? 0 : 1].push(value);
+        }, function() {
+          return [[], []];
+        });
+        function reduce(collection, iteratee2, accumulator) {
+          var func = isArray3(collection) ? arrayReduce : baseReduce, initAccum = arguments.length < 3;
+          return func(collection, getIteratee(iteratee2, 4), accumulator, initAccum, baseEach);
+        }
+        function reduceRight(collection, iteratee2, accumulator) {
+          var func = isArray3(collection) ? arrayReduceRight : baseReduce, initAccum = arguments.length < 3;
+          return func(collection, getIteratee(iteratee2, 4), accumulator, initAccum, baseEachRight);
+        }
+        function reject(collection, predicate) {
+          var func = isArray3(collection) ? arrayFilter2 : baseFilter;
+          return func(collection, negate(getIteratee(predicate, 3)));
+        }
+        function sample(collection) {
+          var func = isArray3(collection) ? arraySample : baseSample;
+          return func(collection);
+        }
+        function sampleSize(collection, n, guard) {
+          if (guard ? isIterateeCall(collection, n, guard) : n === undefined2) {
+            n = 1;
+          } else {
+            n = toInteger(n);
+          }
+          var func = isArray3(collection) ? arraySampleSize : baseSampleSize;
+          return func(collection, n);
+        }
+        function shuffle(collection) {
+          var func = isArray3(collection) ? arrayShuffle : baseShuffle;
+          return func(collection);
+        }
+        function size(collection) {
+          if (collection == null) {
+            return 0;
+          }
+          if (isArrayLike2(collection)) {
+            return isString2(collection) ? stringSize(collection) : collection.length;
+          }
+          var tag = getTag2(collection);
+          if (tag == mapTag4 || tag == setTag4) {
+            return collection.size;
+          }
+          return baseKeys2(collection).length;
+        }
+        function some(collection, predicate, guard) {
+          var func = isArray3(collection) ? arraySome2 : baseSome;
+          if (guard && isIterateeCall(collection, predicate, guard)) {
+            predicate = undefined2;
+          }
+          return func(collection, getIteratee(predicate, 3));
+        }
+        var sortBy = baseRest(function(collection, iteratees) {
+          if (collection == null) {
+            return [];
+          }
+          var length = iteratees.length;
+          if (length > 1 && isIterateeCall(collection, iteratees[0], iteratees[1])) {
+            iteratees = [];
+          } else if (length > 2 && isIterateeCall(iteratees[0], iteratees[1], iteratees[2])) {
+            iteratees = [iteratees[0]];
+          }
+          return baseOrderBy(collection, baseFlatten(iteratees, 1), []);
+        });
+        var now2 = ctxNow || function() {
+          return root2.Date.now();
+        };
+        function after(n, func) {
+          if (typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          n = toInteger(n);
+          return function() {
+            if (--n < 1) {
+              return func.apply(this, arguments);
+            }
+          };
+        }
+        function ary(func, n, guard) {
+          n = guard ? undefined2 : n;
+          n = func && n == null ? func.length : n;
+          return createWrap(func, WRAP_ARY_FLAG, undefined2, undefined2, undefined2, undefined2, n);
+        }
+        function before(n, func) {
+          var result2;
+          if (typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          n = toInteger(n);
+          return function() {
+            if (--n > 0) {
+              result2 = func.apply(this, arguments);
+            }
+            if (n <= 1) {
+              func = undefined2;
+            }
+            return result2;
+          };
+        }
+        var bind2 = baseRest(function(func, thisArg, partials) {
+          var bitmask = WRAP_BIND_FLAG;
+          if (partials.length) {
+            var holders = replaceHolders(partials, getHolder(bind2));
+            bitmask |= WRAP_PARTIAL_FLAG;
+          }
+          return createWrap(func, bitmask, thisArg, partials, holders);
+        });
+        var bindKey = baseRest(function(object4, key, partials) {
+          var bitmask = WRAP_BIND_FLAG | WRAP_BIND_KEY_FLAG;
+          if (partials.length) {
+            var holders = replaceHolders(partials, getHolder(bindKey));
+            bitmask |= WRAP_PARTIAL_FLAG;
+          }
+          return createWrap(key, bitmask, object4, partials, holders);
+        });
+        function curry(func, arity, guard) {
+          arity = guard ? undefined2 : arity;
+          var result2 = createWrap(func, WRAP_CURRY_FLAG, undefined2, undefined2, undefined2, undefined2, undefined2, arity);
+          result2.placeholder = curry.placeholder;
+          return result2;
+        }
+        function curryRight(func, arity, guard) {
+          arity = guard ? undefined2 : arity;
+          var result2 = createWrap(func, WRAP_CURRY_RIGHT_FLAG, undefined2, undefined2, undefined2, undefined2, undefined2, arity);
+          result2.placeholder = curryRight.placeholder;
+          return result2;
+        }
+        function debounce(func, wait, options) {
+          var lastArgs, lastThis, maxWait, result2, timerId, lastCallTime, lastInvokeTime = 0, leading = false, maxing = false, trailing = true;
+          if (typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          wait = toNumber(wait) || 0;
+          if (isObject5(options)) {
+            leading = !!options.leading;
+            maxing = "maxWait" in options;
+            maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+            trailing = "trailing" in options ? !!options.trailing : trailing;
+          }
+          function invokeFunc(time4) {
+            var args = lastArgs, thisArg = lastThis;
+            lastArgs = lastThis = undefined2;
+            lastInvokeTime = time4;
+            result2 = func.apply(thisArg, args);
+            return result2;
+          }
+          function leadingEdge(time4) {
+            lastInvokeTime = time4;
+            timerId = setTimeout2(timerExpired, wait);
+            return leading ? invokeFunc(time4) : result2;
+          }
+          function remainingWait(time4) {
+            var timeSinceLastCall = time4 - lastCallTime, timeSinceLastInvoke = time4 - lastInvokeTime, timeWaiting = wait - timeSinceLastCall;
+            return maxing ? nativeMin(timeWaiting, maxWait - timeSinceLastInvoke) : timeWaiting;
+          }
+          function shouldInvoke(time4) {
+            var timeSinceLastCall = time4 - lastCallTime, timeSinceLastInvoke = time4 - lastInvokeTime;
+            return lastCallTime === undefined2 || timeSinceLastCall >= wait || timeSinceLastCall < 0 || maxing && timeSinceLastInvoke >= maxWait;
+          }
+          function timerExpired() {
+            var time4 = now2();
+            if (shouldInvoke(time4)) {
+              return trailingEdge(time4);
+            }
+            timerId = setTimeout2(timerExpired, remainingWait(time4));
+          }
+          function trailingEdge(time4) {
+            timerId = undefined2;
+            if (trailing && lastArgs) {
+              return invokeFunc(time4);
+            }
+            lastArgs = lastThis = undefined2;
+            return result2;
+          }
+          function cancel() {
+            if (timerId !== undefined2) {
+              clearTimeout2(timerId);
+            }
+            lastInvokeTime = 0;
+            lastArgs = lastCallTime = lastThis = timerId = undefined2;
+          }
+          function flush() {
+            return timerId === undefined2 ? result2 : trailingEdge(now2());
+          }
+          function debounced() {
+            var time4 = now2(), isInvoking = shouldInvoke(time4);
+            lastArgs = arguments;
+            lastThis = this;
+            lastCallTime = time4;
+            if (isInvoking) {
+              if (timerId === undefined2) {
+                return leadingEdge(lastCallTime);
+              }
+              if (maxing) {
+                clearTimeout2(timerId);
+                timerId = setTimeout2(timerExpired, wait);
+                return invokeFunc(lastCallTime);
+              }
+            }
+            if (timerId === undefined2) {
+              timerId = setTimeout2(timerExpired, wait);
+            }
+            return result2;
+          }
+          debounced.cancel = cancel;
+          debounced.flush = flush;
+          return debounced;
+        }
+        var defer = baseRest(function(func, args) {
+          return baseDelay(func, 1, args);
+        });
+        var delay2 = baseRest(function(func, wait, args) {
+          return baseDelay(func, toNumber(wait) || 0, args);
+        });
+        function flip(func) {
+          return createWrap(func, WRAP_FLIP_FLAG);
+        }
+        function memoize2(func, resolver) {
+          if (typeof func != "function" || resolver != null && typeof resolver != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          var memoized = function() {
+            var args = arguments, key = resolver ? resolver.apply(this, args) : args[0], cache = memoized.cache;
+            if (cache.has(key)) {
+              return cache.get(key);
+            }
+            var result2 = func.apply(this, args);
+            memoized.cache = cache.set(key, result2) || cache;
+            return result2;
+          };
+          memoized.cache = new (memoize2.Cache || MapCache2)();
+          return memoized;
+        }
+        memoize2.Cache = MapCache2;
+        function negate(predicate) {
+          if (typeof predicate != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          return function() {
+            var args = arguments;
+            switch (args.length) {
+              case 0:
+                return !predicate.call(this);
+              case 1:
+                return !predicate.call(this, args[0]);
+              case 2:
+                return !predicate.call(this, args[0], args[1]);
+              case 3:
+                return !predicate.call(this, args[0], args[1], args[2]);
+            }
+            return !predicate.apply(this, args);
+          };
+        }
+        function once(func) {
+          return before(2, func);
+        }
+        var overArgs = castRest(function(func, transforms) {
+          transforms = transforms.length == 1 && isArray3(transforms[0]) ? arrayMap2(transforms[0], baseUnary2(getIteratee())) : arrayMap2(baseFlatten(transforms, 1), baseUnary2(getIteratee()));
+          var funcsLength = transforms.length;
+          return baseRest(function(args) {
+            var index = -1, length = nativeMin(args.length, funcsLength);
+            while (++index < length) {
+              args[index] = transforms[index].call(this, args[index]);
+            }
+            return apply(func, this, args);
+          });
+        });
+        var partial3 = baseRest(function(func, partials) {
+          var holders = replaceHolders(partials, getHolder(partial3));
+          return createWrap(func, WRAP_PARTIAL_FLAG, undefined2, partials, holders);
+        });
+        var partialRight = baseRest(function(func, partials) {
+          var holders = replaceHolders(partials, getHolder(partialRight));
+          return createWrap(func, WRAP_PARTIAL_RIGHT_FLAG, undefined2, partials, holders);
+        });
+        var rearg = flatRest(function(func, indexes) {
+          return createWrap(func, WRAP_REARG_FLAG, undefined2, undefined2, undefined2, indexes);
+        });
+        function rest(func, start) {
+          if (typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          start = start === undefined2 ? start : toInteger(start);
+          return baseRest(func, start);
+        }
+        function spread3(func, start) {
+          if (typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          start = start == null ? 0 : nativeMax(toInteger(start), 0);
+          return baseRest(function(args) {
+            var array4 = args[start], otherArgs = castSlice(args, 0, start);
+            if (array4) {
+              arrayPush2(otherArgs, array4);
+            }
+            return apply(func, this, otherArgs);
+          });
+        }
+        function throttle2(func, wait, options) {
+          var leading = true, trailing = true;
+          if (typeof func != "function") {
+            throw new TypeError2(FUNC_ERROR_TEXT2);
+          }
+          if (isObject5(options)) {
+            leading = "leading" in options ? !!options.leading : leading;
+            trailing = "trailing" in options ? !!options.trailing : trailing;
+          }
+          return debounce(func, wait, {
+            "leading": leading,
+            "maxWait": wait,
+            "trailing": trailing
+          });
+        }
+        function unary(func) {
+          return ary(func, 1);
+        }
+        function wrap(value, wrapper) {
+          return partial3(castFunction(wrapper), value);
+        }
+        function castArray() {
+          if (!arguments.length) {
+            return [];
+          }
+          var value = arguments[0];
+          return isArray3(value) ? value : [value];
+        }
+        function clone3(value) {
+          return baseClone(value, CLONE_SYMBOLS_FLAG);
+        }
+        function cloneWith(value, customizer) {
+          customizer = typeof customizer == "function" ? customizer : undefined2;
+          return baseClone(value, CLONE_SYMBOLS_FLAG, customizer);
+        }
+        function cloneDeep(value) {
+          return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG);
+        }
+        function cloneDeepWith(value, customizer) {
+          customizer = typeof customizer == "function" ? customizer : undefined2;
+          return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG, customizer);
+        }
+        function conformsTo(object4, source) {
+          return source == null || baseConformsTo(object4, source, keys2(source));
+        }
+        function eq2(value, other) {
+          return value === other || value !== value && other !== other;
+        }
+        var gt = createRelationalOperation(baseGt);
+        var gte = createRelationalOperation(function(value, other) {
+          return value >= other;
+        });
+        var isArguments2 = baseIsArguments2(/* @__PURE__ */ (function() {
+          return arguments;
+        })()) ? baseIsArguments2 : function(value) {
+          return isObjectLike2(value) && hasOwnProperty11.call(value, "callee") && !propertyIsEnumerable3.call(value, "callee");
+        };
+        var isArray3 = Array2.isArray;
+        var isArrayBuffer2 = nodeIsArrayBuffer ? baseUnary2(nodeIsArrayBuffer) : baseIsArrayBuffer;
+        function isArrayLike2(value) {
+          return value != null && isLength2(value.length) && !isFunction4(value);
+        }
+        function isArrayLikeObject(value) {
+          return isObjectLike2(value) && isArrayLike2(value);
+        }
+        function isBoolean2(value) {
+          return value === true || value === false || isObjectLike2(value) && baseGetTag2(value) == boolTag3;
+        }
+        var isBuffer3 = nativeIsBuffer2 || stubFalse2;
+        var isDate2 = nodeIsDate ? baseUnary2(nodeIsDate) : baseIsDate;
+        function isElement(value) {
+          return isObjectLike2(value) && value.nodeType === 1 && !isPlainObject4(value);
+        }
+        function isEmpty(value) {
+          if (value == null) {
+            return true;
+          }
+          if (isArrayLike2(value) && (isArray3(value) || typeof value == "string" || typeof value.splice == "function" || isBuffer3(value) || isTypedArray3(value) || isArguments2(value))) {
+            return !value.length;
+          }
+          var tag = getTag2(value);
+          if (tag == mapTag4 || tag == setTag4) {
+            return !value.size;
+          }
+          if (isPrototype2(value)) {
+            return !baseKeys2(value).length;
+          }
+          for (var key in value) {
+            if (hasOwnProperty11.call(value, key)) {
+              return false;
+            }
+          }
+          return true;
+        }
+        function isEqual(value, other) {
+          return baseIsEqual2(value, other);
+        }
+        function isEqualWith(value, other, customizer) {
+          customizer = typeof customizer == "function" ? customizer : undefined2;
+          var result2 = customizer ? customizer(value, other) : undefined2;
+          return result2 === undefined2 ? baseIsEqual2(value, other, undefined2, customizer) : !!result2;
+        }
+        function isError(value) {
+          if (!isObjectLike2(value)) {
+            return false;
+          }
+          var tag = baseGetTag2(value);
+          return tag == errorTag3 || tag == domExcTag || typeof value.message == "string" && typeof value.name == "string" && !isPlainObject4(value);
+        }
+        function isFinite2(value) {
+          return typeof value == "number" && nativeIsFinite(value);
+        }
+        function isFunction4(value) {
+          if (!isObject5(value)) {
+            return false;
+          }
+          var tag = baseGetTag2(value);
+          return tag == funcTag3 || tag == genTag2 || tag == asyncTag2 || tag == proxyTag2;
+        }
+        function isInteger(value) {
+          return typeof value == "number" && value == toInteger(value);
+        }
+        function isLength2(value) {
+          return typeof value == "number" && value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER3;
+        }
+        function isObject5(value) {
+          var type = typeof value;
+          return value != null && (type == "object" || type == "function");
+        }
+        function isObjectLike2(value) {
+          return value != null && typeof value == "object";
+        }
+        var isMap = nodeIsMap ? baseUnary2(nodeIsMap) : baseIsMap;
+        function isMatch(object4, source) {
+          return object4 === source || baseIsMatch2(object4, source, getMatchData2(source));
+        }
+        function isMatchWith(object4, source, customizer) {
+          customizer = typeof customizer == "function" ? customizer : undefined2;
+          return baseIsMatch2(object4, source, getMatchData2(source), customizer);
+        }
+        function isNaN2(value) {
+          return isNumber2(value) && value != +value;
+        }
+        function isNative(value) {
+          if (isMaskable(value)) {
+            throw new Error2(CORE_ERROR_TEXT);
+          }
+          return baseIsNative2(value);
+        }
+        function isNull(value) {
+          return value === null;
+        }
+        function isNil(value) {
+          return value == null;
+        }
+        function isNumber2(value) {
+          return typeof value == "number" || isObjectLike2(value) && baseGetTag2(value) == numberTag3;
+        }
+        function isPlainObject4(value) {
+          if (!isObjectLike2(value) || baseGetTag2(value) != objectTag4) {
+            return false;
+          }
+          var proto = getPrototype(value);
+          if (proto === null) {
+            return true;
+          }
+          var Ctor = hasOwnProperty11.call(proto, "constructor") && proto.constructor;
+          return typeof Ctor == "function" && Ctor instanceof Ctor && funcToString3.call(Ctor) == objectCtorString;
+        }
+        var isRegExp2 = nodeIsRegExp ? baseUnary2(nodeIsRegExp) : baseIsRegExp;
+        function isSafeInteger(value) {
+          return isInteger(value) && value >= -MAX_SAFE_INTEGER3 && value <= MAX_SAFE_INTEGER3;
+        }
+        var isSet = nodeIsSet ? baseUnary2(nodeIsSet) : baseIsSet;
+        function isString2(value) {
+          return typeof value == "string" || !isArray3(value) && isObjectLike2(value) && baseGetTag2(value) == stringTag3;
+        }
+        function isSymbol2(value) {
+          return typeof value == "symbol" || isObjectLike2(value) && baseGetTag2(value) == symbolTag3;
+        }
+        var isTypedArray3 = nodeIsTypedArray2 ? baseUnary2(nodeIsTypedArray2) : baseIsTypedArray2;
+        function isUndefined2(value) {
+          return value === undefined2;
+        }
+        function isWeakMap(value) {
+          return isObjectLike2(value) && getTag2(value) == weakMapTag3;
+        }
+        function isWeakSet(value) {
+          return isObjectLike2(value) && baseGetTag2(value) == weakSetTag;
+        }
+        var lt = createRelationalOperation(baseLt);
+        var lte = createRelationalOperation(function(value, other) {
+          return value <= other;
+        });
+        function toArray2(value) {
+          if (!value) {
+            return [];
+          }
+          if (isArrayLike2(value)) {
+            return isString2(value) ? stringToArray(value) : copyArray(value);
+          }
+          if (symIterator && value[symIterator]) {
+            return iteratorToArray(value[symIterator]());
+          }
+          var tag = getTag2(value), func = tag == mapTag4 ? mapToArray2 : tag == setTag4 ? setToArray2 : values;
+          return func(value);
+        }
+        function toFinite(value) {
+          if (!value) {
+            return value === 0 ? value : 0;
+          }
+          value = toNumber(value);
+          if (value === INFINITY4 || value === -INFINITY4) {
+            var sign = value < 0 ? -1 : 1;
+            return sign * MAX_INTEGER;
+          }
+          return value === value ? value : 0;
+        }
+        function toInteger(value) {
+          var result2 = toFinite(value), remainder = result2 % 1;
+          return result2 === result2 ? remainder ? result2 - remainder : result2 : 0;
+        }
+        function toLength(value) {
+          return value ? baseClamp(toInteger(value), 0, MAX_ARRAY_LENGTH) : 0;
+        }
+        function toNumber(value) {
+          if (typeof value == "number") {
+            return value;
+          }
+          if (isSymbol2(value)) {
+            return NAN;
+          }
+          if (isObject5(value)) {
+            var other = typeof value.valueOf == "function" ? value.valueOf() : value;
+            value = isObject5(other) ? other + "" : other;
+          }
+          if (typeof value != "string") {
+            return value === 0 ? value : +value;
+          }
+          value = baseTrim(value);
+          var isBinary = reIsBinary.test(value);
+          return isBinary || reIsOctal.test(value) ? freeParseInt(value.slice(2), isBinary ? 2 : 8) : reIsBadHex.test(value) ? NAN : +value;
+        }
+        function toPlainObject(value) {
+          return copyObject(value, keysIn(value));
+        }
+        function toSafeInteger(value) {
+          return value ? baseClamp(toInteger(value), -MAX_SAFE_INTEGER3, MAX_SAFE_INTEGER3) : value === 0 ? value : 0;
+        }
+        function toString4(value) {
+          return value == null ? "" : baseToString2(value);
+        }
+        var assign = createAssigner(function(object4, source) {
+          if (isPrototype2(source) || isArrayLike2(source)) {
+            copyObject(source, keys2(source), object4);
+            return;
+          }
+          for (var key in source) {
+            if (hasOwnProperty11.call(source, key)) {
+              assignValue(object4, key, source[key]);
+            }
+          }
+        });
+        var assignIn = createAssigner(function(object4, source) {
+          copyObject(source, keysIn(source), object4);
+        });
+        var assignInWith = createAssigner(function(object4, source, srcIndex, customizer) {
+          copyObject(source, keysIn(source), object4, customizer);
+        });
+        var assignWith = createAssigner(function(object4, source, srcIndex, customizer) {
+          copyObject(source, keys2(source), object4, customizer);
+        });
+        var at = flatRest(baseAt);
+        function create(prototype2, properties) {
+          var result2 = baseCreate(prototype2);
+          return properties == null ? result2 : baseAssign(result2, properties);
+        }
+        var defaults2 = baseRest(function(object4, sources) {
+          object4 = Object2(object4);
+          var index = -1;
+          var length = sources.length;
+          var guard = length > 2 ? sources[2] : undefined2;
+          if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+            length = 1;
+          }
+          while (++index < length) {
+            var source = sources[index];
+            var props = keysIn(source);
+            var propsIndex = -1;
+            var propsLength = props.length;
+            while (++propsIndex < propsLength) {
+              var key = props[propsIndex];
+              var value = object4[key];
+              if (value === undefined2 || eq2(value, objectProto13[key]) && !hasOwnProperty11.call(object4, key)) {
+                object4[key] = source[key];
+              }
+            }
+          }
+          return object4;
+        });
+        var defaultsDeep = baseRest(function(args) {
+          args.push(undefined2, customDefaultsMerge);
+          return apply(mergeWith, undefined2, args);
+        });
+        function findKey2(object4, predicate) {
+          return baseFindKey(object4, getIteratee(predicate, 3), baseForOwn);
+        }
+        function findLastKey(object4, predicate) {
+          return baseFindKey(object4, getIteratee(predicate, 3), baseForOwnRight);
+        }
+        function forIn(object4, iteratee2) {
+          return object4 == null ? object4 : baseFor(object4, getIteratee(iteratee2, 3), keysIn);
+        }
+        function forInRight(object4, iteratee2) {
+          return object4 == null ? object4 : baseForRight(object4, getIteratee(iteratee2, 3), keysIn);
+        }
+        function forOwn(object4, iteratee2) {
+          return object4 && baseForOwn(object4, getIteratee(iteratee2, 3));
+        }
+        function forOwnRight(object4, iteratee2) {
+          return object4 && baseForOwnRight(object4, getIteratee(iteratee2, 3));
+        }
+        function functions(object4) {
+          return object4 == null ? [] : baseFunctions(object4, keys2(object4));
+        }
+        function functionsIn(object4) {
+          return object4 == null ? [] : baseFunctions(object4, keysIn(object4));
+        }
+        function get2(object4, path35, defaultValue) {
+          var result2 = object4 == null ? undefined2 : baseGet2(object4, path35);
+          return result2 === undefined2 ? defaultValue : result2;
+        }
+        function has(object4, path35) {
+          return object4 != null && hasPath2(object4, path35, baseHas);
+        }
+        function hasIn2(object4, path35) {
+          return object4 != null && hasPath2(object4, path35, baseHasIn2);
+        }
+        var invert = createInverter(function(result2, value, key) {
+          if (value != null && typeof value.toString != "function") {
+            value = nativeObjectToString3.call(value);
+          }
+          result2[value] = key;
+        }, constant(identity2));
+        var invertBy = createInverter(function(result2, value, key) {
+          if (value != null && typeof value.toString != "function") {
+            value = nativeObjectToString3.call(value);
+          }
+          if (hasOwnProperty11.call(result2, value)) {
+            result2[value].push(key);
+          } else {
+            result2[value] = [key];
+          }
+        }, getIteratee);
+        var invoke = baseRest(baseInvoke);
+        function keys2(object4) {
+          return isArrayLike2(object4) ? arrayLikeKeys2(object4) : baseKeys2(object4);
+        }
+        function keysIn(object4) {
+          return isArrayLike2(object4) ? arrayLikeKeys2(object4, true) : baseKeysIn(object4);
+        }
+        function mapKeys(object4, iteratee2) {
+          var result2 = {};
+          iteratee2 = getIteratee(iteratee2, 3);
+          baseForOwn(object4, function(value, key, object5) {
+            baseAssignValue(result2, iteratee2(value, key, object5), value);
+          });
+          return result2;
+        }
+        function mapValues(object4, iteratee2) {
+          var result2 = {};
+          iteratee2 = getIteratee(iteratee2, 3);
+          baseForOwn(object4, function(value, key, object5) {
+            baseAssignValue(result2, key, iteratee2(value, key, object5));
+          });
+          return result2;
+        }
+        var merge4 = createAssigner(function(object4, source, srcIndex) {
+          baseMerge(object4, source, srcIndex);
+        });
+        var mergeWith = createAssigner(function(object4, source, srcIndex, customizer) {
+          baseMerge(object4, source, srcIndex, customizer);
+        });
+        var omit3 = flatRest(function(object4, paths) {
+          var result2 = {};
+          if (object4 == null) {
+            return result2;
+          }
+          var isDeep = false;
+          paths = arrayMap2(paths, function(path35) {
+            path35 = castPath2(path35, object4);
+            isDeep || (isDeep = path35.length > 1);
+            return path35;
+          });
+          copyObject(object4, getAllKeysIn(object4), result2);
+          if (isDeep) {
+            result2 = baseClone(result2, CLONE_DEEP_FLAG | CLONE_FLAT_FLAG | CLONE_SYMBOLS_FLAG, customOmitClone);
+          }
+          var length = paths.length;
+          while (length--) {
+            baseUnset(result2, paths[length]);
+          }
+          return result2;
+        });
+        function omitBy(object4, predicate) {
+          return pickBy(object4, negate(getIteratee(predicate)));
+        }
+        var pick3 = flatRest(function(object4, paths) {
+          return object4 == null ? {} : basePick(object4, paths);
+        });
+        function pickBy(object4, predicate) {
+          if (object4 == null) {
+            return {};
+          }
+          var props = arrayMap2(getAllKeysIn(object4), function(prop) {
+            return [prop];
+          });
+          predicate = getIteratee(predicate);
+          return basePickBy(object4, props, function(value, path35) {
+            return predicate(value, path35[0]);
+          });
+        }
+        function result(object4, path35, defaultValue) {
+          path35 = castPath2(path35, object4);
+          var index = -1, length = path35.length;
+          if (!length) {
+            length = 1;
+            object4 = undefined2;
+          }
+          while (++index < length) {
+            var value = object4 == null ? undefined2 : object4[toKey2(path35[index])];
+            if (value === undefined2) {
+              index = length;
+              value = defaultValue;
+            }
+            object4 = isFunction4(value) ? value.call(object4) : value;
+          }
+          return object4;
+        }
+        function set3(object4, path35, value) {
+          return object4 == null ? object4 : baseSet(object4, path35, value);
+        }
+        function setWith(object4, path35, value, customizer) {
+          customizer = typeof customizer == "function" ? customizer : undefined2;
+          return object4 == null ? object4 : baseSet(object4, path35, value, customizer);
+        }
+        var toPairs = createToPairs(keys2);
+        var toPairsIn = createToPairs(keysIn);
+        function transform8(object4, iteratee2, accumulator) {
+          var isArr = isArray3(object4), isArrLike = isArr || isBuffer3(object4) || isTypedArray3(object4);
+          iteratee2 = getIteratee(iteratee2, 4);
+          if (accumulator == null) {
+            var Ctor = object4 && object4.constructor;
+            if (isArrLike) {
+              accumulator = isArr ? new Ctor() : [];
+            } else if (isObject5(object4)) {
+              accumulator = isFunction4(Ctor) ? baseCreate(getPrototype(object4)) : {};
+            } else {
+              accumulator = {};
+            }
+          }
+          (isArrLike ? arrayEach : baseForOwn)(object4, function(value, index, object5) {
+            return iteratee2(accumulator, value, index, object5);
+          });
+          return accumulator;
+        }
+        function unset(object4, path35) {
+          return object4 == null ? true : baseUnset(object4, path35);
+        }
+        function update(object4, path35, updater) {
+          return object4 == null ? object4 : baseUpdate(object4, path35, castFunction(updater));
+        }
+        function updateWith(object4, path35, updater, customizer) {
+          customizer = typeof customizer == "function" ? customizer : undefined2;
+          return object4 == null ? object4 : baseUpdate(object4, path35, castFunction(updater), customizer);
+        }
+        function values(object4) {
+          return object4 == null ? [] : baseValues(object4, keys2(object4));
+        }
+        function valuesIn(object4) {
+          return object4 == null ? [] : baseValues(object4, keysIn(object4));
+        }
+        function clamp(number6, lower, upper) {
+          if (upper === undefined2) {
+            upper = lower;
+            lower = undefined2;
+          }
+          if (upper !== undefined2) {
+            upper = toNumber(upper);
+            upper = upper === upper ? upper : 0;
+          }
+          if (lower !== undefined2) {
+            lower = toNumber(lower);
+            lower = lower === lower ? lower : 0;
+          }
+          return baseClamp(toNumber(number6), lower, upper);
+        }
+        function inRange(number6, start, end) {
+          start = toFinite(start);
+          if (end === undefined2) {
+            end = start;
+            start = 0;
+          } else {
+            end = toFinite(end);
+          }
+          number6 = toNumber(number6);
+          return baseInRange(number6, start, end);
+        }
+        function random(lower, upper, floating) {
+          if (floating && typeof floating != "boolean" && isIterateeCall(lower, upper, floating)) {
+            upper = floating = undefined2;
+          }
+          if (floating === undefined2) {
+            if (typeof upper == "boolean") {
+              floating = upper;
+              upper = undefined2;
+            } else if (typeof lower == "boolean") {
+              floating = lower;
+              lower = undefined2;
+            }
+          }
+          if (lower === undefined2 && upper === undefined2) {
+            lower = 0;
+            upper = 1;
+          } else {
+            lower = toFinite(lower);
+            if (upper === undefined2) {
+              upper = lower;
+              lower = 0;
+            } else {
+              upper = toFinite(upper);
+            }
+          }
+          if (lower > upper) {
+            var temp = lower;
+            lower = upper;
+            upper = temp;
+          }
+          if (floating || lower % 1 || upper % 1) {
+            var rand = nativeRandom();
+            return nativeMin(lower + rand * (upper - lower + freeParseFloat("1e-" + ((rand + "").length - 1))), upper);
+          }
+          return baseRandom(lower, upper);
+        }
+        var camelCase2 = createCompounder(function(result2, word, index) {
+          word = word.toLowerCase();
+          return result2 + (index ? capitalize(word) : word);
+        });
+        function capitalize(string5) {
+          return upperFirst(toString4(string5).toLowerCase());
+        }
+        function deburr(string5) {
+          string5 = toString4(string5);
+          return string5 && string5.replace(reLatin, deburrLetter).replace(reComboMark, "");
+        }
+        function endsWith2(string5, target, position) {
+          string5 = toString4(string5);
+          target = baseToString2(target);
+          var length = string5.length;
+          position = position === undefined2 ? length : baseClamp(toInteger(position), 0, length);
+          var end = position;
+          position -= target.length;
+          return position >= 0 && string5.slice(position, end) == target;
+        }
+        function escape2(string5) {
+          string5 = toString4(string5);
+          return string5 && reHasUnescapedHtml.test(string5) ? string5.replace(reUnescapedHtml, escapeHtmlChar) : string5;
+        }
+        function escapeRegExp(string5) {
+          string5 = toString4(string5);
+          return string5 && reHasRegExpChar.test(string5) ? string5.replace(reRegExpChar2, "\\$&") : string5;
+        }
+        var kebabCase = createCompounder(function(result2, word, index) {
+          return result2 + (index ? "-" : "") + word.toLowerCase();
+        });
+        var lowerCase = createCompounder(function(result2, word, index) {
+          return result2 + (index ? " " : "") + word.toLowerCase();
+        });
+        var lowerFirst = createCaseFirst("toLowerCase");
+        function pad(string5, length, chars) {
+          string5 = toString4(string5);
+          length = toInteger(length);
+          var strLength = length ? stringSize(string5) : 0;
+          if (!length || strLength >= length) {
+            return string5;
+          }
+          var mid = (length - strLength) / 2;
+          return createPadding(nativeFloor(mid), chars) + string5 + createPadding(nativeCeil(mid), chars);
+        }
+        function padEnd(string5, length, chars) {
+          string5 = toString4(string5);
+          length = toInteger(length);
+          var strLength = length ? stringSize(string5) : 0;
+          return length && strLength < length ? string5 + createPadding(length - strLength, chars) : string5;
+        }
+        function padStart(string5, length, chars) {
+          string5 = toString4(string5);
+          length = toInteger(length);
+          var strLength = length ? stringSize(string5) : 0;
+          return length && strLength < length ? createPadding(length - strLength, chars) + string5 : string5;
+        }
+        function parseInt2(string5, radix, guard) {
+          if (guard || radix == null) {
+            radix = 0;
+          } else if (radix) {
+            radix = +radix;
+          }
+          return nativeParseInt(toString4(string5).replace(reTrimStart, ""), radix || 0);
+        }
+        function repeat(string5, n, guard) {
+          if (guard ? isIterateeCall(string5, n, guard) : n === undefined2) {
+            n = 1;
+          } else {
+            n = toInteger(n);
+          }
+          return baseRepeat(toString4(string5), n);
+        }
+        function replace() {
+          var args = arguments, string5 = toString4(args[0]);
+          return args.length < 3 ? string5 : string5.replace(args[1], args[2]);
+        }
+        var snakeCase = createCompounder(function(result2, word, index) {
+          return result2 + (index ? "_" : "") + word.toLowerCase();
+        });
+        function split2(string5, separator, limit) {
+          if (limit && typeof limit != "number" && isIterateeCall(string5, separator, limit)) {
+            separator = limit = undefined2;
+          }
+          limit = limit === undefined2 ? MAX_ARRAY_LENGTH : limit >>> 0;
+          if (!limit) {
+            return [];
+          }
+          string5 = toString4(string5);
+          if (string5 && (typeof separator == "string" || separator != null && !isRegExp2(separator))) {
+            separator = baseToString2(separator);
+            if (!separator && hasUnicode(string5)) {
+              return castSlice(stringToArray(string5), 0, limit);
+            }
+          }
+          return string5.split(separator, limit);
+        }
+        var startCase = createCompounder(function(result2, word, index) {
+          return result2 + (index ? " " : "") + upperFirst(word);
+        });
+        function startsWith(string5, target, position) {
+          string5 = toString4(string5);
+          position = position == null ? 0 : baseClamp(toInteger(position), 0, string5.length);
+          target = baseToString2(target);
+          return string5.slice(position, position + target.length) == target;
+        }
+        function template(string5, options, guard) {
+          var settings = lodash.templateSettings;
+          if (guard && isIterateeCall(string5, options, guard)) {
+            options = undefined2;
+          }
+          string5 = toString4(string5);
+          options = assignInWith({}, options, settings, customDefaultsAssignIn);
+          var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn), importsKeys = keys2(imports), importsValues = baseValues(imports, importsKeys);
+          var isEscaping, isEvaluating, index = 0, interpolate = options.interpolate || reNoMatch, source = "__p += '";
+          var reDelimiters = RegExp2(
+            (options.escape || reNoMatch).source + "|" + interpolate.source + "|" + (interpolate === reInterpolate ? reEsTemplate : reNoMatch).source + "|" + (options.evaluate || reNoMatch).source + "|$",
+            "g"
+          );
+          var sourceURL = "//# sourceURL=" + (hasOwnProperty11.call(options, "sourceURL") ? (options.sourceURL + "").replace(/\s/g, " ") : "lodash.templateSources[" + ++templateCounter + "]") + "\n";
+          string5.replace(reDelimiters, function(match, escapeValue, interpolateValue, esTemplateValue, evaluateValue, offset) {
+            interpolateValue || (interpolateValue = esTemplateValue);
+            source += string5.slice(index, offset).replace(reUnescapedString, escapeStringChar);
+            if (escapeValue) {
+              isEscaping = true;
+              source += "' +\n__e(" + escapeValue + ") +\n'";
+            }
+            if (evaluateValue) {
+              isEvaluating = true;
+              source += "';\n" + evaluateValue + ";\n__p += '";
+            }
+            if (interpolateValue) {
+              source += "' +\n((__t = (" + interpolateValue + ")) == null ? '' : __t) +\n'";
+            }
+            index = offset + match.length;
+            return match;
+          });
+          source += "';\n";
+          var variable = hasOwnProperty11.call(options, "variable") && options.variable;
+          if (!variable) {
+            source = "with (obj) {\n" + source + "\n}\n";
+          } else if (reForbiddenIdentifierChars.test(variable)) {
+            throw new Error2(INVALID_TEMPL_VAR_ERROR_TEXT);
+          }
+          source = (isEvaluating ? source.replace(reEmptyStringLeading, "") : source).replace(reEmptyStringMiddle, "$1").replace(reEmptyStringTrailing, "$1;");
+          source = "function(" + (variable || "obj") + ") {\n" + (variable ? "" : "obj || (obj = {});\n") + "var __t, __p = ''" + (isEscaping ? ", __e = _.escape" : "") + (isEvaluating ? ", __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n" : ";\n") + source + "return __p\n}";
+          var result2 = attempt(function() {
+            return Function2(importsKeys, sourceURL + "return " + source).apply(undefined2, importsValues);
+          });
+          result2.source = source;
+          if (isError(result2)) {
+            throw result2;
+          }
+          return result2;
+        }
+        function toLower(value) {
+          return toString4(value).toLowerCase();
+        }
+        function toUpper(value) {
+          return toString4(value).toUpperCase();
+        }
+        function trim2(string5, chars, guard) {
+          string5 = toString4(string5);
+          if (string5 && (guard || chars === undefined2)) {
+            return baseTrim(string5);
+          }
+          if (!string5 || !(chars = baseToString2(chars))) {
+            return string5;
+          }
+          var strSymbols = stringToArray(string5), chrSymbols = stringToArray(chars), start = charsStartIndex(strSymbols, chrSymbols), end = charsEndIndex(strSymbols, chrSymbols) + 1;
+          return castSlice(strSymbols, start, end).join("");
+        }
+        function trimEnd(string5, chars, guard) {
+          string5 = toString4(string5);
+          if (string5 && (guard || chars === undefined2)) {
+            return string5.slice(0, trimmedEndIndex(string5) + 1);
+          }
+          if (!string5 || !(chars = baseToString2(chars))) {
+            return string5;
+          }
+          var strSymbols = stringToArray(string5), end = charsEndIndex(strSymbols, stringToArray(chars)) + 1;
+          return castSlice(strSymbols, 0, end).join("");
+        }
+        function trimStart(string5, chars, guard) {
+          string5 = toString4(string5);
+          if (string5 && (guard || chars === undefined2)) {
+            return string5.replace(reTrimStart, "");
+          }
+          if (!string5 || !(chars = baseToString2(chars))) {
+            return string5;
+          }
+          var strSymbols = stringToArray(string5), start = charsStartIndex(strSymbols, stringToArray(chars));
+          return castSlice(strSymbols, start).join("");
+        }
+        function truncate(string5, options) {
+          var length = DEFAULT_TRUNC_LENGTH, omission = DEFAULT_TRUNC_OMISSION;
+          if (isObject5(options)) {
+            var separator = "separator" in options ? options.separator : separator;
+            length = "length" in options ? toInteger(options.length) : length;
+            omission = "omission" in options ? baseToString2(options.omission) : omission;
+          }
+          string5 = toString4(string5);
+          var strLength = string5.length;
+          if (hasUnicode(string5)) {
+            var strSymbols = stringToArray(string5);
+            strLength = strSymbols.length;
+          }
+          if (length >= strLength) {
+            return string5;
+          }
+          var end = length - stringSize(omission);
+          if (end < 1) {
+            return omission;
+          }
+          var result2 = strSymbols ? castSlice(strSymbols, 0, end).join("") : string5.slice(0, end);
+          if (separator === undefined2) {
+            return result2 + omission;
+          }
+          if (strSymbols) {
+            end += result2.length - end;
+          }
+          if (isRegExp2(separator)) {
+            if (string5.slice(end).search(separator)) {
+              var match, substring = result2;
+              if (!separator.global) {
+                separator = RegExp2(separator.source, toString4(reFlags.exec(separator)) + "g");
+              }
+              separator.lastIndex = 0;
+              while (match = separator.exec(substring)) {
+                var newEnd = match.index;
+              }
+              result2 = result2.slice(0, newEnd === undefined2 ? end : newEnd);
+            }
+          } else if (string5.indexOf(baseToString2(separator), end) != end) {
+            var index = result2.lastIndexOf(separator);
+            if (index > -1) {
+              result2 = result2.slice(0, index);
+            }
+          }
+          return result2 + omission;
+        }
+        function unescape2(string5) {
+          string5 = toString4(string5);
+          return string5 && reHasEscapedHtml.test(string5) ? string5.replace(reEscapedHtml, unescapeHtmlChar) : string5;
+        }
+        var upperCase = createCompounder(function(result2, word, index) {
+          return result2 + (index ? " " : "") + word.toUpperCase();
+        });
+        var upperFirst = createCaseFirst("toUpperCase");
+        function words(string5, pattern, guard) {
+          string5 = toString4(string5);
+          pattern = guard ? undefined2 : pattern;
+          if (pattern === undefined2) {
+            return hasUnicodeWord(string5) ? unicodeWords(string5) : asciiWords(string5);
+          }
+          return string5.match(pattern) || [];
+        }
+        var attempt = baseRest(function(func, args) {
+          try {
+            return apply(func, undefined2, args);
+          } catch (e) {
+            return isError(e) ? e : new Error2(e);
+          }
+        });
+        var bindAll = flatRest(function(object4, methodNames) {
+          arrayEach(methodNames, function(key) {
+            key = toKey2(key);
+            baseAssignValue(object4, key, bind2(object4[key], object4));
+          });
+          return object4;
+        });
+        function cond(pairs) {
+          var length = pairs == null ? 0 : pairs.length, toIteratee = getIteratee();
+          pairs = !length ? [] : arrayMap2(pairs, function(pair) {
+            if (typeof pair[1] != "function") {
+              throw new TypeError2(FUNC_ERROR_TEXT2);
+            }
+            return [toIteratee(pair[0]), pair[1]];
+          });
+          return baseRest(function(args) {
+            var index = -1;
+            while (++index < length) {
+              var pair = pairs[index];
+              if (apply(pair[0], this, args)) {
+                return apply(pair[1], this, args);
+              }
+            }
+          });
+        }
+        function conforms(source) {
+          return baseConforms(baseClone(source, CLONE_DEEP_FLAG));
+        }
+        function constant(value) {
+          return function() {
+            return value;
+          };
+        }
+        function defaultTo(value, defaultValue) {
+          return value == null || value !== value ? defaultValue : value;
+        }
+        var flow = createFlow();
+        var flowRight = createFlow(true);
+        function identity2(value) {
+          return value;
+        }
+        function iteratee(func) {
+          return baseIteratee2(typeof func == "function" ? func : baseClone(func, CLONE_DEEP_FLAG));
+        }
+        function matches(source) {
+          return baseMatches2(baseClone(source, CLONE_DEEP_FLAG));
+        }
+        function matchesProperty(path35, srcValue) {
+          return baseMatchesProperty2(path35, baseClone(srcValue, CLONE_DEEP_FLAG));
+        }
+        var method = baseRest(function(path35, args) {
+          return function(object4) {
+            return baseInvoke(object4, path35, args);
+          };
+        });
+        var methodOf = baseRest(function(object4, args) {
+          return function(path35) {
+            return baseInvoke(object4, path35, args);
+          };
+        });
+        function mixin(object4, source, options) {
+          var props = keys2(source), methodNames = baseFunctions(source, props);
+          if (options == null && !(isObject5(source) && (methodNames.length || !props.length))) {
+            options = source;
+            source = object4;
+            object4 = this;
+            methodNames = baseFunctions(source, keys2(source));
+          }
+          var chain2 = !(isObject5(options) && "chain" in options) || !!options.chain, isFunc = isFunction4(object4);
+          arrayEach(methodNames, function(methodName) {
+            var func = source[methodName];
+            object4[methodName] = func;
+            if (isFunc) {
+              object4.prototype[methodName] = function() {
+                var chainAll = this.__chain__;
+                if (chain2 || chainAll) {
+                  var result2 = object4(this.__wrapped__), actions = result2.__actions__ = copyArray(this.__actions__);
+                  actions.push({ "func": func, "args": arguments, "thisArg": object4 });
+                  result2.__chain__ = chainAll;
+                  return result2;
+                }
+                return func.apply(object4, arrayPush2([this.value()], arguments));
+              };
+            }
+          });
+          return object4;
+        }
+        function noConflict() {
+          if (root2._ === this) {
+            root2._ = oldDash;
+          }
+          return this;
+        }
+        function noop4() {
+        }
+        function nthArg(n) {
+          n = toInteger(n);
+          return baseRest(function(args) {
+            return baseNth(args, n);
+          });
+        }
+        var over = createOver(arrayMap2);
+        var overEvery = createOver(arrayEvery);
+        var overSome = createOver(arraySome2);
+        function property2(path35) {
+          return isKey2(path35) ? baseProperty2(toKey2(path35)) : basePropertyDeep2(path35);
+        }
+        function propertyOf(object4) {
+          return function(path35) {
+            return object4 == null ? undefined2 : baseGet2(object4, path35);
+          };
+        }
+        var range = createRange();
+        var rangeRight = createRange(true);
+        function stubArray2() {
+          return [];
+        }
+        function stubFalse2() {
+          return false;
+        }
+        function stubObject() {
+          return {};
+        }
+        function stubString() {
+          return "";
+        }
+        function stubTrue() {
+          return true;
+        }
+        function times(n, iteratee2) {
+          n = toInteger(n);
+          if (n < 1 || n > MAX_SAFE_INTEGER3) {
+            return [];
+          }
+          var index = MAX_ARRAY_LENGTH, length = nativeMin(n, MAX_ARRAY_LENGTH);
+          iteratee2 = getIteratee(iteratee2);
+          n -= MAX_ARRAY_LENGTH;
+          var result2 = baseTimes2(length, iteratee2);
+          while (++index < n) {
+            iteratee2(index);
+          }
+          return result2;
+        }
+        function toPath(value) {
+          if (isArray3(value)) {
+            return arrayMap2(value, toKey2);
+          }
+          return isSymbol2(value) ? [value] : copyArray(stringToPath2(toString4(value)));
+        }
+        function uniqueId(prefix) {
+          var id = ++idCounter;
+          return toString4(prefix) + id;
+        }
+        var add = createMathOperation(function(augend, addend) {
+          return augend + addend;
+        }, 0);
+        var ceil = createRound("ceil");
+        var divide = createMathOperation(function(dividend, divisor) {
+          return dividend / divisor;
+        }, 1);
+        var floor = createRound("floor");
+        function max(array4) {
+          return array4 && array4.length ? baseExtremum(array4, identity2, baseGt) : undefined2;
+        }
+        function maxBy(array4, iteratee2) {
+          return array4 && array4.length ? baseExtremum(array4, getIteratee(iteratee2, 2), baseGt) : undefined2;
+        }
+        function mean(array4) {
+          return baseMean(array4, identity2);
+        }
+        function meanBy(array4, iteratee2) {
+          return baseMean(array4, getIteratee(iteratee2, 2));
+        }
+        function min(array4) {
+          return array4 && array4.length ? baseExtremum(array4, identity2, baseLt) : undefined2;
+        }
+        function minBy(array4, iteratee2) {
+          return array4 && array4.length ? baseExtremum(array4, getIteratee(iteratee2, 2), baseLt) : undefined2;
+        }
+        var multiply = createMathOperation(function(multiplier, multiplicand) {
+          return multiplier * multiplicand;
+        }, 1);
+        var round = createRound("round");
+        var subtract = createMathOperation(function(minuend, subtrahend) {
+          return minuend - subtrahend;
+        }, 0);
+        function sum(array4) {
+          return array4 && array4.length ? baseSum(array4, identity2) : 0;
+        }
+        function sumBy(array4, iteratee2) {
+          return array4 && array4.length ? baseSum(array4, getIteratee(iteratee2, 2)) : 0;
+        }
+        lodash.after = after;
+        lodash.ary = ary;
+        lodash.assign = assign;
+        lodash.assignIn = assignIn;
+        lodash.assignInWith = assignInWith;
+        lodash.assignWith = assignWith;
+        lodash.at = at;
+        lodash.before = before;
+        lodash.bind = bind2;
+        lodash.bindAll = bindAll;
+        lodash.bindKey = bindKey;
+        lodash.castArray = castArray;
+        lodash.chain = chain;
+        lodash.chunk = chunk;
+        lodash.compact = compact;
+        lodash.concat = concat;
+        lodash.cond = cond;
+        lodash.conforms = conforms;
+        lodash.constant = constant;
+        lodash.countBy = countBy;
+        lodash.create = create;
+        lodash.curry = curry;
+        lodash.curryRight = curryRight;
+        lodash.debounce = debounce;
+        lodash.defaults = defaults2;
+        lodash.defaultsDeep = defaultsDeep;
+        lodash.defer = defer;
+        lodash.delay = delay2;
+        lodash.difference = difference;
+        lodash.differenceBy = differenceBy;
+        lodash.differenceWith = differenceWith;
+        lodash.drop = drop;
+        lodash.dropRight = dropRight;
+        lodash.dropRightWhile = dropRightWhile;
+        lodash.dropWhile = dropWhile;
+        lodash.fill = fill;
+        lodash.filter = filter6;
+        lodash.flatMap = flatMap;
+        lodash.flatMapDeep = flatMapDeep;
+        lodash.flatMapDepth = flatMapDepth;
+        lodash.flatten = flatten;
+        lodash.flattenDeep = flattenDeep;
+        lodash.flattenDepth = flattenDepth;
+        lodash.flip = flip;
+        lodash.flow = flow;
+        lodash.flowRight = flowRight;
+        lodash.fromPairs = fromPairs;
+        lodash.functions = functions;
+        lodash.functionsIn = functionsIn;
+        lodash.groupBy = groupBy;
+        lodash.initial = initial;
+        lodash.intersection = intersection3;
+        lodash.intersectionBy = intersectionBy;
+        lodash.intersectionWith = intersectionWith;
+        lodash.invert = invert;
+        lodash.invertBy = invertBy;
+        lodash.invokeMap = invokeMap;
+        lodash.iteratee = iteratee;
+        lodash.keyBy = keyBy;
+        lodash.keys = keys2;
+        lodash.keysIn = keysIn;
+        lodash.map = map3;
+        lodash.mapKeys = mapKeys;
+        lodash.mapValues = mapValues;
+        lodash.matches = matches;
+        lodash.matchesProperty = matchesProperty;
+        lodash.memoize = memoize2;
+        lodash.merge = merge4;
+        lodash.mergeWith = mergeWith;
+        lodash.method = method;
+        lodash.methodOf = methodOf;
+        lodash.mixin = mixin;
+        lodash.negate = negate;
+        lodash.nthArg = nthArg;
+        lodash.omit = omit3;
+        lodash.omitBy = omitBy;
+        lodash.once = once;
+        lodash.orderBy = orderBy;
+        lodash.over = over;
+        lodash.overArgs = overArgs;
+        lodash.overEvery = overEvery;
+        lodash.overSome = overSome;
+        lodash.partial = partial3;
+        lodash.partialRight = partialRight;
+        lodash.partition = partition;
+        lodash.pick = pick3;
+        lodash.pickBy = pickBy;
+        lodash.property = property2;
+        lodash.propertyOf = propertyOf;
+        lodash.pull = pull;
+        lodash.pullAll = pullAll;
+        lodash.pullAllBy = pullAllBy;
+        lodash.pullAllWith = pullAllWith;
+        lodash.pullAt = pullAt;
+        lodash.range = range;
+        lodash.rangeRight = rangeRight;
+        lodash.rearg = rearg;
+        lodash.reject = reject;
+        lodash.remove = remove;
+        lodash.rest = rest;
+        lodash.reverse = reverse;
+        lodash.sampleSize = sampleSize;
+        lodash.set = set3;
+        lodash.setWith = setWith;
+        lodash.shuffle = shuffle;
+        lodash.slice = slice;
+        lodash.sortBy = sortBy;
+        lodash.sortedUniq = sortedUniq;
+        lodash.sortedUniqBy = sortedUniqBy;
+        lodash.split = split2;
+        lodash.spread = spread3;
+        lodash.tail = tail;
+        lodash.take = take;
+        lodash.takeRight = takeRight;
+        lodash.takeRightWhile = takeRightWhile;
+        lodash.takeWhile = takeWhile;
+        lodash.tap = tap;
+        lodash.throttle = throttle2;
+        lodash.thru = thru;
+        lodash.toArray = toArray2;
+        lodash.toPairs = toPairs;
+        lodash.toPairsIn = toPairsIn;
+        lodash.toPath = toPath;
+        lodash.toPlainObject = toPlainObject;
+        lodash.transform = transform8;
+        lodash.unary = unary;
+        lodash.union = union3;
+        lodash.unionBy = unionBy;
+        lodash.unionWith = unionWith;
+        lodash.uniq = uniq;
+        lodash.uniqBy = uniqBy2;
+        lodash.uniqWith = uniqWith;
+        lodash.unset = unset;
+        lodash.unzip = unzip;
+        lodash.unzipWith = unzipWith;
+        lodash.update = update;
+        lodash.updateWith = updateWith;
+        lodash.values = values;
+        lodash.valuesIn = valuesIn;
+        lodash.without = without;
+        lodash.words = words;
+        lodash.wrap = wrap;
+        lodash.xor = xor3;
+        lodash.xorBy = xorBy;
+        lodash.xorWith = xorWith;
+        lodash.zip = zip;
+        lodash.zipObject = zipObject;
+        lodash.zipObjectDeep = zipObjectDeep;
+        lodash.zipWith = zipWith;
+        lodash.entries = toPairs;
+        lodash.entriesIn = toPairsIn;
+        lodash.extend = assignIn;
+        lodash.extendWith = assignInWith;
+        mixin(lodash, lodash);
+        lodash.add = add;
+        lodash.attempt = attempt;
+        lodash.camelCase = camelCase2;
+        lodash.capitalize = capitalize;
+        lodash.ceil = ceil;
+        lodash.clamp = clamp;
+        lodash.clone = clone3;
+        lodash.cloneDeep = cloneDeep;
+        lodash.cloneDeepWith = cloneDeepWith;
+        lodash.cloneWith = cloneWith;
+        lodash.conformsTo = conformsTo;
+        lodash.deburr = deburr;
+        lodash.defaultTo = defaultTo;
+        lodash.divide = divide;
+        lodash.endsWith = endsWith2;
+        lodash.eq = eq2;
+        lodash.escape = escape2;
+        lodash.escapeRegExp = escapeRegExp;
+        lodash.every = every;
+        lodash.find = find;
+        lodash.findIndex = findIndex;
+        lodash.findKey = findKey2;
+        lodash.findLast = findLast;
+        lodash.findLastIndex = findLastIndex;
+        lodash.findLastKey = findLastKey;
+        lodash.floor = floor;
+        lodash.forEach = forEach2;
+        lodash.forEachRight = forEachRight;
+        lodash.forIn = forIn;
+        lodash.forInRight = forInRight;
+        lodash.forOwn = forOwn;
+        lodash.forOwnRight = forOwnRight;
+        lodash.get = get2;
+        lodash.gt = gt;
+        lodash.gte = gte;
+        lodash.has = has;
+        lodash.hasIn = hasIn2;
+        lodash.head = head;
+        lodash.identity = identity2;
+        lodash.includes = includes;
+        lodash.indexOf = indexOf;
+        lodash.inRange = inRange;
+        lodash.invoke = invoke;
+        lodash.isArguments = isArguments2;
+        lodash.isArray = isArray3;
+        lodash.isArrayBuffer = isArrayBuffer2;
+        lodash.isArrayLike = isArrayLike2;
+        lodash.isArrayLikeObject = isArrayLikeObject;
+        lodash.isBoolean = isBoolean2;
+        lodash.isBuffer = isBuffer3;
+        lodash.isDate = isDate2;
+        lodash.isElement = isElement;
+        lodash.isEmpty = isEmpty;
+        lodash.isEqual = isEqual;
+        lodash.isEqualWith = isEqualWith;
+        lodash.isError = isError;
+        lodash.isFinite = isFinite2;
+        lodash.isFunction = isFunction4;
+        lodash.isInteger = isInteger;
+        lodash.isLength = isLength2;
+        lodash.isMap = isMap;
+        lodash.isMatch = isMatch;
+        lodash.isMatchWith = isMatchWith;
+        lodash.isNaN = isNaN2;
+        lodash.isNative = isNative;
+        lodash.isNil = isNil;
+        lodash.isNull = isNull;
+        lodash.isNumber = isNumber2;
+        lodash.isObject = isObject5;
+        lodash.isObjectLike = isObjectLike2;
+        lodash.isPlainObject = isPlainObject4;
+        lodash.isRegExp = isRegExp2;
+        lodash.isSafeInteger = isSafeInteger;
+        lodash.isSet = isSet;
+        lodash.isString = isString2;
+        lodash.isSymbol = isSymbol2;
+        lodash.isTypedArray = isTypedArray3;
+        lodash.isUndefined = isUndefined2;
+        lodash.isWeakMap = isWeakMap;
+        lodash.isWeakSet = isWeakSet;
+        lodash.join = join2;
+        lodash.kebabCase = kebabCase;
+        lodash.last = last;
+        lodash.lastIndexOf = lastIndexOf;
+        lodash.lowerCase = lowerCase;
+        lodash.lowerFirst = lowerFirst;
+        lodash.lt = lt;
+        lodash.lte = lte;
+        lodash.max = max;
+        lodash.maxBy = maxBy;
+        lodash.mean = mean;
+        lodash.meanBy = meanBy;
+        lodash.min = min;
+        lodash.minBy = minBy;
+        lodash.stubArray = stubArray2;
+        lodash.stubFalse = stubFalse2;
+        lodash.stubObject = stubObject;
+        lodash.stubString = stubString;
+        lodash.stubTrue = stubTrue;
+        lodash.multiply = multiply;
+        lodash.nth = nth;
+        lodash.noConflict = noConflict;
+        lodash.noop = noop4;
+        lodash.now = now2;
+        lodash.pad = pad;
+        lodash.padEnd = padEnd;
+        lodash.padStart = padStart;
+        lodash.parseInt = parseInt2;
+        lodash.random = random;
+        lodash.reduce = reduce;
+        lodash.reduceRight = reduceRight;
+        lodash.repeat = repeat;
+        lodash.replace = replace;
+        lodash.result = result;
+        lodash.round = round;
+        lodash.runInContext = runInContext2;
+        lodash.sample = sample;
+        lodash.size = size;
+        lodash.snakeCase = snakeCase;
+        lodash.some = some;
+        lodash.sortedIndex = sortedIndex;
+        lodash.sortedIndexBy = sortedIndexBy;
+        lodash.sortedIndexOf = sortedIndexOf;
+        lodash.sortedLastIndex = sortedLastIndex;
+        lodash.sortedLastIndexBy = sortedLastIndexBy;
+        lodash.sortedLastIndexOf = sortedLastIndexOf;
+        lodash.startCase = startCase;
+        lodash.startsWith = startsWith;
+        lodash.subtract = subtract;
+        lodash.sum = sum;
+        lodash.sumBy = sumBy;
+        lodash.template = template;
+        lodash.times = times;
+        lodash.toFinite = toFinite;
+        lodash.toInteger = toInteger;
+        lodash.toLength = toLength;
+        lodash.toLower = toLower;
+        lodash.toNumber = toNumber;
+        lodash.toSafeInteger = toSafeInteger;
+        lodash.toString = toString4;
+        lodash.toUpper = toUpper;
+        lodash.trim = trim2;
+        lodash.trimEnd = trimEnd;
+        lodash.trimStart = trimStart;
+        lodash.truncate = truncate;
+        lodash.unescape = unescape2;
+        lodash.uniqueId = uniqueId;
+        lodash.upperCase = upperCase;
+        lodash.upperFirst = upperFirst;
+        lodash.each = forEach2;
+        lodash.eachRight = forEachRight;
+        lodash.first = head;
+        mixin(lodash, (function() {
+          var source = {};
+          baseForOwn(lodash, function(func, methodName) {
+            if (!hasOwnProperty11.call(lodash.prototype, methodName)) {
+              source[methodName] = func;
+            }
+          });
+          return source;
+        })(), { "chain": false });
+        lodash.VERSION = VERSION16;
+        arrayEach(["bind", "bindKey", "curry", "curryRight", "partial", "partialRight"], function(methodName) {
+          lodash[methodName].placeholder = lodash;
+        });
+        arrayEach(["drop", "take"], function(methodName, index) {
+          LazyWrapper.prototype[methodName] = function(n) {
+            n = n === undefined2 ? 1 : nativeMax(toInteger(n), 0);
+            var result2 = this.__filtered__ && !index ? new LazyWrapper(this) : this.clone();
+            if (result2.__filtered__) {
+              result2.__takeCount__ = nativeMin(n, result2.__takeCount__);
+            } else {
+              result2.__views__.push({
+                "size": nativeMin(n, MAX_ARRAY_LENGTH),
+                "type": methodName + (result2.__dir__ < 0 ? "Right" : "")
+              });
+            }
+            return result2;
+          };
+          LazyWrapper.prototype[methodName + "Right"] = function(n) {
+            return this.reverse()[methodName](n).reverse();
+          };
+        });
+        arrayEach(["filter", "map", "takeWhile"], function(methodName, index) {
+          var type = index + 1, isFilter = type == LAZY_FILTER_FLAG || type == LAZY_WHILE_FLAG;
+          LazyWrapper.prototype[methodName] = function(iteratee2) {
+            var result2 = this.clone();
+            result2.__iteratees__.push({
+              "iteratee": getIteratee(iteratee2, 3),
+              "type": type
+            });
+            result2.__filtered__ = result2.__filtered__ || isFilter;
+            return result2;
+          };
+        });
+        arrayEach(["head", "last"], function(methodName, index) {
+          var takeName = "take" + (index ? "Right" : "");
+          LazyWrapper.prototype[methodName] = function() {
+            return this[takeName](1).value()[0];
+          };
+        });
+        arrayEach(["initial", "tail"], function(methodName, index) {
+          var dropName = "drop" + (index ? "" : "Right");
+          LazyWrapper.prototype[methodName] = function() {
+            return this.__filtered__ ? new LazyWrapper(this) : this[dropName](1);
+          };
+        });
+        LazyWrapper.prototype.compact = function() {
+          return this.filter(identity2);
+        };
+        LazyWrapper.prototype.find = function(predicate) {
+          return this.filter(predicate).head();
+        };
+        LazyWrapper.prototype.findLast = function(predicate) {
+          return this.reverse().find(predicate);
+        };
+        LazyWrapper.prototype.invokeMap = baseRest(function(path35, args) {
+          if (typeof path35 == "function") {
+            return new LazyWrapper(this);
+          }
+          return this.map(function(value) {
+            return baseInvoke(value, path35, args);
+          });
+        });
+        LazyWrapper.prototype.reject = function(predicate) {
+          return this.filter(negate(getIteratee(predicate)));
+        };
+        LazyWrapper.prototype.slice = function(start, end) {
+          start = toInteger(start);
+          var result2 = this;
+          if (result2.__filtered__ && (start > 0 || end < 0)) {
+            return new LazyWrapper(result2);
+          }
+          if (start < 0) {
+            result2 = result2.takeRight(-start);
+          } else if (start) {
+            result2 = result2.drop(start);
+          }
+          if (end !== undefined2) {
+            end = toInteger(end);
+            result2 = end < 0 ? result2.dropRight(-end) : result2.take(end - start);
+          }
+          return result2;
+        };
+        LazyWrapper.prototype.takeRightWhile = function(predicate) {
+          return this.reverse().takeWhile(predicate).reverse();
+        };
+        LazyWrapper.prototype.toArray = function() {
+          return this.take(MAX_ARRAY_LENGTH);
+        };
+        baseForOwn(LazyWrapper.prototype, function(func, methodName) {
+          var checkIteratee = /^(?:filter|find|map|reject)|While$/.test(methodName), isTaker = /^(?:head|last)$/.test(methodName), lodashFunc = lodash[isTaker ? "take" + (methodName == "last" ? "Right" : "") : methodName], retUnwrapped = isTaker || /^find/.test(methodName);
+          if (!lodashFunc) {
+            return;
+          }
+          lodash.prototype[methodName] = function() {
+            var value = this.__wrapped__, args = isTaker ? [1] : arguments, isLazy = value instanceof LazyWrapper, iteratee2 = args[0], useLazy = isLazy || isArray3(value);
+            var interceptor = function(value2) {
+              var result3 = lodashFunc.apply(lodash, arrayPush2([value2], args));
+              return isTaker && chainAll ? result3[0] : result3;
+            };
+            if (useLazy && checkIteratee && typeof iteratee2 == "function" && iteratee2.length != 1) {
+              isLazy = useLazy = false;
+            }
+            var chainAll = this.__chain__, isHybrid = !!this.__actions__.length, isUnwrapped = retUnwrapped && !chainAll, onlyLazy = isLazy && !isHybrid;
+            if (!retUnwrapped && useLazy) {
+              value = onlyLazy ? value : new LazyWrapper(this);
+              var result2 = func.apply(value, args);
+              result2.__actions__.push({ "func": thru, "args": [interceptor], "thisArg": undefined2 });
+              return new LodashWrapper(result2, chainAll);
+            }
+            if (isUnwrapped && onlyLazy) {
+              return func.apply(this, args);
+            }
+            result2 = this.thru(interceptor);
+            return isUnwrapped ? isTaker ? result2.value()[0] : result2.value() : result2;
+          };
+        });
+        arrayEach(["pop", "push", "shift", "sort", "splice", "unshift"], function(methodName) {
+          var func = arrayProto2[methodName], chainName = /^(?:push|sort|unshift)$/.test(methodName) ? "tap" : "thru", retUnwrapped = /^(?:pop|shift)$/.test(methodName);
+          lodash.prototype[methodName] = function() {
+            var args = arguments;
+            if (retUnwrapped && !this.__chain__) {
+              var value = this.value();
+              return func.apply(isArray3(value) ? value : [], args);
+            }
+            return this[chainName](function(value2) {
+              return func.apply(isArray3(value2) ? value2 : [], args);
+            });
+          };
+        });
+        baseForOwn(LazyWrapper.prototype, function(func, methodName) {
+          var lodashFunc = lodash[methodName];
+          if (lodashFunc) {
+            var key = lodashFunc.name + "";
+            if (!hasOwnProperty11.call(realNames, key)) {
+              realNames[key] = [];
+            }
+            realNames[key].push({ "name": methodName, "func": lodashFunc });
+          }
+        });
+        realNames[createHybrid(undefined2, WRAP_BIND_KEY_FLAG).name] = [{
+          "name": "wrapper",
+          "func": undefined2
+        }];
+        LazyWrapper.prototype.clone = lazyClone;
+        LazyWrapper.prototype.reverse = lazyReverse;
+        LazyWrapper.prototype.value = lazyValue;
+        lodash.prototype.at = wrapperAt;
+        lodash.prototype.chain = wrapperChain;
+        lodash.prototype.commit = wrapperCommit;
+        lodash.prototype.next = wrapperNext;
+        lodash.prototype.plant = wrapperPlant;
+        lodash.prototype.reverse = wrapperReverse;
+        lodash.prototype.toJSON = lodash.prototype.valueOf = lodash.prototype.value = wrapperValue;
+        lodash.prototype.first = lodash.prototype.head;
+        if (symIterator) {
+          lodash.prototype[symIterator] = wrapperToIterator;
+        }
+        return lodash;
+      });
+      var _2 = runInContext();
+      if (typeof define == "function" && typeof define.amd == "object" && define.amd) {
+        root2._ = _2;
+        define(function() {
+          return _2;
+        });
+      } else if (freeModule3) {
+        (freeModule3.exports = _2)._ = _2;
+        freeExports3._ = _2;
+      } else {
+        root2._ = _2;
+      }
+    }).call(exports2);
+  }
+});
+
 // src/utils/faceSampling.ts
-async function sampleDualFaceAssets(roleDesc, roleName = "") {
-  const fullText = `${roleName} ${roleDesc}`;
-  let gender = "\u5973";
-  if (/男|男主|少年|叔|公|兄|弟|爷|先生|帅哥|小伙|boy|man|male/i.test(fullText)) {
-    gender = "\u7537";
-  } else if (/女|女主|少女|姐|妹|婆|女士|美女|姑娘|girl|woman|female/i.test(fullText)) {
-    gender = "\u5973";
+function weightedPickOne(candidates, targetScore, temperature = 0.8) {
+  if (candidates.length === 0) return null;
+  if (candidates.length === 1) return candidates[0];
+  const diffs = candidates.map((item) => {
+    const score = typeof item.beautyScore === "number" && !isNaN(item.beautyScore) ? item.beautyScore : DEFAULT_BEAUTY_SCORE;
+    return Math.abs(score - targetScore);
+  });
+  const weights = diffs.map((d) => Math.exp(-d / Math.max(0.1, temperature)));
+  const sumWeights = import_lodash.default.sum(weights);
+  let rand = Math.random() * sumWeights;
+  for (let i = 0; i < candidates.length; i++) {
+    rand -= weights[i];
+    if (rand <= 0) return candidates[i];
   }
-  let ethnicity = "\u4E1C\u4E9A";
-  if (/欧美|白人|西方|金发|碧眼|caucasian|western|white/i.test(fullText)) {
-    ethnicity = "\u6B27\u7F8E";
-  } else if (/东南亚|泰国|越南|印尼|菲律宾|马来|thai|vietnam|indonesia/i.test(fullText)) {
-    ethnicity = "\u4E1C\u5357\u4E9A";
-  } else if (/南亚|印度|巴基斯坦|孟加拉|斯里兰卡|indian|pakistan/i.test(fullText)) {
-    ethnicity = "\u5357\u4E9A";
-  } else if (/拉丁|拉美|巴西|墨西哥|阿根廷|西班牙裔|latino|latin|hispanic|mexican|brazil/i.test(fullText)) {
-    ethnicity = "\u62C9\u4E01";
-  } else if (/混血|中西|half|mixed/i.test(fullText)) {
-    ethnicity = "\u5176\u4ED6";
-  } else if (/非裔|黑人|black|african/i.test(fullText)) {
-    ethnicity = "\u975E\u88D4";
+  return candidates[candidates.length - 1];
+}
+async function sampleAssetReferences(roleMeta, roleName = "") {
+  if (roleMeta && roleMeta.species !== void 0 && roleMeta.species !== 1) {
+    return {
+      referenceList: [],
+      faceAssetIds: [],
+      faceSummaryPrompt: ""
+    };
   }
-  let ageGroup = "\u9752\u5E74";
-  if (/幼|少儿|童|萝莉|正太|孩|child|kid/i.test(fullText)) {
-    ageGroup = "\u5C11\u5E74";
-  } else if (/少年|高中生|初中生|学生|青涩|teen/i.test(fullText)) {
-    ageGroup = "\u5C11\u5E74";
-  } else if (/中年|大叔|熟男|熟女|3\d岁|4\d岁|middle/i.test(fullText)) {
-    ageGroup = "\u4E2D\u5E74";
-  } else if (/老|爷|婆|年迈|白发沧桑|6\d岁|7\d岁|elder/i.test(fullText)) {
-    ageGroup = "\u8001\u5E74";
-  }
-  let beautyPrefer;
-  if (/颜值|美女|帅哥|惊艳|绝美|俊朗|俊美|英俊|倾国|盛世美颜|好看|漂亮|帅气|beautiful|handsome|gorgeous/i.test(fullText)) {
-    beautyPrefer = "\u9AD8";
-  } else if (/普通|路人|平平|其貌不扬|一般|大众脸|ordinary|plain|average/i.test(fullText)) {
-    beautyPrefer = "\u4E2D";
-  }
-  let candidates = await utils_default.db("o_faceAsset").where({ gender, ethnicity }).select("*");
+  const genderCode = roleMeta?.gender ?? 2;
+  const ethnicityCode = roleMeta?.ethnicity ?? 1;
+  const ageGroupCode = roleMeta?.ageGroup ?? 2;
+  const targetScore = Math.max(2, Math.min(10, roleMeta?.beautyScore ?? 6.5));
+  const genderLabel = GENDER_MAP[genderCode] || "\u5973";
+  const ethnicityLabel = ETHNICITY_MAP[ethnicityCode] || "\u4E1C\u4E9A";
+  const ageGroupLabel = AGE_GROUP_MAP[ageGroupCode] || "\u9752\u5E74";
+  let candidates = await utils_default.db("o_faceAsset").where({ species: 1, gender: String(genderCode), ethnicity: String(ethnicityCode) }).select("*");
   if (candidates.length < 2) {
-    candidates = await utils_default.db("o_faceAsset").where({ gender }).select("*");
+    candidates = await utils_default.db("o_faceAsset").where({ species: 1, gender: String(genderCode) }).select("*");
   }
   if (candidates.length < 2) {
-    candidates = await utils_default.db("o_faceAsset").select("*");
-  }
-  if (beautyPrefer) {
-    const rank = (b) => b === beautyPrefer ? 0 : b === "\u9AD8" ? 1 : b === "\u4E2D" ? 2 : 3;
-    candidates = [...candidates].sort((a, b) => rank(a.beautyLevel) - rank(b.beautyLevel));
+    candidates = await utils_default.db("o_faceAsset").where("species", 1).select("*");
   }
   if (candidates.length === 0) {
     return {
       referenceList: [],
       faceAssetIds: [],
-      faceSummaryPrompt: `\u3010\u89D2\u8272\u7279\u5F81\u5EFA\u8BAE\u3011\uFF1A${ethnicity}${ageGroup}${gender}\uFF0C\u9AA8\u76F8\u7ACB\u4F53\u81EA\u7136\uFF0C\u675C\u7EDD\u6A21\u677F\u5316\u7F51\u7EA2\u8138\u3002`
+      faceSummaryPrompt: `\u3010\u89D2\u8272\u7279\u5F81\u5EFA\u8BAE\u3011\uFF1A\u5168\u65B0\u539F\u521B${ageGroupLabel}${genderLabel}\u89D2\u8272\uFF0C\u9AA8\u76F8\u7ACB\u4F53\u81EA\u7136\uFF0C\u675C\u7EDD\u6A21\u677F\u5316\u5047\u8138\u3002`
     };
   }
-  const shuffled = candidates.sort(() => 0.5 - Math.random());
-  const selected = shuffled.slice(0, 2);
+  let windowCandidates = candidates.filter((item) => {
+    const score = typeof item.beautyScore === "number" && !isNaN(item.beautyScore) ? item.beautyScore : DEFAULT_BEAUTY_SCORE;
+    return Math.abs(score - targetScore) <= 1.5;
+  });
+  if (windowCandidates.length < 3) windowCandidates = candidates;
+  const primaryFace = weightedPickOne(windowCandidates, targetScore, 0.8);
+  const remainingCandidates = candidates.filter((c) => c.id !== primaryFace.id);
+  const secondaryFace = remainingCandidates.length > 0 ? weightedPickOne(remainingCandidates, targetScore, 1) : primaryFace;
+  const selected = primaryFace.id === secondaryFace.id ? [primaryFace] : [secondaryFace, primaryFace];
   const referenceList = [];
   const faceAssetIds = [];
   for (const item of selected) {
-    if (item.id !== void 0) {
-      faceAssetIds.push(item.id);
-    }
+    if (item.id !== void 0) faceAssetIds.push(item.id);
     if (item.filePath) {
       try {
         const base644 = await utils_default.oss.getImageBase64(item.filePath);
-        if (base644) {
-          referenceList.push({ type: "image", base64: base644 });
-        }
+        if (base644) referenceList.push({ type: "image", base64: base644 });
       } catch (e) {
-        console.warn("\u8BFB\u53D6\u4EBA\u8138\u8D44\u4EA7base64\u5931\u8D25:", item.filePath, e);
+        console.warn("\u8BFB\u53D6\u4EBA\u8138\u5E95\u56FEBase64\u5931\u8D25:", item.filePath, e);
       }
     }
   }
   let faceSummaryPrompt = "";
   if (selected.length >= 2) {
-    const f1 = selected[0];
-    const f2 = selected[1];
-    faceSummaryPrompt = `\u3010\u53CC\u53C2\u8003\u5E95\u56FE\u7279\u5F81\u878D\u5408\u3011\uFF1A\u5168\u65B0\u539F\u521B${ethnicity}${ageGroup}${gender}\u89D2\u8272\uFF0C\u878D\u5408\u4E24\u5F20\u53C2\u8003\u5E95\u56FE\uFF1A\u56FE2\uFF08\u4E3B\u8981\u53C2\u800370%\uFF1A${f2.description || "\u4E3B\u5BFC\u4E94\u5B98\u795E\u97F5\u4E0E\u751F\u6D3B\u5316\u9762\u5B54"}\uFF09\u4E0E\u56FE1\uFF08\u8F85\u52A9\u53C2\u800330%\uFF1A${f1.description || "\u63D0\u4F9B\u9AA8\u76F8\u7ACB\u4F53\u5EA6\u4E0E\u4E0B\u988C\u7EBF\u6761"}\uFF09\uFF0C\u4E25\u7981\u673A\u68B0\u514B\u9686\u5355\u5F20\u5E95\u56FE\u3002`;
+    faceSummaryPrompt = `\u3010\u53CC\u771F\u4EBA\u53C2\u8003\u5E95\u56FE\u878D\u5408\uFF08\u6838\u5FC3\u5FC5\u5B88\uFF09\u3011\uFF1A
+\u57FA\u4E8E\u4E24\u5F20\u53C2\u8003\u5E95\u56FE\u751F\u6210\u5168\u65B0\u539F\u521B${ageGroupLabel}${genderLabel}\u89D2\u8272\uFF08\u4E25\u7981\u76F4\u63A5\u590D\u5236\u4EFB\u4E00\u5F20\uFF09\uFF1A
+- \u56FE2\uFF08\u4E3B\u8981\u53C2\u800370%\uFF09\uFF1A\u4EBA\u7269\u8138\u90E8\u7ED3\u6784\u3001\u4E94\u5B98\u6BD4\u4F8B\u3001\u773C\u578B\u795E\u97F5\u3001\u5507\u5F62\u4E0E\u6838\u5FC3\u6C14\u8D28\u4EE5\u56FE2\u4E3A\u4E3B\uFF1B
+- \u56FE1\uFF08\u8F85\u52A9\u53C2\u800330%\uFF09\uFF1A\u53EA\u501F\u5C11\u91CF\u4E0B\u988C\u7EBF\u4E0E\u9F3B\u9AA8\u7ACB\u4F53\u8F6E\u5ED3\u3001\u76AE\u80A4\u8D28\u611F\u3001\u9762\u90E8\u72B6\u6001\u4E0E\u8096\u50CF\u6C1B\u56F4\uFF1B
+\u4E24\u56FE\u89E3\u8026\u91CD\u6784\u4E3A\u72EC\u7ACB\u539F\u521B\u89D2\u8272\u3002`;
   } else if (selected.length === 1) {
-    const f = selected[0];
-    faceSummaryPrompt = `\u3010\u53C2\u8003\u5E95\u56FE\u7279\u5F81\u878D\u5408\u3011\uFF1A\u5168\u65B0\u539F\u521B${ethnicity}${ageGroup}${gender}\u89D2\u8272\uFF0C\u53C2\u8003\u5E95\u56FE\uFF08${f.description || "\u63D0\u4F9B\u9762\u90E8\u9AA8\u76F8\u4E0E\u4E94\u5B98\u6C14\u8D28"}\uFF09\uFF0C\u751F\u6210\u5168\u65B0\u539F\u521B\u9762\u5BB9\u3002`;
+    faceSummaryPrompt = `\u3010\u5355\u771F\u4EBA\u53C2\u8003\u5E95\u56FE\u878D\u5408\uFF08\u6838\u5FC3\u5FC5\u5B88\uFF09\u3011\uFF1A
+\u57FA\u4E8E\u53C2\u8003\u5E95\u56FE\u751F\u6210\u5168\u65B0\u539F\u521B${ageGroupLabel}${genderLabel}\u89D2\u8272\uFF08\u4E25\u7981\u76F4\u63A5\u590D\u5236\uFF09\uFF0C\u53C2\u8003\u5E95\u56FE\u63D0\u4F9B\u9762\u90E8\u9AA8\u76F8\u3001\u4E94\u5B98\u6C14\u8D28\u4E0E\u8096\u50CF\u8D28\u611F\u3002`;
   }
-  return {
-    referenceList,
-    faceAssetIds,
-    faceSummaryPrompt
-  };
+  return { referenceList, faceAssetIds, faceSummaryPrompt };
 }
+async function sampleDualFaceAssets(roleDesc, roleName = "") {
+  const fullText = `${roleName} ${roleDesc}`;
+  let gender = 2;
+  if (/男|男主|少年|叔|公|兄|弟|爷|先生|帅哥|小伙|boy|man|male/i.test(fullText)) {
+    gender = 1;
+  }
+  let ethnicity = 1;
+  if (/欧美|白人|西方|金发|碧眼|caucasian|western|white/i.test(fullText)) {
+    ethnicity = 2;
+  } else if (/东南亚|泰国|越南|印尼|菲律宾|马来/i.test(fullText)) {
+    ethnicity = 3;
+  } else if (/南亚|印度|巴基斯坦/i.test(fullText)) {
+    ethnicity = 4;
+  } else if (/拉丁|拉美|巴西|墨西哥/i.test(fullText)) {
+    ethnicity = 5;
+  } else if (/非裔|黑人|black|african/i.test(fullText)) {
+    ethnicity = 6;
+  } else if (/混血|中西|half|mixed/i.test(fullText)) {
+    ethnicity = 7;
+  }
+  let ageGroup = 2;
+  if (/幼|少儿|童|萝莉|正太|孩|少年|学生|teen/i.test(fullText)) {
+    ageGroup = 1;
+  } else if (/中年|大叔|熟男|熟女|3\d岁|4\d岁/i.test(fullText)) {
+    ageGroup = 3;
+  } else if (/老|爷|婆|年迈|白发|6\d岁|7\d岁|elder/i.test(fullText)) {
+    ageGroup = 4;
+  }
+  let beautyScore = 6.5;
+  if (/绝美|盛世美颜|神颜|倾国/i.test(fullText)) {
+    beautyScore = 9.2;
+  } else if (/颜值|美女|帅哥|惊艳|俊朗|好看|漂亮|帅气/i.test(fullText)) {
+    beautyScore = 8;
+  } else if (/普通|路人|平平|一般|大众脸/i.test(fullText)) {
+    beautyScore = 4.8;
+  } else if (/沧桑|刀疤|破相|丑|残疾/i.test(fullText)) {
+    beautyScore = 3.5;
+  }
+  return sampleAssetReferences(
+    {
+      species: 1,
+      gender,
+      ethnicity,
+      ageGroup,
+      beautyScore
+    },
+    roleName
+  );
+}
+var import_lodash, ETHNICITY_MAP, AGE_GROUP_MAP, GENDER_MAP, DEFAULT_BEAUTY_SCORE;
 var init_faceSampling = __esm({
   "src/utils/faceSampling.ts"() {
     "use strict";
     init_utils3();
+    import_lodash = __toESM(require_lodash8());
+    ETHNICITY_MAP = {
+      1: "\u4E1C\u4E9A",
+      2: "\u6B27\u7F8E",
+      3: "\u4E1C\u5357\u4E9A",
+      4: "\u5357\u4E9A",
+      5: "\u62C9\u4E01",
+      6: "\u975E\u88D4",
+      7: "\u6DF7\u8840"
+    };
+    AGE_GROUP_MAP = {
+      1: "\u5C11\u5E74",
+      2: "\u9752\u5E74",
+      3: "\u4E2D\u5E74",
+      4: "\u8001\u5E74"
+    };
+    GENDER_MAP = {
+      1: "\u7537",
+      2: "\u5973",
+      3: "\u4E2D\u6027"
+    };
+    DEFAULT_BEAUTY_SCORE = 6.5;
   }
 });
 
 // src/routes/assetsGenerate/batchGenerateImageAssets.ts
-function buildPrompt(cfg, artStyle, name28, prompt, faceSummary = "") {
-  return `
-    \u8BF7\u6839\u636E\u4EE5\u4E0B\u53C2\u6570\u751F\u6210${cfg.promptTitle}\uFF1A
-
-    **\u57FA\u7840\u53C2\u6570\uFF1A**
-    - \u753B\u98CE\u98CE\u683C: ${artStyle || "\u672A\u6307\u5B9A"}
-
-    **${cfg.label}\u8BBE\u5B9A\uFF1A**
-    - \u540D\u79F0:${name28},
-    - \u63D0\u793A\u8BCD:${prompt},
-    ${faceSummary ? `- \u4EBA\u8138\u53C2\u8003\u878D\u5408\u673A\u5236: ${faceSummary}` : ""}
-
-    \u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210${cfg.promptEnd}\u3002
-  `;
+function isAnimeStyle(artStyle) {
+  return /动漫|动画|卡通|二次元|赛璐璐|赛璐珞|国漫|漫画|anime|cartoon|cel|manga|ghibli/i.test(artStyle || "");
 }
-var import_express22, router22, assetTypeConfig, requestSchema, batchGenerateImageAssets_default;
+function buildPrompt(cfg, artStyle, name28, prompt, faceSummary = "", isNonHumanRole = false, roleMeta = null) {
+  if (cfg.label === "\u89D2\u8272") {
+    if (isNonHumanRole) {
+      return `
+\u8BF7\u6839\u636E\u4EE5\u4E0B\u8BBE\u5B9A\u751F\u6210\u3010\u975E\u4EBA\u7C7B/\u751F\u7269\u89D2\u8272\u539F\u751F\u591A\u89C6\u56FE\u8BBE\u5B9A\u56FE\u3011\uFF1A
+
+**\u57FA\u7840\u53C2\u6570\uFF1A**
+- \u753B\u98CE\u98CE\u683C: ${artStyle || "\u771F\u5B9E\u7535\u5F71\u8D28\u611F / \u6982\u5FF5\u8BBE\u8BA1"}
+
+**\u89D2\u8272\u8BBE\u5B9A\uFF1A**
+- \u540D\u79F0: ${name28}
+- \u63CF\u8FF0\u4E0E\u7279\u5F81: ${prompt}
+
+**\u89C6\u89C9\u603B\u76D1\u4E0E\u8BBE\u8BA1\u89C4\u8303\uFF1A**
+- \u5B8C\u6574\u751F\u7269\u8BBE\u5B9A\uFF1A\u5C55\u793A\u8BE5\u751F\u7269/\u975E\u4EBA\u89D2\u8272\u7684\u5B8C\u6574\u751F\u7406\u7ED3\u6784\u3001\u6750\u8D28\u8D28\u611F\u4E0E\u4F53\u6001\u7279\u5F81\uFF0C\u4E25\u7981\u65E0\u5934\u622A\u65AD\u3002
+- \u7269\u7406\u63A5\u89E6\u4E0E\u53D7\u529B\uFF1A\u59FF\u6001\u5177\u6709\u771F\u5B9E\u91CD\u91CF\u611F\u3001\u808C\u8089/\u673A\u68B0\u53D7\u529B\u4E0E\u91CD\u5FC3\u652F\u6491\uFF0C\u53CC\u811A/\u8DB3\u90E8\u4E0E\u5730\u9762\u5F62\u6210\u81EA\u7136\u63A5\u89E6\u9634\u5F71\uFF08contact shadows\uFF09\u3002
+- \u539F\u751F\u591A\u89D2\u5EA6\u89C6\u56FE\uFF08\u81EA\u5DE6\u81F3\u53F3\u6A2A\u5411\u6392\u5E03\uFF09\uFF1A
+  1. \u6B63\u9762\u5168\u8C8C\u7ACB\u59FF\uFF08\u5C55\u793A\u6B63\u9762\u7ED3\u6784\u4E0E\u6574\u4F53\u6BD4\u4F8B\uFF09
+  2. \u4FA7\u9762\u5168\u8C8C\u7ACB\u59FF\uFF08\u5C55\u793A\u4FA7\u9762\u4F53\u6001\u539A\u5EA6\u4E0E\u8F6E\u5ED3\uFF09
+  3. \u80CC\u9762\u5168\u8C8C\u7ACB\u59FF\uFF08\u5C55\u793A\u80CC\u90E8\u7ED3\u6784\u4E0E\u7EC6\u8282\uFF09
+  4. \u5934\u90E8/\u6838\u5FC3\u7ED3\u6784\u7EC6\u8282\u7279\u5199\uFF08\u5C55\u793A\u9762\u90E8\u8868\u60C5\u6216\u6838\u5FC3\u5668\u5B98\u5FAE\u89C2\u7EC6\u8282\uFF09
+
+\u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210\u751F\u7269\u89D2\u8272\u591A\u89D2\u5EA6\u8BBE\u5B9A\u56FE\u3002
+      `.trim();
+    }
+    const roleLabel = `${roleMeta?.ageGroup ? AGE_GROUP_MAP[roleMeta.ageGroup] || "" : ""}${roleMeta?.gender ? GENDER_MAP[roleMeta.gender] || "" : ""}`;
+    const faceSection = faceSummary ? `
+${faceSummary}
+` : `
+`;
+    if (isAnimeStyle(artStyle)) {
+      return `
+\u8BF7\u6839\u636E\u4EE5\u4E0B\u8BBE\u5B9A\u751F\u6210\u3010\u7535\u5F71\u7EA7\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\uFF08\u771F\u5B9E\u6444\u5F71\u4E0E\u5149\u5B66\u7269\u7406\u7EA6\u675F\u89C4\u8303\uFF09\u3011\uFF1A
+
+**\u57FA\u7840\u53C2\u6570\uFF1A**
+- \u753B\u98CE\u98CE\u683C: ${artStyle || "\u771F\u5B9E\u7535\u5F71\u8D28\u611F"}
+
+**\u89D2\u8272\u8BBE\u5B9A\uFF1A**
+- \u540D\u79F0: ${name28}
+- \u63D0\u793A\u8BCD: ${prompt}
+${faceSummary ? `- \u4EBA\u8138\u53C2\u8003\u878D\u5408\u673A\u5236: ${faceSummary}` : ""}
+
+**\u7535\u5F71\u7EA7\u771F\u5B9E\u4EBA\u50CF\u6444\u5F71\u4E0E\u5149\u5B66\u7EA6\u675F\uFF1A**
+- \u771F\u5B9E\u8D28\u611F\u4E0E\u53BBAI\u5851\u6599\u611F\uFF1A\u9075\u5FAA\u771F\u5B9E\u4EBA\u4F53\u89E3\u5256\u5B66\u4E0E\u771F\u5B9E\u6444\u5F71\u5149\u5B66\u3002\u4EBA\u7269\u4FDD\u7559\u8F7B\u5FAE\u5DE6\u53F3\u4E0D\u5BF9\u79F0\u3001\u771F\u5B9E\u6BDB\u5B54\u3001\u7EC6\u5C0F\u7ED2\u6BDB\u3001\u81EA\u7136\u5507\u7EB9\u3001\u773C\u4E0B\u7EB9\u7406\u3001\u81EA\u7136\u6563\u843D\u53D1\u4E1D\u4E0E\u7B26\u5408\u5E74\u9F84\u7684\u76AE\u80A4\u72B6\u6001\u3002\u4E25\u7981\u74F7\u5A03\u5A03\u78E8\u76AE\u3001\u7EDD\u5BF9\u5BF9\u79F0\u4E94\u5B98\u3001\u73BB\u7483\u5047\u773C\u3001\u5851\u6599\u611F\u670D\u88C5\u3001\u5047\u53D1\u8D34\u56FE\u4E0E\u8FC7\u5EA6\u9510\u5316\u3002
+- \u7269\u7406\u53D7\u529B\u4E0E\u91CD\u5FC3\uFF1A\u59FF\u6001\u5177\u6709\u771F\u5B9E\u91CD\u5FC3\u652F\u6491\u3001\u5173\u8282\u53D7\u529B\u4E0E\u808C\u8089\u7275\u5F15\uFF0C\u624B\u6307\u81EA\u7136\u5FAE\u5F2F\uFF0C\u670D\u88C5\u6309\u7167\u7AD9\u59FF\u4EA7\u751F\u771F\u5B9E\u4E0B\u5782\u8936\u76B1\uFF0C\u53CC\u811A\u4E0E\u5730\u9762\u5F62\u6210\u81EA\u7136\u63A5\u89E6\u9634\u5F71\uFF08contact shadows\uFF09\u3002
+- \u7EDF\u4E00\u73AF\u5883\u5149\u5F71\uFF1A\u76AE\u80A4\u3001\u5934\u53D1\u4E0E\u670D\u88C5\u53D7\u5230\u540C\u4E00\u73AF\u5883\u4E3B\u5149\u6E90\u4E0E\u6F2B\u53CD\u5C04\u5F71\u54CD\uFF0C\u514B\u5236\u7684\u955C\u5934\u81EA\u7136\u566A\u70B9\u4E0E\u666F\u6DF1\u3002
+
+**\u6807\u51C6\u56DB\u89C6\u56FE\u6392\u7248\u5E03\u5C40\uFF08\u81EA\u5DE6\u81F3\u53F3\u6A2A\u5411\u65E0\u7F1D\u6392\u5E03\u5728\u540C\u4E00\u5F20\u753B\u9762\u4E2D\uFF09\uFF1A**
+1. \u5DE6\u4E00\uFF1A\u4EBA\u50CF\u8D85\u5927\u7279\u5199\uFF08\u6B63\u9762\u5E73\u89C6\uFF0C\u9888\u90E8\u4EE5\u4E0A\u5B8C\u6574\u5C55\u793A\uFF0C\u9762\u90E8\u5360\u6BD470%+\uFF0C\u5C55\u73B0\u771F\u5B9E\u5FAE\u8868\u60C5\u4E0E\u4E94\u5B98\u795E\u97F5\uFF09
+2. \u5DE6\u4E8C\uFF1A\u6B63\u89C6\u5168\u8EAB\u7D20\u4F53\uFF08\u65E0\u5934\u72B6\u6001\uFF0Cheadless body\uFF0C\u6807\u51C6A-pose\uFF0C\u5C55\u793A\u670D\u88C5\u6B63\u9762\u526A\u88C1\u4E0E\u4F53\u578B\u6BD4\u4F8B\uFF09
+3. \u53F3\u4E8C\uFF1A\u4FA7\u89C6\u5168\u8EAB\u7D20\u4F53\uFF08\u65E0\u5934\u72B6\u6001\uFF0Cheadless body\uFF0C\u4FA7\u5411\u7AD9\u59FF\uFF0C\u5C55\u793A\u4FA7\u9762\u8EAB\u578B\u539A\u5EA6\u4E0E\u670D\u88C5\u8F6E\u5ED3\uFF09
+4. \u53F3\u4E00\uFF1A\u540E\u89C6\u5168\u8EAB\u7ACB\u50CF\uFF08\u80CC\u5411\u7AD9\u59FF\uFF0C\u5C55\u793A\u80CC\u9762\u53D1\u578B\u3001\u80CC\u90E8\u526A\u88C1\u4E0E\u5B8C\u6574\u670D\u9970\u7EC6\u8282\uFF09
+
+\u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210\u4EBA\u7269\u89D2\u8272\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE\u3002
+      `.trim();
+    }
+    return `
+${name28} \xB7 \u5168\u65B0\u539F\u521B${roleLabel}\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE\uFF0C${artStyle || "\u771F\u5B9E\u7535\u5F71\u8D28\u611F"}\uFF0C35mm\u955C\u5934\u771F\u5B9E\u5149\u5F71\uFF0Ccharacter design sheet\uFF0Ccharacter turnaround
+
+\u3010\u89D2\u8272\u8BBE\u5B9A\u4E0E\u670D\u88C5\u9020\u578B\u3011\uFF1A
+${prompt}
+${faceSection}
+\u3010\u771F\u5B9E\u4EBA\u4F53\u89E3\u5256\u5B66\u4E0E\u8D28\u611F\u7EA6\u675F\u3011\uFF1A
+- \u9762\u90E8\u5FAE\u7EC6\u8282\uFF1A\u5B8C\u6574\u4FDD\u7559\u6BDB\u5B54\u4E0E\u80A4\u8272\u5FAE\u5FAE\u8D77\u4F0F\uFF0C\u7EC6\u5C0F\u7ED2\u6BDB\u3001\u81EA\u7136\u5507\u7EB9\u3001\u773C\u4E0B\u7EB9\u7406\u3001\u96F6\u6563\u788E\u53D1\u4E0E\u7B26\u5408\u5E74\u9F84\u7684\u771F\u5B9E\u76AE\u80A4\u8D28\u611F\uFF1B\u5141\u8BB8\u81EA\u7136\u5B58\u5728\u7684\u8F7B\u5FAE\u7455\u75B5\uFF1A\u5C40\u90E8\u6CDB\u7EA2\u3001\u7EC6\u5C0F\u75D8\u5370\u3001\u8F7B\u5FAE\u96C0\u6591\uFF08\u6309\u5E74\u9F84\u4E0E\u89D2\u8272\u8BBE\u5B9A\u514B\u5236\u5448\u73B0\uFF09\uFF0C\u675C\u7EDD\u74F7\u5A03\u5A03\u78E8\u76AE\u4E0E\u7EDD\u5BF9\u5BF9\u79F0\u5047\u8138\uFF1B
+- \u773C\u90E8\u795E\u6001\uFF1A\u8679\u819C\u5448\u73B0\u590D\u6742\u653E\u5C04\u72B6\u7EA4\u7EF4\u7ED3\u6784\uFF0C\u77B3\u5B54\u8FB9\u7F18\u9510\u5229\u6E05\u6670\uFF0C\u89D2\u819C\u62E5\u6709\u771F\u5B9E\u6E7F\u6DA6\u53CD\u5C04\uFF0C\u9AD8\u5149\u7B26\u5408\u7269\u7406\u5149\u5B66\u89C4\u5F8B\uFF0C\u76EE\u5149\u805A\u7126\u81EA\u7136\uFF0C\u776B\u6BDB\u7C97\u7EC6\u4E0D\u4E00\u3001\u6392\u5217\u81EA\u7136\uFF0C\u675C\u7EDD\u65E0\u795E\u73BB\u7483\u773C\uFF1B
+- \u8EAB\u4F53\u529B\u5B66\uFF1A\u59FF\u6001\u5177\u6709\u771F\u5B9E\u91CD\u5FC3\u3001\u5173\u8282\u53D7\u529B\u4E0E\u808C\u8089\u7275\u5F15\uFF0C\u624B\u6307\u81EA\u7136\u5F2F\u66F2\uFF1B
+- \u7269\u7406\u5149\u5B66\uFF1A\u670D\u88C5\u6839\u636E\u59FF\u6001\u4EA7\u751F\u771F\u5B9E\u91CD\u529B\u8936\u76B1\uFF0C\u53CC\u811A\u4E0E\u5730\u9762\u5F62\u6210\u660E\u786E\u7684\u63A5\u89E6\u9634\u5F71\uFF08contact shadows\uFF09\uFF0C\u76AE\u80A4\u3001\u5934\u53D1\u4E0E\u670D\u88C5\u53D7\u540C\u4E00\u73AF\u5883\u5149\u7EDF\u4E00\u5F71\u54CD\uFF1B\u514B\u5236\u7684\u955C\u5934\u5FAE\u566A\u70B9\u4E0E\u81EA\u7136\u666F\u6DF1\u3002
+
+${FOUR_VIEW_LAYOUT}
+
+\u3010\u8D1F\u9762\u7EA6\u675F\u3011\uFF1A\u4E25\u7981\u74F7\u5A03\u5A03\u76AE\u80A4\u3001\u7EDD\u5BF9\u5BF9\u79F0\u4E94\u5B98\u3001\u73BB\u7483\u773C\u775B\u3001\u5851\u6599\u670D\u88C5\u3001\u5047\u53D1\u8D34\u56FE\u3001\u6F02\u6D6E\u8EAB\u4F53\u3001\u8FC7\u5EA6\u9510\u5316\u3001\u56DB\u89C6\u56FE\u4EBA\u7269\u4E0D\u4E00\u81F4\uFF0C\u5168\u56FE\u65E0\u6587\u5B57\u3002
+    `.trim();
+  }
+  return `
+\u8BF7\u6839\u636E\u4EE5\u4E0B\u53C2\u6570\u751F\u6210${cfg.promptTitle}\uFF1A
+
+**\u57FA\u7840\u53C2\u6570\uFF1A**
+- \u753B\u98CE\u98CE\u683C: ${artStyle || "\u672A\u6307\u5B9A"}
+
+**${cfg.label}\u8BBE\u5B9A\uFF1A**
+- \u540D\u79F0:${name28},
+- \u63D0\u793A\u8BCD:${prompt},
+
+\u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210${cfg.promptEnd}\u3002
+  `.trim();
+}
+var import_express22, router22, assetTypeConfig, FOUR_VIEW_LAYOUT, requestSchema, batchGenerateImageAssets_default;
 var init_batchGenerateImageAssets = __esm({
   "src/routes/assetsGenerate/batchGenerateImageAssets.ts"() {
     "use strict";
@@ -255294,8 +260975,8 @@ var init_batchGenerateImageAssets = __esm({
         label: "\u89D2\u8272",
         taskClass: "\u89D2\u8272\u56FE\u751F\u6210",
         dir: "role",
-        promptTitle: "\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\uFF08\u53CC\u771F\u4EBA\u5E95\u56FE\u878D\u5408\u4E0E\u65E0\u5934\u7D20\u4F53\u9632\u5E72\u6270\u7248\uFF09",
-        promptEnd: "\u4EBA\u7269\u89D2\u8272\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE"
+        promptTitle: "\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE",
+        promptEnd: "\u4EBA\u7269/\u751F\u7269\u89D2\u8272\u591A\u89C6\u56FE\u8BBE\u5B9A\u56FE"
       },
       scene: {
         label: "\u573A\u666F",
@@ -255312,6 +260993,13 @@ var init_batchGenerateImageAssets = __esm({
         promptEnd: "\u6807\u51C6\u9053\u5177\u56FE"
       }
     };
+    FOUR_VIEW_LAYOUT = `\u3010\u56DB\u89C6\u56FE\u6807\u51C6\u5E03\u5C40\u89C4\u8303\u3011\uFF1A
+\u540C\u4E00\u753B\u9762\u4ECE\u5DE6\u81F3\u53F3\u6C34\u5E73\u6A2A\u6392\u540C\u4E00\u89D2\u8272\u7684\u56DB\u4E2A\u89C6\u56FE\uFF1A
+- \u5DE6\u4E00\uFF1A\u4EBA\u50CF\u8D85\u5927\u7279\u5199\uFF08\u6B63\u9762\u5E73\u89C6\uFF0C\u5934\u9876\u81F3\u9501\u9AA8\u5B8C\u6574\u5165\u753B head to collarbone complete\uFF0C\u4E25\u7981\u88C1\u5207\u5934\u9876\uFF0C\u9762\u90E8\u5360\u6BD470%+\uFF0C\u6C47\u805A\u7B97\u529B\u7CBE\u7EC6\u5448\u73B0\u4E94\u5B98\u7EC6\u8282\u3001\u773C\u795E\u795E\u6001\u4E0E\u5FAE\u8868\u60C5\uFF09\uFF1B
+- \u5DE6\u4E8C\uFF1A\u6B63\u89C6\u56FE\u65E0\u5934\u5168\u8EAB\u7ACB\u50CF\uFF08\u6B63\u97620\xB0\uFF0C\u9888\u90E8\u4EE5\u4E0A\u5B8C\u5168\u622A\u65AD\u7559\u7A7A headless body\uFF0C\u4ECE\u9888\u90E8\u4EE5\u4E0B\u5230\u811A\u5E95\u5B8C\u6574\u5C55\u793A\u670D\u88C5\u526A\u88C1\u4E0E\u4F53\u6001\uFF09\uFF1B
+- \u53F3\u4E8C\uFF1A\u4FA7\u89C6\u56FE\u65E0\u5934\u5168\u8EAB\u7ACB\u50CF\uFF08\u4FA7\u976290\xB0\uFF0C\u9888\u90E8\u4EE5\u4E0A\u5B8C\u5168\u622A\u65AD\u7559\u7A7A headless body\uFF0C\u5B8C\u6574\u5C55\u793A\u4FA7\u8EAB\u8F6E\u5ED3\u3001\u4F53\u6001\u7EB5\u6DF1\u4E0E\u81EA\u7136\u7AD9\u59FF\u53D7\u529B\u5206\u5E03\uFF09\uFF1B
+- \u53F3\u4E00\uFF1A\u540E\u89C6\u56FE\u5168\u8EAB\u7ACB\u50CF\uFF08\u540E\u65B9180\xB0\uFF0C\u5B8C\u6574\u5C55\u73B0\u53D1\u578B\u540E\u8111\u5C42\u6B21\u3001\u53D1\u5C3E\u4E0E\u80CC\u540E\u8863\u7740\u7248\u578B\uFF0Cfull body head to toe\uFF09\uFF1B
+\u81EA\u7136\u7AD9\u7ACB\uFF0C\u7EAF\u51C0\u767D\u8272\u80CC\u666F\uFF08clean white background\uFF09\uFF0C\u56DB\u89C6\u56FE\u5149\u5F71\u4E0E\u6BD4\u4F8B\u4E25\u683C\u4E00\u81F4\u3002`;
     requestSchema = {
       projectId: external_exports.number(),
       model: external_exports.string(),
@@ -255354,20 +261042,35 @@ var init_batchGenerateImageAssets = __esm({
           await utils_default.db("o_assets").where("id", item.id).update({ imageId });
           let referenceList = [];
           let faceSummary = "";
+          let isNonHumanRole = false;
+          let roleMeta = null;
           if (item.base64) {
             referenceList.push({ type: "image", base64: item.base64 });
           } else if (item.type === "role") {
-            const faceSample = await sampleDualFaceAssets(item.prompt, item.name);
-            if (faceSample.referenceList.length > 0) {
-              referenceList = faceSample.referenceList;
-              faceSummary = faceSample.faceSummaryPrompt;
-              await utils_default.db("o_assets").where("id", item.id).update({
-                faceAssetIds: JSON.stringify(faceSample.faceAssetIds)
-              });
+            const assetRecord = await utils_default.db("o_assets").where("id", item.id).select("roleMeta").first();
+            if (assetRecord?.roleMeta) {
+              try {
+                roleMeta = typeof assetRecord.roleMeta === "string" ? JSON.parse(assetRecord.roleMeta) : assetRecord.roleMeta;
+              } catch (e) {
+                console.warn("\u89E3\u6790 roleMeta \u5931\u8D25:", e);
+              }
+            }
+            if (roleMeta && roleMeta.species !== void 0 && roleMeta.species !== 1) {
+              isNonHumanRole = true;
+            } else if (isAnimeStyle(project.artStyle ?? "")) {
+            } else {
+              const faceSample = roleMeta ? await sampleAssetReferences(roleMeta, item.name) : await sampleDualFaceAssets(item.prompt, item.name);
+              if (faceSample.referenceList.length > 0) {
+                referenceList = faceSample.referenceList;
+                faceSummary = faceSample.faceSummaryPrompt;
+                await utils_default.db("o_assets").where("id", item.id).update({
+                  faceAssetIds: JSON.stringify(faceSample.faceAssetIds)
+                });
+              }
             }
           }
           const imagePath = `/${projectId}/${cfg.dir}/${v4_default()}.jpg`;
-          const userPrompt = buildPrompt(cfg, project.artStyle ?? "", item.name, item.prompt, faceSummary);
+          const userPrompt = buildPrompt(cfg, project.artStyle ?? "", item.name, item.prompt, faceSummary, isNonHumanRole, roleMeta);
           const describe4 = `\u751F\u6210${cfg.label}\u56FE\uFF0C\u540D\u79F0\uFF1A${item.name}\uFF0C\u63D0\u793A\u8BCD\uFF1A${item.prompt}`;
           const relatedObjects = { id: item.id, projectId, type: cfg.label };
           try {
@@ -255545,22 +261248,96 @@ var init_cancelGenerate = __esm({
 });
 
 // src/routes/assetsGenerate/generateAssets.ts
-function buildPrompt2(cfg, artStyle, name28, prompt, faceSummary = "") {
-  return `
-    \u8BF7\u6839\u636E\u4EE5\u4E0B\u53C2\u6570\u751F\u6210${cfg.promptTitle}\uFF1A
-
-    **\u57FA\u7840\u53C2\u6570\uFF1A**
-    - \u753B\u98CE\u98CE\u683C: ${artStyle || "\u672A\u6307\u5B9A"}
-
-    **${cfg.label}\u8BBE\u5B9A\uFF1A**
-    - \u540D\u79F0:${name28},
-    - \u63D0\u793A\u8BCD:${prompt},
-    ${faceSummary ? `- \u4EBA\u8138\u53C2\u8003\u878D\u5408\u673A\u5236: ${faceSummary}` : ""}
-
-    \u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210${cfg.promptEnd}\u3002
-  `;
+function isAnimeStyle2(artStyle) {
+  return /动漫|动画|卡通|二次元|赛璐璐|赛璐珞|国漫|漫画|anime|cartoon|cel|manga|ghibli/i.test(artStyle || "");
 }
-var import_express25, router25, assetTypeConfig2, requestSchema2, generateAssets_default;
+function buildPrompt2(cfg, artStyle, name28, prompt, faceSummary = "", isNonHumanRole = false, roleMeta = null) {
+  if (cfg.label === "\u89D2\u8272") {
+    if (isNonHumanRole) {
+      return `
+\u8BF7\u6839\u636E\u4EE5\u4E0B\u8BBE\u5B9A\u751F\u6210\u3010\u975E\u4EBA\u7C7B/\u751F\u7269\u89D2\u8272\u539F\u751F\u591A\u89C6\u56FE\u8BBE\u5B9A\u56FE\u3011\uFF1A
+
+**\u57FA\u7840\u53C2\u6570\uFF1A**
+- \u753B\u98CE\u98CE\u683C: ${artStyle || "\u771F\u5B9E\u7535\u5F71\u8D28\u611F / \u6982\u5FF5\u8BBE\u8BA1"}
+
+**\u89D2\u8272\u8BBE\u5B9A\uFF1A**
+- \u540D\u79F0: ${name28}
+- \u63CF\u8FF0\u4E0E\u7279\u5F81: ${prompt}
+
+**\u89C6\u89C9\u603B\u76D1\u4E0E\u8BBE\u8BA1\u89C4\u8303\uFF1A**
+- \u5B8C\u6574\u751F\u7269\u8BBE\u5B9A\uFF1A\u5C55\u793A\u8BE5\u751F\u7269/\u975E\u4EBA\u89D2\u8272\u7684\u5B8C\u6574\u751F\u7406\u7ED3\u6784\u3001\u6750\u8D28\u8D28\u611F\u4E0E\u4F53\u6001\u7279\u5F81\uFF0C\u4E25\u7981\u65E0\u5934\u622A\u65AD\u3002
+- \u7269\u7406\u63A5\u89E6\u4E0E\u53D7\u529B\uFF1A\u59FF\u6001\u5177\u6709\u771F\u5B9E\u91CD\u91CF\u611F\u3001\u808C\u8089/\u673A\u68B0\u53D7\u529B\u4E0E\u91CD\u5FC3\u652F\u6491\uFF0C\u53CC\u811A/\u8DB3\u90E8\u4E0E\u5730\u9762\u5F62\u6210\u81EA\u7136\u63A5\u89E6\u9634\u5F71\uFF08contact shadows\uFF09\u3002
+- \u539F\u751F\u591A\u89D2\u5EA6\u89C6\u56FE\uFF08\u81EA\u5DE6\u81F3\u53F3\u6A2A\u5411\u6392\u5E03\uFF09\uFF1A
+  1. \u6B63\u9762\u5168\u8C8C\u7ACB\u59FF\uFF08\u5C55\u793A\u6B63\u9762\u7ED3\u6784\u4E0E\u6574\u4F53\u6BD4\u4F8B\uFF09
+  2. \u4FA7\u9762\u5168\u8C8C\u7ACB\u59FF\uFF08\u5C55\u793A\u4FA7\u9762\u4F53\u6001\u539A\u5EA6\u4E0E\u8F6E\u5ED3\uFF09
+  3. \u80CC\u9762\u5168\u8C8C\u7ACB\u59FF\uFF08\u5C55\u793A\u80CC\u90E8\u7ED3\u6784\u4E0E\u7EC6\u8282\uFF09
+  4. \u5934\u90E8/\u6838\u5FC3\u7ED3\u6784\u7EC6\u8282\u7279\u5199\uFF08\u5C55\u793A\u9762\u90E8\u8868\u60C5\u6216\u6838\u5FC3\u5668\u5B98\u5FAE\u89C2\u7EC6\u8282\uFF09
+
+\u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210\u751F\u7269\u89D2\u8272\u591A\u89D2\u5EA6\u8BBE\u5B9A\u56FE\u3002
+      `.trim();
+    }
+    const roleLabel = `${roleMeta?.ageGroup ? AGE_GROUP_MAP[roleMeta.ageGroup] || "" : ""}${roleMeta?.gender ? GENDER_MAP[roleMeta.gender] || "" : ""}`;
+    const faceSection = faceSummary ? `
+${faceSummary}
+` : `
+`;
+    if (isAnimeStyle2(artStyle)) {
+      return `
+\u8BF7\u6839\u636E\u4EE5\u4E0B\u8BBE\u5B9A\u751F\u6210\u3010\u7535\u5F71\u7EA7\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\uFF08\u771F\u5B9E\u6444\u5F71\u4E0E\u5149\u5B66\u7269\u7406\u7EA6\u675F\u89C4\u8303\uFF09\u3011\uFF1A
+
+**\u57FA\u7840\u53C2\u6570\uFF1A**
+- \u753B\u98CE\u98CE\u683C: ${artStyle || "\u771F\u5B9E\u7535\u5F71\u8D28\u611F"}
+
+**\u89D2\u8272\u8BBE\u5B9A\uFF1A**
+- \u540D\u79F0: ${name28}
+- \u63D0\u793A\u8BCD: ${prompt}
+${faceSummary ? `- \u4EBA\u8138\u53C2\u8003\u878D\u5408\u673A\u5236: ${faceSummary}` : ""}
+
+**\u7535\u5F71\u7EA7\u771F\u5B9E\u4EBA\u50CF\u6444\u5F71\u4E0E\u5149\u5B66\u7EA6\u675F\uFF1A**
+- \u771F\u5B9E\u8D28\u611F\u4E0E\u53BBAI\u5851\u6599\u611F\uFF1A\u9075\u5FAA\u771F\u5B9E\u4EBA\u4F53\u89E3\u5256\u5B66\u4E0E\u771F\u5B9E\u6444\u5F71\u5149\u5B66\u3002\u4EBA\u7269\u4FDD\u7559\u8F7B\u5FAE\u5DE6\u53F3\u4E0D\u5BF9\u79F0\u3001\u771F\u5B9E\u6BDB\u5B54\u3001\u7EC6\u5C0F\u7ED2\u6BDB\u3001\u81EA\u7136\u5507\u7EB9\u3001\u773C\u4E0B\u7EB9\u7406\u3001\u81EA\u7136\u6563\u843D\u53D1\u4E1D\u4E0E\u7B26\u5408\u5E74\u9F84\u7684\u76AE\u80A4\u72B6\u6001\u3002\u4E25\u7981\u74F7\u5A03\u5A03\u78E8\u76AE\u3001\u7EDD\u5BF9\u5BF9\u79F0\u4E94\u5B98\u3001\u73BB\u7483\u5047\u773C\u3001\u5851\u6599\u611F\u670D\u88C5\u3001\u5047\u53D1\u8D34\u56FE\u4E0E\u8FC7\u5EA6\u9510\u5316\u3002
+- \u7269\u7406\u53D7\u529B\u4E0E\u91CD\u5FC3\uFF1A\u59FF\u6001\u5177\u6709\u771F\u5B9E\u91CD\u5FC3\u652F\u6491\u3001\u5173\u8282\u53D7\u529B\u4E0E\u808C\u8089\u7275\u5F15\uFF0C\u624B\u6307\u81EA\u7136\u5FAE\u5F2F\uFF0C\u670D\u88C5\u6309\u7167\u7AD9\u59FF\u4EA7\u751F\u771F\u5B9E\u4E0B\u5782\u8936\u76B1\uFF0C\u53CC\u811A\u4E0E\u5730\u9762\u5F62\u6210\u81EA\u7136\u63A5\u89E6\u9634\u5F71\uFF08contact shadows\uFF09\u3002
+- \u7EDF\u4E00\u73AF\u5883\u5149\u5F71\uFF1A\u76AE\u80A4\u3001\u5934\u53D1\u4E0E\u670D\u88C5\u53D7\u5230\u540C\u4E00\u73AF\u5883\u4E3B\u5149\u6E90\u4E0E\u6F2B\u53CD\u5C04\u5F71\u54CD\uFF0C\u514B\u5236\u7684\u955C\u5934\u81EA\u7136\u566A\u70B9\u4E0E\u666F\u6DF1\u3002
+
+**\u6807\u51C6\u56DB\u89C6\u56FE\u6392\u7248\u5E03\u5C40\uFF08\u81EA\u5DE6\u81F3\u53F3\u6A2A\u5411\u65E0\u7F1D\u6392\u5E03\u5728\u540C\u4E00\u5F20\u753B\u9762\u4E2D\uFF09\uFF1A**
+1. \u5DE6\u4E00\uFF1A\u4EBA\u50CF\u8D85\u5927\u7279\u5199\uFF08\u6B63\u9762\u5E73\u89C6\uFF0C\u9888\u90E8\u4EE5\u4E0A\u5B8C\u6574\u5C55\u793A\uFF0C\u9762\u90E8\u5360\u6BD470%+\uFF0C\u5C55\u73B0\u771F\u5B9E\u5FAE\u8868\u60C5\u4E0E\u4E94\u5B98\u795E\u97F5\uFF09
+2. \u5DE6\u4E8C\uFF1A\u6B63\u89C6\u5168\u8EAB\u7D20\u4F53\uFF08\u65E0\u5934\u72B6\u6001\uFF0Cheadless body\uFF0C\u6807\u51C6A-pose\uFF0C\u5C55\u793A\u670D\u88C5\u6B63\u9762\u526A\u88C1\u4E0E\u4F53\u578B\u6BD4\u4F8B\uFF09
+3. \u53F3\u4E8C\uFF1A\u4FA7\u89C6\u5168\u8EAB\u7D20\u4F53\uFF08\u65E0\u5934\u72B6\u6001\uFF0Cheadless body\uFF0C\u4FA7\u5411\u7AD9\u59FF\uFF0C\u5C55\u793A\u4FA7\u9762\u8EAB\u578B\u539A\u5EA6\u4E0E\u670D\u88C5\u8F6E\u5ED3\uFF09
+4. \u53F3\u4E00\uFF1A\u540E\u89C6\u5168\u8EAB\u7ACB\u50CF\uFF08\u80CC\u5411\u7AD9\u59FF\uFF0C\u5C55\u793A\u80CC\u9762\u53D1\u578B\u3001\u80CC\u90E8\u526A\u88C1\u4E0E\u5B8C\u6574\u670D\u9970\u7EC6\u8282\uFF09
+
+\u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210\u4EBA\u7269\u89D2\u8272\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE\u3002
+      `.trim();
+    }
+    return `
+${name28} \xB7 \u5168\u65B0\u539F\u521B${roleLabel}\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE\uFF0C${artStyle || "\u771F\u5B9E\u7535\u5F71\u8D28\u611F"}\uFF0C35mm\u955C\u5934\u771F\u5B9E\u5149\u5F71\uFF0Ccharacter design sheet\uFF0Ccharacter turnaround
+
+\u3010\u89D2\u8272\u8BBE\u5B9A\u4E0E\u670D\u88C5\u9020\u578B\u3011\uFF1A
+${prompt}
+${faceSection}
+\u3010\u771F\u5B9E\u4EBA\u4F53\u89E3\u5256\u5B66\u4E0E\u8D28\u611F\u7EA6\u675F\u3011\uFF1A
+- \u9762\u90E8\u5FAE\u7EC6\u8282\uFF1A\u5B8C\u6574\u4FDD\u7559\u6BDB\u5B54\u4E0E\u80A4\u8272\u5FAE\u5FAE\u8D77\u4F0F\uFF0C\u7EC6\u5C0F\u7ED2\u6BDB\u3001\u81EA\u7136\u5507\u7EB9\u3001\u773C\u4E0B\u7EB9\u7406\u3001\u96F6\u6563\u788E\u53D1\u4E0E\u7B26\u5408\u5E74\u9F84\u7684\u771F\u5B9E\u76AE\u80A4\u8D28\u611F\uFF1B\u5141\u8BB8\u81EA\u7136\u5B58\u5728\u7684\u8F7B\u5FAE\u7455\u75B5\uFF1A\u5C40\u90E8\u6CDB\u7EA2\u3001\u7EC6\u5C0F\u75D8\u5370\u3001\u8F7B\u5FAE\u96C0\u6591\uFF08\u6309\u5E74\u9F84\u4E0E\u89D2\u8272\u8BBE\u5B9A\u514B\u5236\u5448\u73B0\uFF09\uFF0C\u675C\u7EDD\u74F7\u5A03\u5A03\u78E8\u76AE\u4E0E\u7EDD\u5BF9\u5BF9\u79F0\u5047\u8138\uFF1B
+- \u773C\u90E8\u795E\u6001\uFF1A\u8679\u819C\u5448\u73B0\u590D\u6742\u653E\u5C04\u72B6\u7EA4\u7EF4\u7ED3\u6784\uFF0C\u77B3\u5B54\u8FB9\u7F18\u9510\u5229\u6E05\u6670\uFF0C\u89D2\u819C\u62E5\u6709\u771F\u5B9E\u6E7F\u6DA6\u53CD\u5C04\uFF0C\u9AD8\u5149\u7B26\u5408\u7269\u7406\u5149\u5B66\u89C4\u5F8B\uFF0C\u76EE\u5149\u805A\u7126\u81EA\u7136\uFF0C\u776B\u6BDB\u7C97\u7EC6\u4E0D\u4E00\u3001\u6392\u5217\u81EA\u7136\uFF0C\u675C\u7EDD\u65E0\u795E\u73BB\u7483\u773C\uFF1B
+- \u8EAB\u4F53\u529B\u5B66\uFF1A\u59FF\u6001\u5177\u6709\u771F\u5B9E\u91CD\u5FC3\u3001\u5173\u8282\u53D7\u529B\u4E0E\u808C\u8089\u7275\u5F15\uFF0C\u624B\u6307\u81EA\u7136\u5F2F\u66F2\uFF1B
+- \u7269\u7406\u5149\u5B66\uFF1A\u670D\u88C5\u6839\u636E\u59FF\u6001\u4EA7\u751F\u771F\u5B9E\u91CD\u529B\u8936\u76B1\uFF0C\u53CC\u811A\u4E0E\u5730\u9762\u5F62\u6210\u660E\u786E\u7684\u63A5\u89E6\u9634\u5F71\uFF08contact shadows\uFF09\uFF0C\u76AE\u80A4\u3001\u5934\u53D1\u4E0E\u670D\u88C5\u53D7\u540C\u4E00\u73AF\u5883\u5149\u7EDF\u4E00\u5F71\u54CD\uFF1B\u514B\u5236\u7684\u955C\u5934\u5FAE\u566A\u70B9\u4E0E\u81EA\u7136\u666F\u6DF1\u3002
+
+${FOUR_VIEW_LAYOUT2}
+
+\u3010\u8D1F\u9762\u7EA6\u675F\u3011\uFF1A\u4E25\u7981\u74F7\u5A03\u5A03\u76AE\u80A4\u3001\u7EDD\u5BF9\u5BF9\u79F0\u4E94\u5B98\u3001\u73BB\u7483\u773C\u775B\u3001\u5851\u6599\u670D\u88C5\u3001\u5047\u53D1\u8D34\u56FE\u3001\u6F02\u6D6E\u8EAB\u4F53\u3001\u8FC7\u5EA6\u9510\u5316\u3001\u56DB\u89C6\u56FE\u4EBA\u7269\u4E0D\u4E00\u81F4\uFF0C\u5168\u56FE\u65E0\u6587\u5B57\u3002
+    `.trim();
+  }
+  return `
+\u8BF7\u6839\u636E\u4EE5\u4E0B\u53C2\u6570\u751F\u6210${cfg.promptTitle}\uFF1A
+
+**\u57FA\u7840\u53C2\u6570\uFF1A**
+- \u753B\u98CE\u98CE\u683C: ${artStyle || "\u672A\u6307\u5B9A"}
+
+**${cfg.label}\u8BBE\u5B9A\uFF1A**
+- \u540D\u79F0:${name28},
+- \u63D0\u793A\u8BCD:${prompt},
+
+\u8BF7\u4E25\u683C\u6309\u7167\u7CFB\u7EDF\u89C4\u8303\u751F\u6210${cfg.promptEnd}\u3002
+  `.trim();
+}
+var import_express25, router25, assetTypeConfig2, FOUR_VIEW_LAYOUT2, requestSchema2, generateAssets_default;
 var init_generateAssets = __esm({
   "src/routes/assetsGenerate/generateAssets.ts"() {
     "use strict";
@@ -255577,8 +261354,8 @@ var init_generateAssets = __esm({
         label: "\u89D2\u8272",
         taskClass: "\u89D2\u8272\u56FE\u751F\u6210",
         dir: "role",
-        promptTitle: "\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\uFF08\u53CC\u771F\u4EBA\u5E95\u56FE\u878D\u5408\u4E0E\u65E0\u5934\u7D20\u4F53\u9632\u5E72\u6270\u7248\uFF09",
-        promptEnd: "\u4EBA\u7269\u89D2\u8272\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE"
+        promptTitle: "\u89D2\u8272\u6807\u51C6\u56DB\u89C6\u56FE\u8BBE\u5B9A\u56FE",
+        promptEnd: "\u4EBA\u7269/\u751F\u7269\u89D2\u8272\u591A\u89C6\u56FE\u8BBE\u5B9A\u56FE"
       },
       scene: {
         label: "\u573A\u666F",
@@ -255595,6 +261372,13 @@ var init_generateAssets = __esm({
         promptEnd: "\u6807\u51C6\u9053\u5177\u56FE"
       }
     };
+    FOUR_VIEW_LAYOUT2 = `\u3010\u56DB\u89C6\u56FE\u6807\u51C6\u5E03\u5C40\u89C4\u8303\u3011\uFF1A
+\u540C\u4E00\u753B\u9762\u4ECE\u5DE6\u81F3\u53F3\u6C34\u5E73\u6A2A\u6392\u540C\u4E00\u89D2\u8272\u7684\u56DB\u4E2A\u89C6\u56FE\uFF1A
+- \u5DE6\u4E00\uFF1A\u4EBA\u50CF\u8D85\u5927\u7279\u5199\uFF08\u6B63\u9762\u5E73\u89C6\uFF0C\u5934\u9876\u81F3\u9501\u9AA8\u5B8C\u6574\u5165\u753B head to collarbone complete\uFF0C\u4E25\u7981\u88C1\u5207\u5934\u9876\uFF0C\u9762\u90E8\u5360\u6BD470%+\uFF0C\u6C47\u805A\u7B97\u529B\u7CBE\u7EC6\u5448\u73B0\u4E94\u5B98\u7EC6\u8282\u3001\u773C\u795E\u795E\u6001\u4E0E\u5FAE\u8868\u60C5\uFF09\uFF1B
+- \u5DE6\u4E8C\uFF1A\u6B63\u89C6\u56FE\u65E0\u5934\u5168\u8EAB\u7ACB\u50CF\uFF08\u6B63\u97620\xB0\uFF0C\u9888\u90E8\u4EE5\u4E0A\u5B8C\u5168\u622A\u65AD\u7559\u7A7A headless body\uFF0C\u4ECE\u9888\u90E8\u4EE5\u4E0B\u5230\u811A\u5E95\u5B8C\u6574\u5C55\u793A\u670D\u88C5\u526A\u88C1\u4E0E\u4F53\u6001\uFF09\uFF1B
+- \u53F3\u4E8C\uFF1A\u4FA7\u89C6\u56FE\u65E0\u5934\u5168\u8EAB\u7ACB\u50CF\uFF08\u4FA7\u976290\xB0\uFF0C\u9888\u90E8\u4EE5\u4E0A\u5B8C\u5168\u622A\u65AD\u7559\u7A7A headless body\uFF0C\u5B8C\u6574\u5C55\u793A\u4FA7\u8EAB\u8F6E\u5ED3\u3001\u4F53\u6001\u7EB5\u6DF1\u4E0E\u81EA\u7136\u7AD9\u59FF\u53D7\u529B\u5206\u5E03\uFF09\uFF1B
+- \u53F3\u4E00\uFF1A\u540E\u89C6\u56FE\u5168\u8EAB\u7ACB\u50CF\uFF08\u540E\u65B9180\xB0\uFF0C\u5B8C\u6574\u5C55\u73B0\u53D1\u578B\u540E\u8111\u5C42\u6B21\u3001\u53D1\u5C3E\u4E0E\u80CC\u540E\u8863\u7740\u7248\u578B\uFF0Cfull body head to toe\uFF09\uFF1B
+\u81EA\u7136\u7AD9\u7ACB\uFF0C\u7EAF\u51C0\u767D\u8272\u80CC\u666F\uFF08clean white background\uFF09\uFF0C\u56DB\u89C6\u56FE\u5149\u5F71\u4E0E\u6BD4\u4F8B\u4E25\u683C\u4E00\u81F4\u3002`;
     requestSchema2 = {
       projectId: external_exports.number(),
       model: external_exports.string(),
@@ -255621,20 +261405,35 @@ var init_generateAssets = __esm({
       await utils_default.db("o_assets").where("id", id).update({ imageId });
       let referenceList = [];
       let faceSummary = "";
+      let isNonHumanRole = false;
+      let roleMeta = null;
       if (base644) {
         referenceList.push({ type: "image", base64: base644 });
       } else if (type === "role") {
-        const faceSample = await sampleDualFaceAssets(prompt, name28);
-        if (faceSample.referenceList.length > 0) {
-          referenceList = faceSample.referenceList;
-          faceSummary = faceSample.faceSummaryPrompt;
-          await utils_default.db("o_assets").where("id", id).update({
-            faceAssetIds: JSON.stringify(faceSample.faceAssetIds)
-          });
+        const assetRecord = await utils_default.db("o_assets").where("id", id).select("roleMeta").first();
+        if (assetRecord?.roleMeta) {
+          try {
+            roleMeta = typeof assetRecord.roleMeta === "string" ? JSON.parse(assetRecord.roleMeta) : assetRecord.roleMeta;
+          } catch (e) {
+            console.warn("\u89E3\u6790 roleMeta \u5931\u8D25:", e);
+          }
+        }
+        if (roleMeta && roleMeta.species !== void 0 && roleMeta.species !== 1) {
+          isNonHumanRole = true;
+        } else if (isAnimeStyle2(project.artStyle ?? "")) {
+        } else {
+          const faceSample = roleMeta ? await sampleAssetReferences(roleMeta, name28) : await sampleDualFaceAssets(prompt, name28);
+          if (faceSample.referenceList.length > 0) {
+            referenceList = faceSample.referenceList;
+            faceSummary = faceSample.faceSummaryPrompt;
+            await utils_default.db("o_assets").where("id", id).update({
+              faceAssetIds: JSON.stringify(faceSample.faceAssetIds)
+            });
+          }
         }
       }
       const imagePath = `/${projectId}/${cfg.dir}/${v4_default()}.jpg`;
-      const userPrompt = buildPrompt2(cfg, project.artStyle, name28, prompt, faceSummary);
+      const userPrompt = buildPrompt2(cfg, project.artStyle, name28, prompt, faceSummary, isNonHumanRole, roleMeta);
       const describe4 = `\u751F\u6210${cfg.label}\u56FE\uFF0C\u540D\u79F0\uFF1A${name28}\uFF0C\u63D0\u793A\u8BCD\uFF1A${prompt}`;
       const relatedObjects = { id, projectId, type: cfg.label };
       try {
@@ -255994,16 +261793,32 @@ var init_updateAssetsAudio = __esm({
 });
 
 // src/routes/faceAsset/addFaceAsset.ts
-function normalizeGender(raw) {
-  if (raw === null || raw === void 0) return void 0;
-  const s = String(raw).trim().toLowerCase();
-  if (!s) return void 0;
-  if (/^男$|^男性$|^male$|^man$|^m$|^boy$|^先生$/.test(s)) return "\u7537";
-  if (/^女$|^女性$|^female$|^woman$|^w$|^f$|^girl$|^女士$/.test(s)) return "\u5973";
-  if (/未知|unknown|不确定|无法|无|n\/a|na$/.test(s)) return "\u672A\u77E5";
-  return "\u672A\u77E5";
+function toCode(raw, min, max) {
+  const n = typeof raw === "string" ? Number(raw) : raw;
+  if (typeof n !== "number" || !Number.isFinite(n)) return void 0;
+  const int3 = Math.round(n);
+  return int3 >= min && int3 <= max ? int3 : void 0;
 }
-var import_express32, router32, addFaceAsset_default;
+function toBeautyScore(raw) {
+  const n = typeof raw === "string" ? Number(raw) : raw;
+  if (typeof n !== "number" || !Number.isFinite(n)) return void 0;
+  return Math.round(Math.max(2, Math.min(10, n)) * 10) / 10;
+}
+function toTags(raw) {
+  if (!Array.isArray(raw)) return [];
+  const seen = /* @__PURE__ */ new Set();
+  const list2 = [];
+  for (const item of raw) {
+    const s = typeof item === "string" ? item.trim() : "";
+    if (s && !seen.has(s)) {
+      seen.add(s);
+      list2.push(s);
+      if (list2.length >= 8) break;
+    }
+  }
+  return list2;
+}
+var import_express32, router32, GENDER_LABEL, ETHNICITY_LABEL, AGE_GROUP_LABEL, addFaceAsset_default;
 var init_addFaceAsset = __esm({
   "src/routes/faceAsset/addFaceAsset.ts"() {
     "use strict";
@@ -256014,23 +261829,32 @@ var init_addFaceAsset = __esm({
     init_responseFormat();
     init_middleware();
     router32 = import_express32.default.Router();
+    GENDER_LABEL = { 1: "\u7537", 2: "\u5973", 3: "\u4E2D\u6027" };
+    ETHNICITY_LABEL = { 1: "\u4E1C\u4E9A", 2: "\u6B27\u7F8E", 3: "\u4E1C\u5357\u4E9A", 4: "\u5357\u4E9A", 5: "\u62C9\u4E01", 6: "\u975E\u88D4", 7: "\u6DF7\u8840" };
+    AGE_GROUP_LABEL = { 1: "\u5C11\u5E74", 2: "\u9752\u5E74", 3: "\u4E2D\u5E74", 4: "\u8001\u5E74" };
     addFaceAsset_default = router32.post(
       "/",
       validateFields({
         name: external_exports.string().optional(),
         fileUrl: external_exports.string(),
-        // base64
-        gender: external_exports.string().optional(),
-        ageGroup: external_exports.string().optional(),
-        ethnicity: external_exports.string().optional(),
+        // base64（可带 data:image/xxx;base64, 前缀）
+        species: external_exports.number().int().min(1).max(2).optional(),
+        // 1: 人类, 2: 非人类
+        gender: external_exports.number().int().min(1).max(3).optional(),
+        // 1: 男, 2: 女, 3: 中性/其他
+        ethnicity: external_exports.number().int().min(1).max(7).optional(),
+        // 1: 东亚 ... 7: 混血/其他
+        ageGroup: external_exports.number().int().min(1).max(4).optional(),
+        // 1: 少年 ... 4: 老年
+        beautyScore: external_exports.number().min(2).max(10).optional(),
+        // 2.0 ~ 10.0 连续客观打分
         tags: external_exports.array(external_exports.string()).optional(),
         description: external_exports.string().optional(),
-        beautyLevel: external_exports.string().optional(),
         model: external_exports.string().optional()
         // 允许用户自行指定用于智能打标的 Vision 模型，如 "openai:gpt-4o" 或 "universalAi"
       }),
       async (req, res) => {
-        const { name: name28, fileUrl, gender, ageGroup, ethnicity, tags, description, beautyLevel, model = "faceAssetVisionAgent" } = req.body;
+        const { name: name28, fileUrl, species, gender, ethnicity, ageGroup, beautyScore, tags, description, model = "faceAssetVisionAgent" } = req.body;
         try {
           const mimeMatch = fileUrl.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
           const mimeType = mimeMatch ? mimeMatch[1].toLowerCase() : "jpeg";
@@ -256039,43 +261863,46 @@ var init_addFaceAsset = __esm({
           const ext = extMap[mimeType] || "jpg";
           const imagePath = `/faceAssets/${v4_default()}.${ext}`;
           await utils_default.oss.writeFile(imagePath, Buffer.from(realBase64, "base64"));
+          let autoSpecies = species;
           let autoGender = gender;
-          let autoAgeGroup = ageGroup;
           let autoEthnicity = ethnicity;
-          let autoBeauty = beautyLevel;
+          let autoAgeGroup = ageGroup;
+          let autoBeautyScore = beautyScore;
           let autoTags = tags || [];
           let autoDesc = description;
-          if (model !== "none" && (!autoGender || !autoAgeGroup || !autoEthnicity || !autoBeauty || autoTags.length === 0 || !autoDesc)) {
+          if (model !== "none" && (!autoSpecies || !autoGender || !autoEthnicity || !autoAgeGroup || autoBeautyScore === void 0 || autoTags.length === 0 || !autoDesc)) {
             const modelCandidates = [.../* @__PURE__ */ new Set([model || "faceAssetVisionAgent", "universalAi"])].filter(Boolean);
             for (const tryModel of modelCandidates) {
               try {
                 const aiRes = await utils_default.Ai.Text(tryModel).invoke({
-                  system: `\u4F60\u662F\u4E00\u4F4D\u4E13\u4E1A\u7684\u4EBA\u50CF\u9762\u90E8\u7279\u5F81\u4E0E\u9AA8\u76F8\u5206\u6790\u4E13\u5BB6\u3002\u8BF7\u4ED4\u7EC6\u5206\u6790\u4E0A\u4F20\u7684\u4EBA\u8138\u7167\u7247\uFF0C\u8F93\u51FA\u4E25\u683C\u7684 JSON \u683C\u5F0F\u7ED3\u679C\uFF0C\u4E0D\u8981\u5305\u542B\u4EFB\u4F55 markdown \u4EE3\u7801\u5757\u6807\u8BB0\u4EE5\u5916\u7684\u95F2\u804A\u6587\u5B57\u3002
-JSON \u683C\u5F0F\u8981\u6C42\u5982\u4E0B\uFF1A
-{
-  "gender": "\u7537" | "\u5973" | "\u672A\u77E5",
-  "ageGroup": "\u5C11\u5E74" | "\u9752\u5E74" | "\u4E2D\u5E74" | "\u8001\u5E74",
-  "ethnicity": "\u4E1C\u4E9A" | "\u4E1C\u5357\u4E9A" | "\u5357\u4E9A" | "\u6B27\u7F8E" | "\u62C9\u4E01" | "\u975E\u88D4" | "\u5176\u4ED6",
-  "beautyLevel": "\u9AD8" | "\u4E2D",
-  "tags": ["\u9AD8\u9F3B\u6881", "\u5185\u53CC", "\u4E0B\u988C\u7EBF\u6761\u6E05\u6670", "\u5FAE\u5355\u773C\u76AE", "\u5251\u7709", "\u6843\u82B1\u773C", "\u6545\u4E8B\u611F\u795E\u6001"... 3-6\u4E2A\u7279\u5F81\u8BCD],
-  "description": "50\u5B57\u4EE5\u5185\u6982\u62EC\u5176\u9762\u90E8\u9AA8\u76F8\u7ACB\u4F53\u5EA6\u3001\u4E94\u5B98\u795E\u6001\u3001\u773C\u578B\u7279\u5F81\u4E0E\u76AE\u80A4\u8D28\u611F"
-}
-\u6CE8\u610F\uFF1A
-1. \u5FC5\u987B\u4E25\u683C\u4F9D\u636E\u7167\u7247\u4E2D\u4EBA\u7269\u7684\u771F\u5B9E\u751F\u7406\u7279\u5F81\u5224\u65AD\u6027\u522B\uFF1B\u5982\u679C\u7167\u7247\u6A21\u7CCA\u3001\u906E\u6321\u6216\u65E0\u6CD5\u660E\u786E\u5224\u65AD\u6027\u522B\uFF0C\u4E00\u5F8B\u8FD4\u56DE "\u672A\u77E5"\uFF0C\u4E25\u7981\u731C\u6D4B\u6216\u9ED8\u8BA4\u3002
-2. beautyLevel \u8868\u793A\u989C\u503C\u7B49\u7EA7\uFF1A\u4E94\u5B98\u6BD4\u4F8B\u534F\u8C03\u3001\u9AA8\u76F8\u7ACB\u4F53\u3001\u65E0\u660E\u663E\u7455\u75B5\u4E3A "\u9AD8"\uFF1B\u4E94\u5B98\u7AEF\u6B63\u3001\u7565\u6709\u7455\u75B5\u4E3A "\u4E2D"\u3002\u57FA\u4E8E\u5BA2\u89C2\u9762\u90E8\u7279\u5F81\u8BC4\u4F30\uFF0C\u4E0D\u8981\u523B\u610F\u8BA8\u597D\u3002`,
+                  system: `\u4F60\u662F\u4E00\u540D\u8D44\u6DF1\u7535\u5F71\u9009\u89D2\u5BFC\u6F14\u4E0E\u89D2\u8272\u89C6\u89C9\u603B\u76D1\uFF0C\u540C\u65F6\u662F\u4EBA\u50CF\u9AA8\u76F8\u5206\u6790\u4E13\u5BB6\u3002\u8BF7\u4EE5\u82DB\u523B\u3001\u5BA2\u89C2\u3001\u51B7\u9759\u7684\u5DE5\u4E1A\u7EA7\u773C\u5149\u5206\u6790\u4E0A\u4F20\u7684\u4EBA\u8138\u7167\u7247\uFF0C\u4E25\u683C\u6309\u3010\u6807\u51C6\u6570\u5B57\u7801\u503C\u5B57\u5178\u3011\u8F93\u51FA\u7ED3\u6784\u5316\u5143\u6570\u636E\u3002
+
+\u3010\u6807\u51C6\u6570\u5B57\u7801\u503C\u5B57\u5178\u3011
+species\uFF08\u7269\u79CD\uFF09\uFF1A1=\u4EBA\u7C7B\uFF1B2=\u975E\u4EBA\u7C7B\uFF08\u52A8\u7269/\u602A\u517D/\u673A\u7532/\u5F02\u5F62/\u62DF\u4EBA\u751F\u7269\u7B49\uFF09
+gender\uFF08\u6027\u522B\uFF09\uFF1A1=\u7537\uFF1B2=\u5973\uFF1B3=\u4E2D\u6027/\u96BE\u4EE5\u754C\u5B9A
+ethnicity\uFF08\u65CF\u88D4\uFF09\uFF1A1=\u4E1C\u4E9A\uFF1B2=\u6B27\u7F8E\uFF08\u9AD8\u52A0\u7D22\uFF09\uFF1B3=\u4E1C\u5357\u4E9A\uFF1B4=\u5357\u4E9A\uFF1B5=\u62C9\u4E01\uFF1B6=\u975E\u88D4\uFF1B7=\u6DF7\u8840/\u5176\u4ED6
+ageGroup\uFF08\u5E74\u9F84\u6BB5\uFF09\uFF1A1=\u5C11\u5E74(12-17)\uFF1B2=\u9752\u5E74(18-35)\uFF1B3=\u4E2D\u5E74(36-55)\uFF1B4=\u8001\u5E74(56+)
+beautyScore\uFF08\u5BA2\u89C2\u989C\u503C\u8FDE\u7EED\u6253\u5206 2.0~10.0\uFF09\u2014\u2014\u4E25\u7981\u8C04\u5A9A\u4E0E\u5206\u6570\u901A\u80C0\uFF0C\u5FC5\u987B\u4EE5\u771F\u5B9E\u4EBA\u7C7B\u793E\u4F1A\u6B63\u6001\u5206\u5E03\u4E3A\u57FA\u51C6\uFF1A
+- 9.0~10.0 \u9876\u7EA7\u795E\u989C\uFF1A\u9AA8\u76F8\u76AE\u76F8\u8FD1\u4E4E\u5B8C\u7F8E\u3001\u65E0\u6B7B\u89D2\u9EC4\u91D1\u6BD4\u4F8B\uFF0C\u7A00\u4E16\u7F55\u89C1\uFF08\u6781\u5C11\u7ED9\u51FA\uFF09
+- 7.5~8.9 \u4FCA\u7F8E\u51FA\u4F17\uFF1A\u660E\u661F/\u6A21\u7279/\u9AD8\u989C\u503C\u7D20\u4EBA\uFF0C\u4E94\u5B98\u7ACB\u4F53\u6216\u6781\u5177\u8FA8\u8BC6\u5EA6
+- 5.5~7.4 \u6E05\u79C0\u8010\u770B/\u90BB\u5BB6\u751F\u6D3B\u611F\uFF1A\u6B63\u5E38\u4E94\u5B98\uFF0C\u7A0D\u6709\u4E2A\u4EBA\u7279\u8272\uFF0C\u73B0\u5B9E\u5267\u7537\u5973\u4E3B\u5E38\u89C1\u6863\u4F4D
+- 4.0~5.4 \u5E73\u5E73\u65E0\u5947/\u5927\u4F17\u8138\uFF1A\u4E94\u5B98\u65E0\u4EAE\u70B9\uFF0C\u53EF\u80FD\u6709\u8F7B\u5FAE\u51F8\u5634\u3001\u4E0D\u5BF9\u79F0\u3001\u584C\u9F3B\u6881\u7B49\u5C0F\u7455\u75B5
+- 2.0~3.9 \u6CA7\u6851\u7279\u578B/\u4E11\u89D2\uFF1A\u660E\u663E\u4E0D\u5BF9\u79F0\u3001\u5927\u75A4\u75D5\u3001\u4E25\u91CD\u8870\u8001\u6216\u7279\u5B9A\u53CD\u5411\u7279\u5F81
+
+tags\uFF1A3~6 \u4E2A\u7ED3\u6784\u5316\u7279\u5F81\u8BCD\uFF0C\u805A\u7126\u9AA8\u76F8\u3001\u4E94\u5B98\u786C\u7279\u5F81\u4E0E\u795E\u6001\uFF08\u5982 "\u9AD8\u9F3B\u6881"\u3001"\u5185\u53CC"\u3001"\u4E0B\u988C\u7EBF\u6E05\u6670"\u3001"\u773C\u795E\u51B7\u5CFB"\uFF09\uFF0C\u907F\u514D\u7A7A\u6CDB\u5F62\u5BB9\u8BCD
+description\uFF1A50 \u5B57\u4EE5\u5185\uFF0C\u91CD\u70B9\u63D0\u70BC\u9AA8\u76F8\u7ED3\u6784\uFF08\u7709\u5F13/\u9F3B\u9AA8/\u98A7\u9AA8/\u4E0B\u988C\u6298\u89D2\uFF09\u3001\u773C\u578B\u795E\u97F5\u4E0E\u76AE\u80A4\u8D28\u611F\uFF0C\u4F9B\u53CC\u5E95\u56FE\u878D\u5408 Prompt \u4F7F\u7528
+
+\u53EA\u8F93\u51FA\u5982\u4E0B\u7EAF JSON\uFF0C\u7981\u6B62 markdown \u4EE3\u7801\u5757\u3001\u6CE8\u91CA\u6216\u4EFB\u4F55\u591A\u4F59\u6587\u5B57\uFF1A
+{"species":1,"gender":1,"ethnicity":1,"ageGroup":2,"beautyScore":6.8,"tags":["\u5355\u773C\u76AE","\u9F3B\u6881\u9AD8\u633A","\u4E0B\u988C\u7EBF\u6E05\u6670","\u773C\u795E\u5185\u655B"],"description":"\u9AA8\u76F8\u7ACB\u4F53\u81EA\u7136\u7684\u4E1C\u4E9A\u9752\u5E74\u7537\u6027\uFF0C\u7709\u773C\u6DF1\u9083\uFF0C\u4E0B\u988C\u6298\u89D2\u6E05\u6670\uFF0C\u773C\u795E\u575A\u6BC5\u51B7\u5CFB"}`,
                   messages: [
                     {
                       role: "user",
                       content: [
-                        // AI SDK v6 ImagePart 标准格式：image 传「纯 base64」（不能带 data: 前缀，否则被当 URL fetch），mediaType 声明图片格式
-                        {
-                          type: "image",
-                          image: realBase64,
-                          mediaType: `image/${mimeType}`
-                        },
+                        // AI SDK v6 ImagePart 标准格式：image 传「纯 base64」（不能带 data: 前缀），mediaType 声明图片格式
+                        { type: "image", image: realBase64, mediaType: `image/${mimeType}` },
                         {
                           type: "text",
-                          text: "\u8BF7\u5206\u6790\u6B64\u771F\u4EBA\u4EBA\u8138\u7684\u9AA8\u76F8\u7279\u5F81\u3001\u4E94\u5B98\u795E\u97F5\u3001\u6027\u522B\u3001\u5E74\u9F84\u6BB5\u4E0E\u4EBA\u79CD\uFF0C\u5E76\u6309\u89C4\u8303\u8F93\u51FA JSON\u3002"
+                          text: "\u8BF7\u4EE5\u9009\u89D2\u603B\u76D1\u89C6\u89D2\u5206\u6790\u8FD9\u5F20\u4EBA\u50CF\uFF0C\u6309\u6807\u51C6\u6570\u5B57\u7801\u503C\u5B57\u5178\u8F93\u51FA\u7EAF JSON\u3002\u7279\u522B\u6CE8\u610F\uFF1AbeautyScore \u5FC5\u987B\u843D\u5728\u771F\u5B9E\u4EBA\u7FA4\u6B63\u6001\u5206\u5E03\u533A\u95F4\uFF0C\u666E\u901A\u4EBA\u4E25\u7981\u8D85\u8FC7 7.4\u3002"
                         }
                       ]
                     }
@@ -256084,36 +261911,37 @@ JSON \u683C\u5F0F\u8981\u6C42\u5982\u4E0B\uFF1A
                 const jsonMatch = aiRes.text.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
                   const parsed = JSON.parse(jsonMatch[0]);
-                  if (!autoGender && parsed.gender) autoGender = normalizeGender(parsed.gender);
-                  if (!autoAgeGroup && parsed.ageGroup) autoAgeGroup = parsed.ageGroup;
-                  if (!autoEthnicity && parsed.ethnicity) autoEthnicity = parsed.ethnicity;
-                  if (!autoBeauty && parsed.beautyLevel && ["\u9AD8", "\u4E2D"].includes(parsed.beautyLevel)) autoBeauty = parsed.beautyLevel;
-                  if (autoTags.length === 0 && Array.isArray(parsed.tags)) autoTags = parsed.tags;
-                  if (!autoDesc && parsed.description) autoDesc = parsed.description;
+                  if (autoSpecies === void 0) autoSpecies = toCode(parsed.species, 1, 2);
+                  if (autoGender === void 0) autoGender = toCode(parsed.gender, 1, 3);
+                  if (autoEthnicity === void 0) autoEthnicity = toCode(parsed.ethnicity, 1, 7);
+                  if (autoAgeGroup === void 0) autoAgeGroup = toCode(parsed.ageGroup, 1, 4);
+                  if (autoBeautyScore === void 0) autoBeautyScore = toBeautyScore(parsed.beautyScore);
+                  if (autoTags.length === 0) autoTags = toTags(parsed.tags);
+                  if (!autoDesc && typeof parsed.description === "string") autoDesc = parsed.description.trim();
                 }
-                if (autoGender || autoAgeGroup || autoEthnicity || autoBeauty || autoTags.length || autoDesc) break;
+                if (autoGender || autoEthnicity || autoAgeGroup || autoBeautyScore !== void 0 || autoTags.length || autoDesc) break;
               } catch (visionErr) {
                 console.warn(`[addFaceAsset] Vision \u6A21\u578B ${tryModel} \u6253\u6807\u5931\u8D25\uFF0C\u5C1D\u8BD5\u4E0B\u4E00\u4E2A:`, utils_default.error(visionErr).message);
               }
             }
           }
-          autoGender = autoGender || "\u672A\u77E5";
-          autoAgeGroup = autoAgeGroup || "";
-          autoEthnicity = autoEthnicity || "";
-          autoBeauty = autoBeauty || "";
+          autoSpecies = autoSpecies ?? 1;
           autoTags = autoTags && autoTags.length ? autoTags : [];
           autoDesc = autoDesc || "";
-          const [id] = await utils_default.db("o_faceAsset").insert({
-            name: name28 || `${autoEthnicity || "\u672A\u77E5"}${autoAgeGroup || ""}${autoGender}_${Date.now().toString().slice(-4)}`,
+          const fallbackName = `${ETHNICITY_LABEL[autoEthnicity ?? 7] || "\u672A\u77E5"}${AGE_GROUP_LABEL[autoAgeGroup ?? 2] || ""}${GENDER_LABEL[autoGender ?? 3] || ""}_${Date.now().toString().slice(-4)}`;
+          const insertData = {
+            name: name28 || fallbackName,
             filePath: imagePath,
-            gender: autoGender,
-            ageGroup: autoAgeGroup,
-            ethnicity: autoEthnicity,
-            beautyLevel: autoBeauty,
+            species: autoSpecies,
+            gender: autoGender != null ? String(autoGender) : null,
+            ethnicity: autoEthnicity != null ? String(autoEthnicity) : null,
+            ageGroup: autoAgeGroup != null ? String(autoAgeGroup) : null,
+            beautyScore: autoBeautyScore ?? null,
             tags: JSON.stringify(autoTags),
             description: autoDesc,
             createTime: Date.now()
-          });
+          };
+          const [id] = await utils_default.db("o_faceAsset").insert(insertData);
           let smallUrl = "";
           try {
             smallUrl = await utils_default.oss.getSmallImageUrl(imagePath);
@@ -256123,14 +261951,10 @@ JSON \u683C\u5F0F\u8981\u6C42\u5982\u4E0B\uFF1A
           res.status(200).send(
             success3({
               id,
-              name: name28 || `${autoEthnicity || "\u672A\u77E5"}${autoAgeGroup || ""}${autoGender}`,
+              ...insertData,
+              name: insertData.name,
               fileUrl: smallUrl,
-              gender: autoGender,
-              ageGroup: autoAgeGroup,
-              ethnicity: autoEthnicity,
-              beautyLevel: autoBeauty,
-              tags: autoTags,
-              description: autoDesc
+              tags: autoTags
             })
           );
         } catch (e) {
@@ -256143,11 +261967,11 @@ JSON \u683C\u5F0F\u8981\u6C42\u5982\u4E0B\uFF1A
 });
 
 // src/routes/faceAsset/autoImportSamples.ts
-function ageToGroup(age) {
-  if (age < 18) return "\u5C11\u5E74";
-  if (age < 30) return "\u9752\u5E74";
-  if (age < 50) return "\u4E2D\u5E74";
-  return "\u8001\u5E74";
+function ageToGroupCode(age) {
+  if (age < 18) return 1;
+  if (age < 36) return 2;
+  if (age < 56) return 3;
+  return 4;
 }
 function pickAgeDiverse(candidates, n) {
   if (candidates.length <= n) return candidates;
@@ -256159,7 +261983,14 @@ function pickAgeDiverse(candidates, n) {
   }
   return picked;
 }
-var import_express33, router33, ETHNICITY_NATS, autoImportSamples_default;
+function sampleBeautyScore(seedText) {
+  let hash3 = 0;
+  for (let i = 0; i < seedText.length; i++) {
+    hash3 = hash3 * 31 + seedText.charCodeAt(i) >>> 0;
+  }
+  return Math.round((5.2 + hash3 % 17 * 0.1) * 10) / 10;
+}
+var import_express33, router33, GENDER_LABEL2, ETHNICITY_LABEL2, AGE_GROUP_LABEL2, ETHNICITY_NATS, autoImportSamples_default;
 var init_autoImportSamples = __esm({
   "src/routes/faceAsset/autoImportSamples.ts"() {
     "use strict";
@@ -256170,14 +262001,16 @@ var init_autoImportSamples = __esm({
     init_zod();
     init_dist_node();
     router33 = import_express33.default.Router();
+    GENDER_LABEL2 = { 1: "\u7537", 2: "\u5973", 3: "\u4E2D\u6027" };
+    ETHNICITY_LABEL2 = { 1: "\u4E1C\u4E9A", 2: "\u6B27\u7F8E", 3: "\u4E1C\u5357\u4E9A", 4: "\u5357\u4E9A", 5: "\u62C9\u4E01", 6: "\u975E\u88D4", 7: "\u6DF7\u8840" };
+    AGE_GROUP_LABEL2 = { 1: "\u5C11\u5E74", 2: "\u9752\u5E74", 3: "\u4E2D\u5E74", 4: "\u8001\u5E74" };
     ETHNICITY_NATS = {
-      \u4E1C\u4E9A: [],
-      \u4E1C\u5357\u4E9A: [],
-      \u5357\u4E9A: ["in", "pk", "bd", "lk", "np"],
-      \u6B27\u7F8E: ["us", "gb", "au", "fr", "de", "nl", "es", "ie", "ca", "ch", "fi", "no", "se", "dk", "nz", "be", "at", "it", "pl"],
-      \u62C9\u4E01: ["br", "mx", "ar", "co", "pe", "cl"],
-      \u975E\u88D4: [],
-      \u5176\u4ED6: []
+      2: ["us", "gb", "au", "fr", "de", "nl", "es", "ie", "ca", "ch", "fi", "no", "se", "dk", "nz", "be", "at", "it", "pl"],
+      // 欧美
+      4: ["in", "pk", "bd", "lk", "np"],
+      // 南亚
+      5: ["br", "mx", "ar", "co", "pe", "cl"]
+      // 拉丁
     };
     autoImportSamples_default = router33.post(
       "/",
@@ -256189,34 +262022,42 @@ var init_autoImportSamples = __esm({
         const perGroup = Math.min(Math.max(req.body?.perGroup ?? 5, 1), 10);
         try {
           const groups = [];
-          for (const [ethnicity, nats] of Object.entries(ETHNICITY_NATS)) {
-            groups.push({ ethnicity, gender: "\u7537", genderParam: "male", nats });
-            groups.push({ ethnicity, gender: "\u5973", genderParam: "female", nats });
+          for (const [ethnicityCode, nats] of Object.entries(ETHNICITY_NATS)) {
+            if (!nats.length) continue;
+            const code = Number(ethnicityCode);
+            groups.push({ ethnicityCode: code, genderCode: 1, genderParam: "male", nats });
+            groups.push({ ethnicityCode: code, genderCode: 2, genderParam: "female", nats });
           }
           const existingRows = await utils_default.db("o_faceAsset").select("name");
           const existingNames = new Set(existingRows.map((r) => r.name || ""));
           let successCount = 0;
           const failed = [];
-          const importOne = async (user, gender, ethnicity) => {
+          const importOne = async (user, genderCode, ethnicityCode) => {
+            const genderLabel = GENDER_LABEL2[genderCode];
+            const ethnicityLabel = ETHNICITY_LABEL2[ethnicityCode] || "\u672A\u77E5";
             const first = (user.name?.first || "").replace(/[^\u4e00-\u9fa5a-zA-Z]/g, "");
-            const baseName = `${ethnicity}${gender}${first ? `-${first}` : ""}`;
-            if (existingNames.has(`${baseName}_${gender}`)) return;
-            const name28 = `${baseName}_${gender}`;
+            const baseName = `${ethnicityLabel}${genderLabel}${first ? `-${first}` : ""}`;
+            if (existingNames.has(`${baseName}_${genderLabel}`)) return;
+            const name28 = `${baseName}_${genderLabel}`;
             try {
               const imgResp = await fetch(user.picture?.large || user.picture?.medium, { signal: AbortSignal.timeout(3e4) });
               if (!imgResp.ok) throw new Error(`\u56FE\u7247\u4E0B\u8F7D\u5931\u8D25 ${imgResp.status}`);
               const buf = Buffer.from(await imgResp.arrayBuffer());
               const imagePath = `/faceAssets/${v4_default()}.jpg`;
               await utils_default.oss.writeFile(imagePath, buf);
-              const ageGroup = ageToGroup(user.dob?.age ?? 25);
+              const ageGroupCode = ageToGroupCode(user.dob?.age ?? 25);
+              const ageGroupLabel = AGE_GROUP_LABEL2[ageGroupCode] || "\u9752\u5E74";
+              const beautyScore = sampleBeautyScore(name28);
               const [id] = await utils_default.db("o_faceAsset").insert({
                 name: name28,
                 filePath: imagePath,
-                gender,
-                ageGroup,
-                ethnicity,
-                tags: JSON.stringify(["\u771F\u4EBA\u6837\u4F8B", gender, ethnicity]),
-                description: `\u81EA\u52A8\u5BFC\u5165\u7684${ethnicity}${gender}\u6027\u771F\u4EBA\u6837\u4F8B\uFF08${ageGroup}\uFF09\uFF0C\u6765\u6E90 randomuser.me\uFF0C\u53EF\u7528\u4E8E\u89D2\u8272\u751F\u56FE\u53C2\u8003\u5E95\u56FE\u3002`,
+                species: 1,
+                gender: String(genderCode),
+                ethnicity: String(ethnicityCode),
+                ageGroup: String(ageGroupCode),
+                beautyScore,
+                tags: JSON.stringify(["\u771F\u4EBA\u6837\u4F8B", genderLabel, ethnicityLabel]),
+                description: `\u81EA\u52A8\u5BFC\u5165\u7684${ethnicityLabel}${genderLabel}\u6027\u771F\u4EBA\u6837\u4F8B\uFF08${ageGroupLabel}\uFF0C\u89C6\u89C9\u4F30\u503C ${beautyScore} \u5206\uFF09\uFF0C\u6765\u6E90 randomuser.me\uFF0C\u53EF\u7528\u4E8E\u89D2\u8272\u751F\u56FE\u53C2\u8003\u5E95\u56FE\u3002`,
                 createTime: Date.now()
               });
               if (id) {
@@ -256233,16 +262074,17 @@ var init_autoImportSamples = __esm({
               { signal: AbortSignal.timeout(3e4) }
             );
             if (!resp.ok) {
-              failed.push(`${group.ethnicity}${group.gender}: \u56FE\u6E90\u8BF7\u6C42\u5931\u8D25 ${resp.status}`);
+              failed.push(`${ETHNICITY_LABEL2[group.ethnicityCode]}${GENDER_LABEL2[group.genderCode]}: \u56FE\u6E90\u8BF7\u6C42\u5931\u8D25 ${resp.status}`);
               continue;
             }
             const data = await resp.json();
             const candidates = pickAgeDiverse(data?.results || [], perGroup);
             for (const user of candidates) {
-              await importOne(user, group.gender, group.ethnicity);
+              await importOne(user, group.genderCode, group.ethnicityCode);
             }
           }
-          const msg = `\u81EA\u52A8\u5BFC\u5165\u5B8C\u6210\uFF1A\u6210\u529F ${successCount} \u5F20\uFF08\u8986\u76D6 5 \u4EBA\u79CD \xD7 \u7537\u5973 \xD7 \u6BCF\u7EC4 ${perGroup} \u5F20\uFF09\uFF0C\u5931\u8D25 ${failed.length} \u5F20`;
+          const ethnicityCount = new Set(groups.map((g) => g.ethnicityCode)).size;
+          const msg = `\u81EA\u52A8\u5BFC\u5165\u5B8C\u6210\uFF1A\u6210\u529F ${successCount} \u5F20\uFF08\u8986\u76D6 ${ethnicityCount} \u65CF\u88D4 \xD7 \u7537\u5973 \xD7 \u6BCF\u7EC4 ${perGroup} \u5F20\uFF09\uFF0C\u5931\u8D25 ${failed.length} \u5F20`;
           if (failed.length) console.warn("[autoImportSamples] \u5931\u8D25\u660E\u7EC6:", failed.slice(0, 5));
           res.status(200).send(success3(msg));
         } catch (e) {
@@ -256310,27 +262152,39 @@ var init_editFaceAsset = __esm({
       validateFields({
         id: external_exports.number(),
         name: external_exports.string().optional(),
-        gender: external_exports.string().optional(),
-        ageGroup: external_exports.string().optional(),
-        ethnicity: external_exports.string().optional(),
-        beautyLevel: external_exports.string().optional(),
+        species: external_exports.number().int().min(1).max(2).optional(),
+        // 1: 人类, 2: 非人类
+        gender: external_exports.number().int().min(1).max(3).optional(),
+        // 1: 男, 2: 女, 3: 中性/其他
+        ethnicity: external_exports.number().int().min(1).max(7).optional(),
+        // 1: 东亚 ... 7: 混血/其他
+        ageGroup: external_exports.number().int().min(1).max(4).optional(),
+        // 1: 少年 ... 4: 老年
+        beautyScore: external_exports.number().min(2).max(10).optional(),
+        // 2.0 ~ 10.0 连续客观打分
         tags: external_exports.array(external_exports.string()).optional(),
         description: external_exports.string().optional()
       }),
       async (req, res) => {
-        const { id, name: name28, gender, ageGroup, ethnicity, beautyLevel, tags, description } = req.body;
-        const exist = await utils_default.db("o_faceAsset").where("id", id).first();
-        if (!exist) return res.status(404).send(error50("\u4EBA\u8138\u8D44\u4EA7\u4E0D\u5B58\u5728"));
-        const updateData = {};
-        if (name28 !== void 0) updateData.name = name28;
-        if (gender !== void 0) updateData.gender = gender;
-        if (ageGroup !== void 0) updateData.ageGroup = ageGroup;
-        if (ethnicity !== void 0) updateData.ethnicity = ethnicity;
-        if (beautyLevel !== void 0) updateData.beautyLevel = beautyLevel;
-        if (tags !== void 0) updateData.tags = JSON.stringify(tags);
-        if (description !== void 0) updateData.description = description;
-        await utils_default.db("o_faceAsset").where("id", id).update(updateData);
-        res.status(200).send(success3("\u66F4\u65B0\u6210\u529F"));
+        const { id, name: name28, species, gender, ethnicity, ageGroup, beautyScore, tags, description } = req.body;
+        try {
+          const exist = await utils_default.db("o_faceAsset").where("id", id).first();
+          if (!exist) return res.status(404).send(error50("\u4EBA\u8138\u8D44\u4EA7\u4E0D\u5B58\u5728"));
+          const updateData = {};
+          if (name28 !== void 0) updateData.name = name28;
+          if (species !== void 0) updateData.species = species;
+          if (gender !== void 0) updateData.gender = String(gender);
+          if (ethnicity !== void 0) updateData.ethnicity = String(ethnicity);
+          if (ageGroup !== void 0) updateData.ageGroup = String(ageGroup);
+          if (beautyScore !== void 0) updateData.beautyScore = Math.round(Math.max(2, Math.min(10, beautyScore)) * 10) / 10;
+          if (tags !== void 0) updateData.tags = JSON.stringify(tags);
+          if (description !== void 0) updateData.description = description;
+          await utils_default.db("o_faceAsset").where("id", id).update(updateData);
+          res.status(200).send(success3("\u66F4\u65B0\u6210\u529F"));
+        } catch (e) {
+          console.error("[editFaceAsset Error]:", e);
+          res.status(500).send(error50(utils_default.error(e).message));
+        }
       }
     );
   }
@@ -256350,50 +262204,58 @@ var init_getFaceAssets = __esm({
     getFaceAssets_default = router36.post(
       "/",
       validateFields({
-        gender: external_exports.string().optional(),
-        ethnicity: external_exports.string().optional(),
-        ageGroup: external_exports.string().optional(),
-        beautyLevel: external_exports.string().optional(),
+        species: external_exports.number().int().min(1).max(2).optional(),
+        // 1: 人类, 2: 非人类
+        gender: external_exports.number().int().min(1).max(3).optional(),
+        // 1: 男, 2: 女, 3: 中性/其他
+        ethnicity: external_exports.number().int().min(1).max(7).optional(),
+        // 1: 东亚 ... 7: 混血/其他
+        ageGroup: external_exports.number().int().min(1).max(4).optional(),
+        // 1: 少年 ... 4: 老年
+        beautyMin: external_exports.number().min(2).max(10).optional(),
+        // 颜值分区间下限
+        beautyMax: external_exports.number().min(2).max(10).optional(),
+        // 颜值分区间上限
         page: external_exports.number().optional(),
         pageSize: external_exports.number().optional()
       }),
       async (req, res) => {
-        const { gender, ethnicity, ageGroup, beautyLevel, page = 1, pageSize = 50 } = req.body;
-        let query = utils_default.db("o_faceAsset");
-        if (gender) {
-          query = query.where("gender", gender);
+        const { species, gender, ethnicity, ageGroup, beautyMin, beautyMax, page = 1, pageSize = 50 } = req.body;
+        try {
+          let query = utils_default.db("o_faceAsset");
+          if (species !== void 0) query = query.where("species", species);
+          if (gender !== void 0) query = query.where("gender", String(gender));
+          if (ethnicity !== void 0) query = query.where("ethnicity", String(ethnicity));
+          if (ageGroup !== void 0) query = query.where("ageGroup", String(ageGroup));
+          if (beautyMin !== void 0 || beautyMax !== void 0) {
+            query = query.whereBetween("beautyScore", [beautyMin ?? 2, beautyMax ?? 10]);
+          }
+          const totalRes = await query.clone().count("* as count").first();
+          const total = Number(totalRes?.count || 0);
+          const list2 = await query.select("*").orderBy("id", "desc").limit(pageSize).offset((page - 1) * pageSize);
+          const data = await Promise.all(
+            list2.map(async (item) => {
+              const fileUrl = item.filePath ? await utils_default.oss.getSmallImageUrl(item.filePath) : "";
+              const fileUrlRaw = item.filePath ? await utils_default.oss.getFileUrl(item.filePath) : "";
+              let tags = [];
+              try {
+                tags = item.tags ? JSON.parse(item.tags) : [];
+              } catch {
+                tags = [];
+              }
+              return {
+                ...item,
+                fileUrl,
+                fileUrlRaw,
+                tags
+              };
+            })
+          );
+          res.status(200).send(success3({ list: data, total }));
+        } catch (e) {
+          console.error("[getFaceAssets Error]:", e);
+          res.status(500).send(error50(utils_default.error(e).message));
         }
-        if (ethnicity) {
-          query = query.where("ethnicity", ethnicity);
-        }
-        if (ageGroup) {
-          query = query.where("ageGroup", ageGroup);
-        }
-        if (beautyLevel) {
-          query = query.where("beautyLevel", beautyLevel);
-        }
-        const list2 = await query.select("*").orderBy("id", "desc").limit(pageSize).offset((page - 1) * pageSize);
-        const totalRes = await utils_default.db("o_faceAsset").count("* as count").first();
-        const total = Number(totalRes?.count || 0);
-        const data = await Promise.all(
-          list2.map(async (item) => {
-            const fileUrl = item.filePath ? await utils_default.oss.getSmallImageUrl(item.filePath) : "";
-            const fileUrlRaw = item.filePath ? await utils_default.oss.getFileUrl(item.filePath) : "";
-            let tags = [];
-            try {
-              tags = item.tags ? JSON.parse(item.tags) : [];
-            } catch {
-              tags = [];
-            }
-            return {
-              ...item,
-              fileUrl,
-              fileUrlRaw,
-              tags
-            };
-          })
-        );
-        res.status(200).send(success3({ list: data, total }));
       }
     );
   }
@@ -262193,7 +268055,7 @@ var require_stream_writable = __commonJS({
             return this.getBuffer();
           }, "_writableState.buffer is deprecated. Use _writableState.getBuffer instead.", "DEP0003")
         });
-      } catch (_) {
+      } catch (_2) {
       }
     })();
     var realHasInstance;
@@ -263955,8 +269817,8 @@ var require_is_callable = __commonJS({
         reflectApply(function() {
           throw 42;
         }, null, badArrayLike);
-      } catch (_) {
-        if (_ !== isCallableMarker) {
+      } catch (_2) {
+        if (_2 !== isCallableMarker) {
           reflectApply = null;
         }
       }
@@ -264539,7 +270401,7 @@ var require_buffer_fill = __commonJS({
         var buf = Buffer.alloc ? Buffer.alloc(4) : new Buffer(4);
         buf.fill("ab", "ucs2");
         return buf.toString("hex") === "61006200";
-      } catch (_) {
+      } catch (_2) {
         return false;
       }
     })();
@@ -265555,7 +271417,7 @@ var require_stream10 = __commonJS({
           }
           const buf = [];
           const collectStream = new stream4.Writable({
-            write(chunk, _, callback) {
+            write(chunk, _2, callback) {
               buf.push(chunk);
               callback();
             }
@@ -270518,7 +276380,7 @@ var require_file_stream3 = __commonJS({
             }
             const buf = [];
             this.entry = new stream4.Writable({
-              write(chunk, _, callback) {
+              write(chunk, _2, callback) {
                 buf.push(chunk);
                 callback();
               }
@@ -270827,7 +276689,7 @@ function chunkArray(arr, groupSize) {
   }
   return groupChunks;
 }
-var import_express115, router115, NewAssetSchema, ExistingAssetRefSchema, AssetSchema, extractAssets_default;
+var import_express115, router115, RoleMetaSchema, NewAssetSchema, ExistingAssetRefSchema, AssetSchema, extractAssets_default;
 var init_extractAssets = __esm({
   "src/routes/script/extractAssets.ts"() {
     "use strict";
@@ -270838,10 +276700,23 @@ var init_extractAssets = __esm({
     init_middleware();
     init_dist22();
     router115 = import_express115.default.Router();
+    RoleMetaSchema = external_exports.object({
+      species: external_exports.number().describe("\u7269\u79CD: 1(\u4EBA\u7C7B), 2(\u975E\u4EBA\u7C7B/\u602A\u517D/\u52A8\u7269/\u673A\u7532/\u5F02\u5F62/\u5176\u4ED6)"),
+      gender: external_exports.number().optional().describe("\u6027\u522B: 1(\u7537), 2(\u5973), 3(\u4E2D\u6027/\u5176\u4ED6)"),
+      ethnicity: external_exports.number().optional().describe("\u65CF\u88D4: 1(\u4E1C\u4E9A), 2(\u6B27\u7F8E), 3(\u4E1C\u5357\u4E9A), 4(\u5357\u4E9A), 5(\u62C9\u4E01), 6(\u975E\u88D4), 7(\u6DF7\u8840/\u5176\u4ED6)"),
+      ageGroup: external_exports.number().optional().describe("\u5E74\u9F84\u6BB5: 1(\u5C11\u5E7412-17), 2(\u9752\u5E7418-35), 3(\u4E2D\u5E7436-55), 4(\u8001\u5E7456+)"),
+      actualAge: external_exports.number().optional().describe("\u5267\u672C\u8BBE\u5B9A\u5177\u4F53\u5E74\u9F84\u6570\u5B57(\u598225)"),
+      beautyScore: external_exports.number().min(2).max(10).optional().describe("\u4EBA\u7C7B\u771F\u5B9E\u989C\u503C\u6253\u5206(2.0-10.0\uFF0C\u4E3B\u89D2\u4E0D\u4E00\u5B9A\u597D\u770B\uFF0C\u4F9D\u636E\u89D2\u8272\u771F\u5B9E\u8BBE\u5B9A\u6253\u5206)"),
+      personality: external_exports.string().optional().describe("\u6027\u683C\u4E0E\u6C14\u8D28\u5173\u952E\u8BCD(\u5982'\u51B7\u9759\u5E72\u7EC3\u3001\u773C\u795E\u9510\u5229')"),
+      appearance: external_exports.string().optional().describe("\u4E94\u5B98\u53D1\u578B\u7279\u5F81(\u5982'\u5355\u773C\u76AE\u3001\u9F3B\u6881\u633A\u76F4\u3001\u9ED1\u8336\u8272\u5FAE\u5377\u9501\u9AA8\u53D1')"),
+      clothing: external_exports.string().optional().describe("\u57FA\u7840\u5E38\u89C4\u7740\u88C5(\u5982'\u7C73\u767D\u8272\u6781\u7B80\u4E9A\u9EBB\u886C\u886B\u642D\u914D\u70DF\u7070\u8272\u4F11\u95F2\u897F\u88E4')"),
+      figure: external_exports.string().optional().describe("\u8EAB\u9AD8\u4F53\u578B\u63CF\u8FF0(\u5982'\u8EAB\u9AD8168cm\uFF0C\u4F53\u6001\u81EA\u7136\u653E\u677E')")
+    });
     NewAssetSchema = external_exports.object({
       name: external_exports.string().describe("\u8D44\u4EA7\u540D\u79F0,\u4EC5\u4E3A\u540D\u79F0\u4E0D\u505A\u5176\u4ED6\u4EFB\u4F55\u8868\u8FF0"),
       desc: external_exports.string().describe("\u8D44\u4EA7\u63CF\u8FF0"),
       type: external_exports.enum(["role", "tool", "scene"]).describe("\u8D44\u4EA7\u7C7B\u578B"),
+      roleMeta: RoleMetaSchema.optional().describe("\u82E5 type \u4E3A role\uFF0C\u5FC5\u987B\u63D0\u4F9B\u7ED3\u6784\u5316\u89D2\u8272\u5143\u6570\u636E\uFF1B\u573A\u666F\u4E0E\u9053\u5177\u7559\u7A7A"),
       scriptIds: external_exports.array(external_exports.number()).describe("\u4F7F\u7528\u8BE5\u8D44\u4EA7\u7684\u5267\u672Cid\u6570\u7EC4")
     });
     ExistingAssetRefSchema = external_exports.object({
@@ -270851,7 +276726,8 @@ var init_extractAssets = __esm({
     AssetSchema = external_exports.object({
       name: external_exports.string().describe("\u8D44\u4EA7\u540D\u79F0,\u4EC5\u4E3A\u540D\u79F0\u4E0D\u505A\u5176\u4ED6\u4EFB\u4F55\u8868\u8FF0"),
       desc: external_exports.string().describe("\u8D44\u4EA7\u63CF\u8FF0"),
-      type: external_exports.enum(["role", "tool", "scene"]).describe("\u8D44\u4EA7\u7C7B\u578B")
+      type: external_exports.enum(["role", "tool", "scene"]).describe("\u8D44\u4EA7\u7C7B\u578B"),
+      roleMeta: RoleMetaSchema.optional().describe("\u89D2\u8272\u7ED3\u6784\u5316\u5143\u6570\u636E")
     });
     extractAssets_default = router115.post(
       "/",
@@ -270884,6 +276760,7 @@ var init_extractAssets = __esm({
                 name: asset.name,
                 type: asset.type,
                 describe: asset.desc,
+                roleMeta: asset.roleMeta ? JSON.stringify(asset.roleMeta) : null,
                 projectId,
                 startTime: Date.now()
               }))
@@ -270944,7 +276821,7 @@ var init_extractAssets = __esm({
             });
             const existingAssets = await utils_default.db("o_assets").where("projectId", projectId).select("name", "type");
             const existingAssetsList = existingAssets.map((a) => `${a.name}(${a.type})`).join("\u3001");
-            const scriptsContent = validScripts.map(({ id, script }) => `===== \u3010\u5267\u672CID: ${id}\u3011${script.name || ""} =====
+            const scriptsContent = validScripts.map(({ id, script }) => `===== \u3010\u5267\u672CID: ${id}\u301B${script.name || ""} =====
 ${script.content}`).join("\n\n");
             let collectedNew = [];
             let collectedExisting = [];
@@ -270953,7 +276830,7 @@ ${script.content}`).join("\n\n");
                 description: "\u8FD4\u56DE\u7ED3\u679C\u65F6\u5FC5\u987B\u8C03\u7528\u8FD9\u4E2A\u5DE5\u5177",
                 inputSchema: jsonSchema(
                   external_exports.object({
-                    newAssets: external_exports.array(NewAssetSchema).describe("\u65B0\u53D1\u73B0\u7684\u8D44\u4EA7\u5217\u8868\uFF08\u4E0D\u5728\u5DF2\u6709\u8D44\u4EA7\u5217\u8868\u4E2D\u7684\uFF09\uFF0C\u9700\u8981\u5B8C\u6574\u7684 prompt\u3001name\u3001desc\u3001type \u548C\u4F7F\u7528\u8BE5\u8D44\u4EA7\u7684 scriptIds"),
+                    newAssets: external_exports.array(NewAssetSchema).describe("\u65B0\u53D1\u73B0\u7684\u8D44\u4EA7\u5217\u8868\uFF08\u4E0D\u5728\u5DF2\u6709\u8D44\u4EA7\u5217\u8868\u4E2D\u7684\uFF09\uFF0C\u5FC5\u987B\u5305\u542B\u5B8C\u6574\u7684 name\u3001desc\u3001type\u3001roleMeta(\u89D2\u8272\u4E13\u5C5E\u7ED3\u6784\u5316\u753B\u50CF) \u548C\u4F7F\u7528\u8BE5\u8D44\u4EA7\u7684 scriptIds"),
                     existingAssetRefs: external_exports.array(ExistingAssetRefSchema).describe("\u5DF2\u6709\u8D44\u4EA7\u7684\u5F15\u7528\u5217\u8868\uFF08\u5728\u5DF2\u6709\u8D44\u4EA7\u5217\u8868\u4E2D\u5DF2\u5B58\u5728\u7684\uFF09\uFF0C\u53EA\u9700\u7ED9\u51FA\u8D44\u4EA7\u540D\u79F0\u548C\u4F7F\u7528\u8BE5\u8D44\u4EA7\u7684 scriptIds")
                   }).toJSONSchema()
                 ),
@@ -270974,11 +276851,33 @@ ${script.content}`).join("\n\n");
 
 \u3010\u5DF2\u6709\u8D44\u4EA7\u5217\u8868\u3011\uFF1A${existingAssetsList}
 \u5BF9\u4E8E\u5DF2\u6709\u8D44\u4EA7\uFF0C\u5982\u679C\u5728\u5267\u672C\u4E2D\u51FA\u73B0\uFF0C\u53EA\u9700\u5728 existingAssetRefs \u4E2D\u7ED9\u51FA\u8D44\u4EA7\u540D\u79F0\u548C\u5BF9\u5E94\u7684 scriptIds \u6570\u7EC4\u5373\u53EF\uFF0C\u65E0\u9700\u91CD\u590D\u751F\u6210 desc/type\u3002\u5BF9\u4E8E\u65B0\u53D1\u73B0\u7684\u8D44\u4EA7\uFF08\u4E0D\u5728\u5DF2\u6709\u5217\u8868\u4E2D\uFF09\uFF0C\u8BF7\u5728 newAssets \u4E2D\u7ED9\u51FA\u5B8C\u6574\u4FE1\u606F\u3002` : "";
-              const output = await utils_default.Ai.Text("universalAi").invoke({
+              const extractionGuide = `
+\u3010\u8D44\u4EA7\u63D0\u53D6\u89C4\u8303\u4E0E\u89D2\u8272\u6570\u5B57\u753B\u50CF\u6307\u5357\u3011\uFF1A
+1. \u8D44\u4EA7\u7C7B\u578B\u5206\u4E3A\uFF1Arole (\u89D2\u8272), scene (\u573A\u666F), tool (\u9053\u5177)\u3002
+2. \u5F53\u7C7B\u578B\u4E3A role \u65F6\uFF0C\u5FC5\u987B\u5728 roleMeta \u4E2D\u586B\u5165\u6807\u51C6\u6570\u5B57\u7801\u503C\u753B\u50CF\uFF1A
+   - species (\u7269\u79CD): 1=\u4EBA\u7C7B, 2=\u975E\u4EBA\u7C7B/\u602A\u517D/\u52A8\u7269/\u673A\u7532/\u5F02\u5F62/\u5176\u4ED6\u3002
+   - gender (\u6027\u522B): 1=\u7537, 2=\u5973, 3=\u4E2D\u6027/\u5176\u4ED6\u3002
+   - ethnicity (\u65CF\u88D4): 1=\u4E1C\u4E9A, 2=\u6B27\u7F8E, 3=\u4E1C\u5357\u4E9A, 4=\u5357\u4E9A, 5=\u62C9\u4E01, 6=\u975E\u88D4, 7=\u6DF7\u8840/\u5176\u4ED6\u3002
+   - ageGroup (\u5E74\u9F84\u6BB5): 1=\u5C11\u5E74(12-17), 2=\u9752\u5E74(18-35), 3=\u4E2D\u5E74(36-55), 4=\u8001\u5E74(56+)\u3002
+   - beautyScore (\u989C\u503C\u6253\u5206): 2.0-10.0 \u8FDE\u7EED\u6253\u5206\uFF08\u6CE8\u610F\uFF1A\u4E3B\u89D2\u4E0D\u4E00\u5B9A\u597D\u770B\uFF0C\u4E25\u683C\u4F9D\u636E\u6545\u4E8B\u4EBA\u7269\u8BBE\u5B9A\uFF09\uFF1A
+     * 9.0-10.0: \u9876\u7EA7\u795E\u989C\u3001\u503E\u56FD\u503E\u57CE\u3001\u6821\u82B1\u6821\u8349\u9876\u6D41\uFF1B
+     * 7.5-8.9: \u4FCA\u7F8E\u51FA\u4F17\u3001\u767D\u9886\u7CBE\u82F1\u9AD8\u989C\u503C\uFF1B
+     * 5.5-7.4: \u6E05\u79C0\u8010\u770B\u3001\u666E\u901A\u751F\u6D3B\u5267/\u73B0\u5B9E\u60AC\u7591\u5267\u7537\u5973\u4E3B\u3001\u90BB\u5BB6\u5927\u4F17\uFF1B
+     * 4.0-5.4: \u5E73\u5E73\u65E0\u5947\u3001\u5E95\u5C42\u5C0F\u4EBA\u7269\u3001\u5927\u4F17\u8138\u8DEF\u4EBA\uFF1B
+     * 2.0-3.9: \u9971\u7ECF\u98CE\u971C\u3001\u5200\u75A4\u6B8B\u7834\u3001\u7279\u578B\u53CD\u6D3E/\u4E11\u89D2\u3002
+   - personality, appearance, clothing, figure: \u7B80\u660E\u63D0\u70BC\u5BF9\u5E94\u7ED3\u6784\u5316\u7279\u5F81\u3002
+`;
+              await utils_default.Ai.Text("universalAi").invoke({
                 messages: [
                   {
                     role: "system",
-                    content: scriptAssetExtraction + "\n\n\u63D0\u53D6\u5267\u672C\u4E2D\u6D89\u53CA\u7684\u8D44\u4EA7\uFF08\u89D2\u8272\u3001\u573A\u666F\u3001\u9053\u5177\uFF09\uFF0C\u53C2\u8003\u6280\u80FD script_assets_extract \u89C4\u8303\uFF0C\u7ED3\u679C\u5FC5\u987B\u901A\u8FC7 resultTool \u5DE5\u5177\u8FD4\u56DE\u3002\n\n\u6CE8\u610F\uFF1A\u672C\u6B21\u4F1A\u540C\u65F6\u63D0\u4F9B\u591A\u96C6\u5267\u672C\uFF0C\u6BCF\u96C6\u5267\u672C\u4EE5 ===== \u3010\u5267\u672CID: xxx\u3011 ===== \u5206\u9694\u3002\u4F60\u9700\u8981\u5206\u6790\u6BCF\u96C6\u5267\u672C\u4F7F\u7528\u4E86\u54EA\u4E9B\u8D44\u4EA7\uFF0C\u5E76\u5728\u8F93\u51FA\u4E2D\u7528 scriptIds \u6570\u7EC4\u6807\u660E\u6BCF\u4E2A\u8D44\u4EA7\u5728\u54EA\u4E9B\u5267\u672C\u4E2D\u51FA\u73B0\u3002"
+                    content: `${scriptAssetExtraction || "\u63D0\u53D6\u5267\u672C\u4E2D\u6D89\u53CA\u7684\u8D44\u4EA7\uFF08\u89D2\u8272\u3001\u573A\u666F\u3001\u9053\u5177\uFF09\u3002"}
+
+${extractionGuide}
+
+\u63D0\u53D6\u7ED3\u679C\u5FC5\u987B\u901A\u8FC7 resultTool \u5DE5\u5177\u8FD4\u56DE\u3002
+
+\u6CE8\u610F\uFF1A\u672C\u6B21\u4F1A\u540C\u65F6\u63D0\u4F9B\u591A\u96C6\u5267\u672C\uFF0C\u6BCF\u96C6\u5267\u672C\u4EE5 ===== \u3010\u5267\u672CID: xxx\u3011 ===== \u5206\u9694\u3002\u4F60\u9700\u8981\u5206\u6790\u6BCF\u96C6\u5267\u672C\u4F7F\u7528\u4E86\u54EA\u4E9B\u8D44\u4EA7\uFF0C\u5E76\u5728\u8F93\u51FA\u4E2D\u7528 scriptIds \u6570\u7EC4\u6807\u660E\u6BCF\u4E2A\u8D44\u4EA7\u5728\u54EA\u4E9B\u5267\u672C\u4E2D\u51FA\u73B0\u3002`
                   },
                   {
                     role: "user",
@@ -272885,21 +278784,30 @@ var init_imageTest = __esm({
         modelName: external_exports.string(),
         id: external_exports.string(),
         imageBase64: external_exports.string().optional(),
-        prompt: external_exports.string()
+        imagesBase64: external_exports.array(external_exports.string()).optional(),
+        prompt: external_exports.string(),
+        size: external_exports.enum(["1K", "2K", "4K"]).optional(),
+        aspectRatio: external_exports.string().optional()
       }),
       async (req, res) => {
-        const { modelName, imageBase64, id, prompt } = req.body;
+        const { modelName, imageBase64, imagesBase64, id, prompt, size, aspectRatio } = req.body;
         try {
           const vendorConfigData = await utils_default.db("o_vendorConfig").where("id", id).first();
           if (!vendorConfigData) return res.status(500).send(error50("\u672A\u627E\u5230\u8BE5\u4F9B\u5E94\u5546\u914D\u7F6E"));
           if (!vendorConfigData.models) return res.status(500).send(error50("\u672A\u627E\u5230\u6A21\u578B\u5217\u8868"));
+          let refList = [];
+          if (imagesBase64 && Array.isArray(imagesBase64) && imagesBase64.length > 0) {
+            refList = imagesBase64.filter(Boolean).map((b64) => ({ type: "image", base64: b64 }));
+          } else if (imageBase64) {
+            refList = [{ type: "image", base64: imageBase64 }];
+          }
           const reqFn = await utils_default.Ai.Image(`${id}:${modelName}`).run({
             prompt,
-            referenceList: imageBase64 ? [{ type: "image", base64: imageBase64 }] : [],
+            referenceList: refList,
             //输入的图片提示词
-            size: "1K",
+            size: size || "1K",
             // 图片尺寸
-            aspectRatio: "16:9"
+            aspectRatio: aspectRatio || "16:9"
           });
           await reqFn.save("testImage.jpg");
           const resultUrl = await utils_default.oss.getFileUrl("testImage.jpg");
@@ -272935,7 +278843,9 @@ var init_textTest = __esm({
         messages: external_exports.array(
           external_exports.object({
             role: external_exports.enum(["user", "assistant"]),
-            content: external_exports.string()
+            content: external_exports.union([external_exports.string(), external_exports.array(external_exports.any())]).optional(),
+            images: external_exports.array(external_exports.string()).optional(),
+            image: external_exports.string().optional()
           })
         )
       }),
@@ -272960,8 +278870,57 @@ var init_textTest = __esm({
               };
             }
           });
+          const formattedMessages = messages.map((msg) => {
+            if (msg.role === "assistant") {
+              return {
+                role: "assistant",
+                content: typeof msg.content === "string" ? msg.content : JSON.stringify(msg.content ?? "")
+              };
+            }
+            const imgs = [];
+            if (Array.isArray(msg.images)) {
+              imgs.push(...msg.images.filter(Boolean));
+            }
+            if (msg.image && typeof msg.image === "string") {
+              imgs.push(msg.image);
+            }
+            if (Array.isArray(msg.content)) {
+              return {
+                role: "user",
+                content: msg.content
+              };
+            }
+            const textContent = typeof msg.content === "string" ? msg.content : "";
+            if (imgs.length > 0) {
+              const contentParts = [];
+              for (const img of imgs) {
+                const mimeMatch = img.match(/^data:image\/([a-zA-Z0-9+.-]+);base64,(.+)$/);
+                const mimeType = mimeMatch ? mimeMatch[1].toLowerCase() : "jpeg";
+                const realBase64 = mimeMatch ? mimeMatch[2] : img;
+                contentParts.push({
+                  type: "image",
+                  image: realBase64,
+                  mediaType: `image/${mimeType}`
+                });
+              }
+              if (textContent) {
+                contentParts.push({
+                  type: "text",
+                  text: textContent
+                });
+              }
+              return {
+                role: "user",
+                content: contentParts
+              };
+            }
+            return {
+              role: "user",
+              content: textContent
+            };
+          });
           const data = await utils_default.Ai.Text(`${id}:${modelName}`).invoke({
-            messages,
+            messages: formattedMessages,
             tools: { getWeatherTool }
           });
           console.log("%c Line:46 \u{1F350} data", "background:#6ec1c2", data);
@@ -273816,7 +279775,7 @@ var import_crypto = __toESM(require("crypto"));
 function fileNameToRoutePath(fileName) {
   let routePath = fileName.replace(/\.(ts)$/, "");
   routePath = routePath.split(import_path.default.sep).join("/");
-  routePath = routePath.replace(/\[([^\]]+)\]/g, (_, p1) => p1.startsWith("...") ? "*" : `:${p1}`);
+  routePath = routePath.replace(/\[([^\]]+)\]/g, (_2, p1) => p1.startsWith("...") ? "*" : `:${p1}`);
   if (routePath === "index") return "/";
   routePath = routePath.replace(/\/index$/, "");
   routePath = "/" + routePath.replace(/\/+/g, "/").replace(/\/$/, "");
@@ -274484,6 +280443,12 @@ var tools_default = (toolCpnfig) => {
 // src/agents/productionAgent/index.ts
 var fs12 = __toESM(require("fs"));
 var import_path11 = __toESM(require("path"));
+var CONTENT_FORMAT_LABELS = {
+  vertical_episode: "\u7AD6\u5C4F\u77ED\u5267",
+  series_drama: "\u4E2D\u957F\u8FDE\u7EED\u5267",
+  single_film: "\u5355\u7247\u5FAE\u7535\u5F71",
+  explainer_video: "\u77E5\u8BC6\u79D1\u666E\u89E3\u8BF4"
+};
 var PRODUCTION_FORMAT_SKILLS_MAP = {
   vertical_episode: {
     directorPlan: "content_formats/vertical_episode/production_execution_director_plan.md",
@@ -274544,7 +280509,7 @@ async function runDecisionAI(ctx) {
   const prompt = await fs12.promises.readFile(skill, "utf-8");
   const projectInfo = await utils_default.db("o_project").where("id", ctx.resTool.data.projectId).first();
   if (!projectInfo) throw new Error(`\u9879\u76EE\u4E0D\u5B58\u5728\uFF0CID: ${ctx.resTool.data.projectId}`);
-  const [_, imageModelName] = (projectInfo.imageModel || "openlux:gpt-image-2").split(/:(.+)/);
+  const [_2, imageModelName] = (projectInfo.imageModel || "openlux:gpt-image-2").split(/:(.+)/);
   let videoModelName = "\u672A\u914D\u7F6E";
   let isRef = true;
   if (projectInfo.videoModel && projectInfo.videoModel.includes(":")) {
@@ -274560,7 +280525,7 @@ async function runDecisionAI(ctx) {
   }
   const contentFormat = normalizeContentFormat(projectInfo.contentFormat);
   const modelInfo = `\u9879\u76EE\u4F7F\u7528\u7684\u6A21\u578B\u5982\u4E0B\uFF1A
-\u5185\u5BB9\u5F62\u6001\uFF1A${contentFormat}
+\u5185\u5BB9\u5F62\u6001\uFF1A${CONTENT_FORMAT_LABELS[contentFormat]}\uFF08${contentFormat}\uFF09
 \u5BFC\u6F14\u624B\u518C\uFF1A${projectInfo.directorManual || "\u672A\u914D\u7F6E"}
 \u56FE\u50CF\u6A21\u578B\uFF1A${imageModelName}
 \u89C6\u9891\u6A21\u578B\uFF1A${videoModelName}
@@ -274626,7 +280591,7 @@ async function createSubAgent(parentCtx) {
   const projectInfo = await utils_default.db("o_project").where("id", resTool.data.projectId).first();
   if (!projectInfo) throw new Error(`\u9879\u76EE\u4E0D\u5B58\u5728\uFF0CID: ${resTool.data.projectId}`);
   const artSkills = await createArtSkills(projectInfo?.artStyle, projectInfo?.directorManual);
-  const [_, imageModelName] = (projectInfo.imageModel || "openlux:gpt-image-2").split(/:(.+)/);
+  const [_2, imageModelName] = (projectInfo.imageModel || "openlux:gpt-image-2").split(/:(.+)/);
   let videoModelName = "\u672A\u914D\u7F6E";
   let isRef = true;
   if (projectInfo.videoModel && projectInfo.videoModel.includes(":")) {
@@ -275807,6 +281772,34 @@ var tools_default2 = (toolCpnfig) => {
 // src/agents/scriptAgent/index.ts
 var fs13 = __toESM(require("fs"));
 var import_path12 = __toESM(require("path"));
+var CONTENT_FORMAT_LABELS2 = {
+  vertical_episode: "\u7AD6\u5C4F\u77ED\u5267",
+  series_drama: "\u4E2D\u957F\u8FDE\u7EED\u5267",
+  single_film: "\u5355\u7247\u5FAE\u7535\u5F71",
+  explainer_video: "\u77E5\u8BC6\u79D1\u666E\u89E3\u8BF4"
+};
+var SUB_AGENT_TIMEOUT_MS = 10 * 60 * 1e3;
+var DECISION_TIMEOUT_MS = 45 * 60 * 1e3;
+function withTimeoutSignal(parent, ms) {
+  const timeoutSignal = AbortSignal.timeout(ms);
+  const signal = parent ? AbortSignal.any([parent, timeoutSignal]) : timeoutSignal;
+  return {
+    signal,
+    isTimeout: () => timeoutSignal.aborted
+  };
+}
+async function getSkillDisplayName(kind, id) {
+  if (!id) return "\u672A\u914D\u7F6E";
+  try {
+    const readmePath = import_path12.default.join(utils_default.getPath("skills"), kind, id, "README.md");
+    const first = (await fs13.promises.readFile(readmePath, "utf-8")).split(/\r?\n/).find((line) => line.trim().startsWith("# "));
+    if (!first) return id;
+    const name28 = first.replace(/^#\s+/, "").replace(/\s*·\s*.*$/, "").replace(/风格说明$/, "").trim();
+    return name28 || id;
+  } catch {
+    return id;
+  }
+}
 var SCRIPT_SKILLS_MAP = {
   vertical_episode: {
     skeleton: "content_formats/vertical_episode/script_execution_skeleton.md",
@@ -275834,26 +281827,33 @@ async function getScriptSkillContent(projectId, phase) {
   const formatKey = project?.contentFormat && project.contentFormat in SCRIPT_SKILLS_MAP ? project.contentFormat : "vertical_episode";
   const relativePath = SCRIPT_SKILLS_MAP[formatKey][phase];
   const targetPath = import_path12.default.join(utils_default.getPath("skills"), relativePath);
-  if (fs13.existsSync(targetPath)) {
-    console.log(`[scriptAgent] \u52A0\u8F7D\u5F62\u6001\u6280\u80FD: format=${formatKey}, phase=${phase}, path=${relativePath}`);
-    return await fs13.promises.readFile(targetPath, "utf-8");
+  if (!fs13.existsSync(targetPath)) {
+    throw new Error(`[scriptAgent] \u5F62\u6001\u4E13\u5C5E\u6280\u80FD\u6587\u4EF6\u4E0D\u5B58\u5728: format=${formatKey}, phase=${phase}, path=${targetPath}`);
   }
-  const fallbackPath = import_path12.default.join(utils_default.getPath("skills"), `script_execution_${phase}.md`);
-  console.warn(`[scriptAgent] \u5F62\u6001\u6280\u80FD\u7F3A\u5931\uFF0C\u4F7F\u7528\u901A\u7528\u89C4\u5219: format=${formatKey}, phase=${phase}, path=${fallbackPath}`);
-  return await fs13.promises.readFile(fallbackPath, "utf-8");
+  console.log(`[scriptAgent] \u52A0\u8F7D\u5F62\u6001\u6280\u80FD: format=${formatKey}, phase=${phase}, path=${relativePath}`);
+  return await fs13.promises.readFile(targetPath, "utf-8");
 }
 async function getSupervisionSkillContent(projectId) {
   const project = projectId ? await utils_default.db("o_project").where("id", projectId).first() : null;
   const formatKey = project?.contentFormat && project.contentFormat in SCRIPT_SKILLS_MAP ? project.contentFormat : "vertical_episode";
   const relativePath = `content_formats/${formatKey}/script_agent_supervision.md`;
   const targetPath = import_path12.default.join(utils_default.getPath("skills"), relativePath);
-  if (fs13.existsSync(targetPath)) {
-    console.log(`[scriptAgent] \u52A0\u8F7D\u5F62\u6001\u76D1\u7763\u6280\u80FD: format=${formatKey}, path=${relativePath}`);
-    return await fs13.promises.readFile(targetPath, "utf-8");
+  if (!fs13.existsSync(targetPath)) {
+    throw new Error(`[scriptAgent] \u5F62\u6001\u4E13\u5C5E\u76D1\u7763\u6280\u80FD\u6587\u4EF6\u4E0D\u5B58\u5728: format=${formatKey}, path=${targetPath}`);
   }
-  const fallbackPath = import_path12.default.join(utils_default.getPath("skills"), "script_agent_supervision.md");
-  console.warn(`[scriptAgent] \u5F62\u6001\u76D1\u7763\u6280\u80FD\u7F3A\u5931\uFF0C\u4F7F\u7528\u901A\u7528\u5BA1\u6838: format=${formatKey}, path=${fallbackPath}`);
-  return await fs13.promises.readFile(fallbackPath, "utf-8");
+  console.log(`[scriptAgent] \u52A0\u8F7D\u5F62\u6001\u76D1\u7763\u6280\u80FD: format=${formatKey}, path=${relativePath}`);
+  return await fs13.promises.readFile(targetPath, "utf-8");
+}
+async function getDecisionSkillContent(projectId) {
+  const project = projectId ? await utils_default.db("o_project").where("id", projectId).first() : null;
+  const formatKey = project?.contentFormat && project.contentFormat in SCRIPT_SKILLS_MAP ? project.contentFormat : "vertical_episode";
+  const relativePath = `content_formats/${formatKey}/script_agent_decision.md`;
+  const targetPath = import_path12.default.join(utils_default.getPath("skills"), relativePath);
+  if (!fs13.existsSync(targetPath)) {
+    throw new Error(`[scriptAgent] \u5F62\u6001\u4E13\u5C5E\u51B3\u7B56\u6280\u80FD\u6587\u4EF6\u4E0D\u5B58\u5728: format=${formatKey}, path=${targetPath}`);
+  }
+  console.log(`[scriptAgent] \u52A0\u8F7D\u5F62\u6001\u51B3\u7B56\u6280\u80FD: format=${formatKey}, path=${relativePath}`);
+  return await fs13.promises.readFile(targetPath, "utf-8");
 }
 function buildMemPrompt2(mem) {
   let memoryContext = "";
@@ -275879,29 +281879,41 @@ async function runDecisionAI2(ctx) {
   const { isolationKey, text: text2, userMessageTime, abortSignal, resTool } = ctx;
   const memory = new memory_default("scriptAgent", isolationKey);
   await memory.add("user", text2, { createTime: userMessageTime });
-  const skill = import_path12.default.join(utils_default.getPath("skills"), "script_agent_decision.md");
-  const prompt = await fs13.promises.readFile(skill, "utf-8");
+  const prompt = await getDecisionSkillContent(resTool.data.projectId);
   const mem = buildMemPrompt2(await memory.get(text2));
   const projectData = await utils_default.db("o_project").where("id", resTool.data.projectId).first();
   const novelData = await utils_default.db("o_novel").where("projectId", resTool.data.projectId).select("chapterIndex");
+  const formatKey = projectData?.contentFormat && projectData.contentFormat in CONTENT_FORMAT_LABELS2 ? projectData.contentFormat : "vertical_episode";
+  const [artStyleName, directorManualName] = await Promise.all([
+    getSkillDisplayName("art_skills", projectData?.artStyle),
+    getSkillDisplayName("story_skills", projectData?.directorManual)
+  ]);
+  const videoRatio = projectData?.videoRatio ?? "16:9";
+  const ratioLabel = videoRatio === "9:16" ? "\u7AD6\u5C4F" : videoRatio === "16:9" ? "\u6A2A\u5C4F" : "";
+  const decisionTimeout = withTimeoutSignal(abortSignal, DECISION_TIMEOUT_MS);
   const projectInfo = [
-    "## \u9879\u76EE\u4FE1\u606F",
+    "## \u9879\u76EE\u6863\u6848\uFF08\u65E2\u5B9A\u8BBE\u5B9A\uFF09",
+    "\u4EE5\u4E0B\u8BBE\u5B9A\u5DF2\u7531\u7528\u6237\u5728\u9879\u76EE\u8BBE\u7F6E\u4E2D\u786E\u8BA4\uFF0C\u5C5E\u4E8E\u65E2\u5B9A\u4E8B\u5B9E\uFF1A\u4E0D\u5F97\u518D\u6B21\u8BE2\u95EE\u3001\u4E0D\u5F97\u5EFA\u8BAE\u66F4\u6362\u3001\u4E0D\u5F97\u64C5\u81EA\u66F4\u6539\u3002",
     `\u5C0F\u8BF4\u540D\u79F0\uFF1A${projectData?.name ?? "\u672A\u77E5"}`,
     `\u5C0F\u8BF4\u7C7B\u578B\uFF1A${projectData?.type ?? "\u672A\u77E5"}`,
     `\u5C0F\u8BF4\u7B80\u4ECB\uFF1A${projectData?.intro ?? "\u65E0"}`,
-    `\u5185\u5BB9\u5F62\u6001\uFF1A${projectData?.contentFormat ?? "vertical_episode"}`,
-    `\u76EE\u6807\u6539\u7F16\u5F71\u89C6\u89C6\u89C9\u624B\u518C|\u753B\u98CE\uFF1A${projectData?.artStyle ?? "\u65E0"}`,
-    `\u76EE\u6807\u5BFC\u6F14\u624B\u518C\uFF1A${projectData?.directorManual ?? "\u65E0"}`,
-    `\u76EE\u6807\u6539\u7F16\u89C6\u9891\u753B\u5E45\uFF1A${projectData?.videoRatio ?? "16:9"}`,
+    `\u5185\u5BB9\u5F62\u6001\uFF1A${CONTENT_FORMAT_LABELS2[formatKey]}\uFF08${formatKey}\uFF09`,
+    `\u753B\u98CE\u624B\u518C\uFF1A${artStyleName}\uFF08${projectData?.artStyle ?? "\u672A\u914D\u7F6E"}\uFF09`,
+    `\u5BFC\u6F14\u624B\u518C\uFF1A${directorManualName}\uFF08${projectData?.directorManual ?? "\u672A\u914D\u7F6E"}\uFF09`,
+    `\u5F71\u7247\u753B\u5E45\uFF1A${videoRatio}${ratioLabel ? `\uFF08${ratioLabel}\uFF09` : ""}`,
     `\u7AE0\u8282\u6570\u91CF\uFF1A${novelData.length}\u7AE0`
   ].join("\n");
   const { fullStream } = await utils_default.Ai.Text("scriptAgent:decisionAgent", ctx.thinkConfig.think, ctx.thinkConfig.thinlLevel).stream({
     messages: [
-      { role: "system", content: prompt },
-      { role: "assistant", content: projectInfo + "\n" + mem },
+      { role: "system", content: `${prompt}
+
+---
+
+${projectInfo}` },
+      { role: "assistant", content: mem },
       { role: "user", content: text2 }
     ],
-    abortSignal,
+    abortSignal: decisionTimeout.signal,
     tools: {
       ...memory.getTools(),
       ...tools_default2({ resTool: ctx.resTool, msg: ctx.msg }),
@@ -275935,12 +281947,13 @@ function createSubAgent2(parentCtx) {
   }) {
     parentCtx.msg.complete();
     const subMsg = resTool.newMessage("assistant", name28);
+    const subTimeout = withTimeoutSignal(abortSignal, SUB_AGENT_TIMEOUT_MS);
     let fullStream;
     try {
       const streamResult = await utils_default.Ai.Text(key, parentCtx.thinkConfig.think, parentCtx.thinkConfig.thinlLevel).stream({
         system,
         messages: messages ?? [{ role: "user", content: prompt }],
-        abortSignal,
+        abortSignal: subTimeout.signal,
         // 执行层禁止调用写工具：正文统一走"XML 输出 → persist 自动落库"，避免模型双写/污染
         tools: {
           ...extraTools,
@@ -275954,22 +281967,40 @@ function createSubAgent2(parentCtx) {
       fullStream = streamResult.fullStream ?? streamResult;
     } catch (err) {
       console.error(`[scriptAgent] subAgent \u5F02\u5E38 key=${key} name=${name28}:`, utils_default.error(err).message);
-      subMsg.error(`\u5B50\u4EFB\u52A1\u6267\u884C\u5F02\u5E38\uFF1A${utils_default.error(err).message}`);
+      const errMsg = subTimeout.isTimeout() ? `\u5B50\u4EFB\u52A1\u8D85\u65F6\u4E2D\u65AD\uFF08\u8D85\u8FC7 ${Math.round(SUB_AGENT_TIMEOUT_MS / 6e4)} \u5206\u949F\u65E0\u54CD\u5E94\uFF09\uFF0C\u8BF7\u68C0\u67E5\u6A21\u578B\u670D\u52A1\u72B6\u6001\u540E\u91CD\u8BD5` : `\u5B50\u4EFB\u52A1\u6267\u884C\u5F02\u5E38\uFF1A${utils_default.error(err).message}`;
+      subMsg.error(errMsg);
       throw err;
     }
-    const fullResponse = await consumeFullStream2(fullStream, subMsg);
+    let fullResponse;
+    try {
+      fullResponse = await consumeFullStream2(fullStream, subMsg);
+    } catch (err) {
+      if (subTimeout.isTimeout()) {
+        const errMsg = `\u5B50\u4EFB\u52A1\u8D85\u65F6\u4E2D\u65AD\uFF08\u8D85\u8FC7 ${Math.round(SUB_AGENT_TIMEOUT_MS / 6e4)} \u5206\u949F\u65E0\u54CD\u5E94\uFF09\uFF0C\u8BF7\u68C0\u67E5\u6A21\u578B\u670D\u52A1\u72B6\u6001\u540E\u91CD\u8BD5`;
+        console.error(`[scriptAgent] subAgent \u8D85\u65F6 key=${key} name=${name28}`);
+        subMsg.error(errMsg);
+        throw new Error(errMsg);
+      }
+      throw err;
+    }
     if (persist) {
       try {
         await persist(fullResponse);
       } catch (err) {
         console.error(`[scriptAgent] persist \u843D\u5E93\u5F02\u5E38 key=${key}:`, utils_default.error(err).message);
+        subMsg.error(`\u5199\u5165\u5DE5\u4F5C\u533A\u5931\u8D25\uFF1A${utils_default.error(err).message}`);
+        throw err;
       }
     }
     if (fullResponse.trim()) {
-      await memory.add(memoryKey, removeAllXmlTags2(fullResponse), {
-        name: name28,
-        createTime: new Date(subMsg.datetime).getTime()
-      });
+      try {
+        await memory.add(memoryKey, removeAllXmlTags2(fullResponse), {
+          name: name28,
+          createTime: new Date(subMsg.datetime).getTime()
+        });
+      } catch (memErr) {
+        console.error(`[scriptAgent] memory.add \u5931\u8D25(\u6570\u636E\u5DF2\u5199\u5165\uFF0C\u4EC5\u8BB0\u5FC6\u7F3A\u5931) key=${key}:`, utils_default.error(memErr).message);
+      }
     }
     parentCtx.msg = resTool.newMessage("assistant", "\u89C6\u9891\u7B56\u5212");
     return fullResponse;
@@ -275982,7 +282013,7 @@ function createSubAgent2(parentCtx) {
     inputSchema: jsonSchema(promptInput),
     execute: async ({ prompt }) => {
       const systemPrompt = await getScriptSkillContent(projectId, "skeleton");
-      const formatPrompt = "\n\u4F60\u5FC5\u987B\u4F7F\u7528\u5982\u4E0BXML\u683C\u5F0F\u5199\u5165\u5DE5\u4F5C\u533A\uFF1A\n<storySkeleton>\u6545\u4E8B\u9AA8\u67B6\u5185\u5BB9</storySkeleton>";
+      const formatPrompt = '\n\u4F60\u5FC5\u987B\u4F7F\u7528\u5982\u4E0BXML\u683C\u5F0F\u5199\u5165\u5DE5\u4F5C\u533A\uFF1A\n<storySkeleton>\u6545\u4E8B\u9AA8\u67B6\u5185\u5BB9</storySkeleton>\n\u6CE8\u610F\uFF1A\u7CFB\u7EDF\u81EA\u52A8\u89E3\u6790XML\u843D\u5E93\uFF0C\u7981\u6B62\u8F93\u51FA"\u6B63\u5728\u5199\u5165/\u5DF2\u5199\u5165\u5DE5\u4F5C\u533A"\u7B49\u53D9\u8FF0\uFF0C\u5B8C\u6574\u6B63\u6587\u5FC5\u987B\u5305\u542B\u5728\u6807\u7B7E\u5185\u3002';
       return runAgent({
         key: "scriptAgent:storySkeletonAgent",
         prompt,
@@ -275992,7 +282023,12 @@ function createSubAgent2(parentCtx) {
         messages: [{ role: "user", content: prompt + formatPrompt }],
         persist: async (resp) => {
           const content = extractXmlContent(resp, "storySkeleton");
-          if (content) await persistPlanData(resTool.data.projectId, { storySkeleton: content });
+          if (!content) {
+            throw new Error(
+              `\u6A21\u578B\u56DE\u590D\u4E2D\u672A\u627E\u5230 <storySkeleton>...</storySkeleton> \u8F93\u51FA\uFF08\u54CD\u5E94${resp.length}\u5B57\uFF0C\u53EF\u80FD\u88AB\u622A\u65AD\u6216\u683C\u5F0F\u4E0D\u7B26\uFF09\uFF0C\u9AA8\u67B6\u672A\u5199\u5165\u5DE5\u4F5C\u533A\uFF0C\u8BF7\u91CD\u65B0\u6D3E\u53D1\u5E76\u8981\u6C42\u6309XML\u683C\u5F0F\u8F93\u51FA\u5B8C\u6574\u6B63\u6587`
+            );
+          }
+          await persistPlanData(resTool.data.projectId, { storySkeleton: content });
         }
       });
     }
@@ -276002,7 +282038,7 @@ function createSubAgent2(parentCtx) {
     inputSchema: jsonSchema(promptInput),
     execute: async ({ prompt }) => {
       const systemPrompt = await getScriptSkillContent(projectId, "adaptation");
-      const formatPrompt = "\n\u4F60\u5FC5\u987B\u4F7F\u7528\u5982\u4E0BXML\u683C\u5F0F\u5199\u5165\u5DE5\u4F5C\u533A\uFF1A\n<adaptationStrategy>\u6539\u7F16\u7B56\u7565\u5185\u5BB9</adaptationStrategy>";
+      const formatPrompt = '\n\u4F60\u5FC5\u987B\u4F7F\u7528\u5982\u4E0BXML\u683C\u5F0F\u5199\u5165\u5DE5\u4F5C\u533A\uFF1A\n<adaptationStrategy>\u6539\u7F16\u7B56\u7565\u5185\u5BB9</adaptationStrategy>\n\u6CE8\u610F\uFF1A\u7CFB\u7EDF\u81EA\u52A8\u89E3\u6790XML\u843D\u5E93\uFF0C\u7981\u6B62\u8F93\u51FA"\u6B63\u5728\u5199\u5165/\u5DF2\u5199\u5165\u5DE5\u4F5C\u533A"\u7B49\u53D9\u8FF0\uFF0C\u5B8C\u6574\u6B63\u6587\u5FC5\u987B\u5305\u542B\u5728\u6807\u7B7E\u5185\u3002';
       return runAgent({
         key: "scriptAgent:adaptationStrategyAgent",
         prompt,
@@ -276012,7 +282048,12 @@ function createSubAgent2(parentCtx) {
         messages: [{ role: "user", content: prompt + formatPrompt }],
         persist: async (resp) => {
           const content = extractXmlContent(resp, "adaptationStrategy");
-          if (content) await persistPlanData(resTool.data.projectId, { adaptationStrategy: content });
+          if (!content) {
+            throw new Error(
+              `\u6A21\u578B\u56DE\u590D\u4E2D\u672A\u627E\u5230 <adaptationStrategy>...</adaptationStrategy> \u8F93\u51FA\uFF08\u54CD\u5E94${resp.length}\u5B57\uFF0C\u53EF\u80FD\u88AB\u622A\u65AD\u6216\u683C\u5F0F\u4E0D\u7B26\uFF09\uFF0C\u6539\u7F16\u7B56\u7565\u672A\u5199\u5165\u5DE5\u4F5C\u533A\uFF0C\u8BF7\u91CD\u65B0\u6D3E\u53D1\u5E76\u8981\u6C42\u6309XML\u683C\u5F0F\u8F93\u51FA\u5B8C\u6574\u6B63\u6587`
+            );
+          }
+          await persistPlanData(resTool.data.projectId, { adaptationStrategy: content });
         }
       });
     }
@@ -276029,7 +282070,8 @@ function createSubAgent2(parentCtx) {
       const novelData = await utils_default.db("o_novel").where("projectId", resTool.data.projectId).select("chapterIndex");
       const formatPrompt = `
 \u4F60\u5FC5\u987B\u4F7F\u7528\u5982\u4E0BXML\u683C\u5F0F\u5199\u5165\u5DE5\u4F5C\u533A\uFF1A
-XML\u4E0D\u5F97\u6DFB\u52A0\u4EFB\u4F55\u989D\u5916\u6807\u7B7E<scriptItem name="\u5267\u672C\u540D\u79F0">\u5267\u672C\u5185\u5BB9</scriptItem><scriptItem name="\u5267\u672C\u540D\u79F0">\u5267\u672C\u5185\u5BB9</scriptItem><scriptItem name="\u5267\u672C\u540D\u79F0">\u5267\u672C\u5185\u5BB9</scriptItem>`;
+XML\u4E0D\u5F97\u6DFB\u52A0\u4EFB\u4F55\u989D\u5916\u6807\u7B7E<scriptItem name="\u5267\u672C\u540D\u79F0">\u5267\u672C\u5185\u5BB9</scriptItem><scriptItem name="\u5267\u672C\u540D\u79F0">\u5267\u672C\u5185\u5BB9</scriptItem><scriptItem name="\u5267\u672C\u540D\u79F0">\u5267\u672C\u5185\u5BB9</scriptItem>
+\u6CE8\u610F\uFF1A\u7CFB\u7EDF\u81EA\u52A8\u89E3\u6790XML\u843D\u5E93\uFF0C\u7981\u6B62\u8F93\u51FA"\u6B63\u5728\u5199\u5165/\u5DF2\u5199\u5165\u5DE5\u4F5C\u533A"\u7B49\u53D9\u8FF0\uFF1B\u6BCF\u96C6\u5267\u672C\u5B8C\u6574\u6B63\u6587\uFF08\u542B\u573A\u666F\u3001\u5BF9\u767D\u3001\u52A8\u4F5C\u63CF\u8FF0\uFF09\u5FC5\u987B\u5B8C\u6574\u5305\u542B\u5728\u5BF9\u5E94<scriptItem>\u6807\u7B7E\u5185\uFF0C\u4E0D\u5F97\u7701\u7565\u6216\u7528\u6982\u8981\u4EE3\u66FF\u3002`;
       return runAgent({
         key: "scriptAgent:scriptAgent",
         prompt,
@@ -276042,6 +282084,12 @@ XML\u4E0D\u5F97\u6DFB\u52A0\u4EFB\u4F55\u989D\u5916\u6807\u7B7E<scriptItem name=
         memoryKey: "assistant:execution:script",
         persist: async (resp) => {
           const items = extractScriptItems(resp);
+          console.log(`[scriptAgent] script persist: \u54CD\u5E94${resp.length}\u5B57\uFF0C\u63D0\u53D6\u5230 ${items.length} \u4E2A scriptItem`);
+          if (items.length === 0) {
+            throw new Error(
+              `\u6A21\u578B\u56DE\u590D\u4E2D\u672A\u627E\u5230 <scriptItem name="...">\u5267\u672C\u5185\u5BB9</scriptItem> \u683C\u5F0F\u8F93\u51FA\uFF08\u54CD\u5E94${resp.length}\u5B57\uFF0C\u53EF\u80FD\u88AB\u622A\u65AD\u6216\u683C\u5F0F\u4E0D\u7B26\uFF09\uFF0C\u5267\u672C\u672A\u5199\u5165\u5DE5\u4F5C\u533A\uFF0C\u8BF7\u91CD\u65B0\u6D3E\u53D1\u5E76\u8981\u6C42\u6309XML\u683C\u5F0F\u8F93\u51FA\u5B8C\u6574\u6B63\u6587`
+            );
+          }
           for (const item of items) {
             const row = await utils_default.db("o_script").where({ projectId: resTool.data.projectId, name: item.name }).first();
             if (row) {
@@ -276140,10 +282188,22 @@ function extractScriptItems(text2) {
   const items = [];
   const re2 = /<scriptItem\s+name="([^"]*)"[^>]*>([\s\S]*?)<\/scriptItem>/g;
   let m;
+  let lastClosedEnd = 0;
   while ((m = re2.exec(text2)) !== null) {
     const name28 = (m[1] || "").trim();
     const content = m[2].trim();
     if (name28 || content) items.push({ name: name28, content });
+    lastClosedEnd = m.index + m[0].length;
+  }
+  const tail = text2.slice(lastClosedEnd);
+  const unclosed = tail.match(/<scriptItem\s+name="([^"]*)"[^>]*>([\s\S]*)$/);
+  if (unclosed) {
+    const name28 = (unclosed[1] || "").trim();
+    const content = unclosed[2].trim();
+    if (name28 || content) {
+      console.warn(`[scriptAgent] \u68C0\u6D4B\u5230\u672A\u95ED\u5408\u7684 scriptItem\uFF08\u54CD\u5E94\u53EF\u80FD\u88AB\u622A\u65AD\uFF09\uFF0C\u6309\u5DF2\u6709\u5185\u5BB9\u5199\u5165: ${name28 || "(\u672A\u547D\u540D)"}`);
+      items.push({ name: name28, content });
+    }
   }
   return items;
 }
@@ -276164,6 +282224,184 @@ async function persistPlanData(projectId, patch) {
     await utils_default.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).update({ data: jsonStr });
   } else {
     await utils_default.db("o_agentWorkData").insert({ projectId, key: "scriptAgent", data: jsonStr, createTime: Date.now(), updateTime: Date.now() });
+  }
+}
+
+// src/utils/agent/stateSnapshot.ts
+var import_node_crypto4 = __toESM(require("node:crypto"));
+init_db();
+var AGENT_KEY = "scriptAgent";
+var SNAPSHOT_LIMIT = 60;
+async function withRawConnection(fn) {
+  const conn = await db.client.acquireConnection();
+  try {
+    return fn(conn);
+  } finally {
+    await db.client.releaseConnection(conn);
+  }
+}
+function readCurrentStateWithConn(conn, projectId) {
+  const workRow = conn.prepare("SELECT data FROM o_agentWorkData WHERE projectId = ? AND key = ?").get(projectId, AGENT_KEY);
+  const scripts = conn.prepare("SELECT id, name, content, createTime FROM o_script WHERE projectId = ?").all(projectId);
+  const project = conn.prepare("SELECT totalEpisodes, episodeDuration, intro FROM o_project WHERE id = ?").get(projectId);
+  const scriptIds = scripts.map((s) => s.id);
+  const scriptAssets = scriptIds.length ? conn.prepare(`SELECT scriptId, assetId FROM o_scriptAssets WHERE scriptId IN (${scriptIds.map(() => "?").join(",")})`).all(...scriptIds) : [];
+  return {
+    workData: workRow?.data ?? null,
+    scripts,
+    scriptAssets,
+    projectMeta: {
+      totalEpisodes: project?.totalEpisodes ?? null,
+      episodeDuration: project?.episodeDuration ?? null,
+      intro: project?.intro ?? null
+    }
+  };
+}
+function resolvePayloadRowWithConn(conn, row) {
+  let current = row;
+  let guard = 0;
+  while (current && current.payload == null && current.refId != null && guard++ < SNAPSHOT_LIMIT) {
+    current = conn.prepare("SELECT id, payload, refId FROM o_agentStateSnapshot WHERE id = ?").get(current.refId);
+  }
+  if (!current?.payload) return null;
+  try {
+    return JSON.parse(current.payload);
+  } catch {
+    return null;
+  }
+}
+async function pruneSnapshots(projectId, isolationKey) {
+  await withRawConnection((conn) => {
+    const rows = conn.prepare("SELECT id, payload, refId FROM o_agentStateSnapshot WHERE projectId = ? AND isolationKey = ? ORDER BY id DESC").all(projectId, isolationKey);
+    if (rows.length <= SNAPSHOT_LIMIT) return null;
+    const keepRows = rows.slice(0, SNAPSHOT_LIMIT);
+    const keepIds = new Set(keepRows.map((r) => r.id));
+    for (const row of keepRows) {
+      if (row.payload == null && row.refId != null && !keepIds.has(row.refId)) {
+        const resolved = resolvePayloadRowWithConn(conn, row);
+        if (resolved) {
+          conn.prepare("UPDATE o_agentStateSnapshot SET payload = ?, refId = NULL WHERE id = ?").run(JSON.stringify(resolved), row.id);
+        }
+      }
+    }
+    const delIds = rows.slice(SNAPSHOT_LIMIT).map((r) => r.id);
+    if (delIds.length) {
+      conn.prepare(`DELETE FROM o_agentStateSnapshot WHERE id IN (${delIds.map(() => "?").join(",")})`).run(...delIds);
+    }
+    return null;
+  });
+}
+async function captureSnapshot(projectId, isolationKey, userMessageTime) {
+  const payload = await withRawConnection((conn) => readCurrentStateWithConn(conn, projectId));
+  const stateHash = import_node_crypto4.default.createHash("sha256").update(JSON.stringify(payload)).digest("hex");
+  await withRawConnection((conn) => {
+    const latest = conn.prepare("SELECT id, stateHash, payload, refId FROM o_agentStateSnapshot WHERE projectId = ? AND isolationKey = ? ORDER BY id DESC LIMIT 1").get(projectId, isolationKey);
+    let payloadStr = JSON.stringify(payload);
+    let refId = null;
+    if (latest && latest.stateHash === stateHash) {
+      payloadStr = null;
+      refId = latest.payload != null ? latest.id : latest.refId;
+    }
+    conn.prepare(
+      "INSERT INTO o_agentStateSnapshot (projectId, isolationKey, userMessageTime, turnEndTime, stateHash, payload, refId, createTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    ).run(projectId, isolationKey, userMessageTime, Date.now(), stateHash, payloadStr, refId, Date.now());
+    return null;
+  });
+  await pruneSnapshots(projectId, isolationKey);
+}
+async function ensureBaselineSnapshot(projectId, isolationKey) {
+  const existing = await withRawConnection(
+    (conn) => conn.prepare("SELECT id FROM o_agentStateSnapshot WHERE projectId = ? AND isolationKey = ? LIMIT 1").get(projectId, isolationKey)
+  );
+  if (!existing) await captureSnapshot(projectId, isolationKey, 0);
+}
+async function restoreSnapshot(projectId, isolationKey, mode, messageTime) {
+  const row = await withRawConnection(
+    (conn2) => mode === "keep" ? conn2.prepare("SELECT * FROM o_agentStateSnapshot WHERE projectId = ? AND isolationKey = ? AND userMessageTime <= ? ORDER BY id DESC LIMIT 1").get(projectId, isolationKey, messageTime) : conn2.prepare("SELECT * FROM o_agentStateSnapshot WHERE projectId = ? AND isolationKey = ? AND userMessageTime < ? ORDER BY id DESC LIMIT 1").get(projectId, isolationKey, messageTime)
+  );
+  if (!row) throw new Error("\u8BE5\u65F6\u95F4\u70B9\u4E4B\u524D\u6CA1\u6709\u53EF\u7528\u7684\u72B6\u6001\u5FEB\u7167\uFF08\u5FEB\u7167\u529F\u80FD\u542F\u7528\u524D\u7684\u6D88\u606F\u65E0\u6CD5\u56DE\u9000\uFF09");
+  const payload = await withRawConnection((conn2) => row.payload != null ? safeParse4(row.payload) : resolvePayloadRowWithConn(conn2, row));
+  if (!payload) throw new Error("\u5FEB\u7167\u6570\u636E\u635F\u574F\uFF0C\u65E0\u6CD5\u56DE\u9000");
+  const conn = await db.client.acquireConnection();
+  try {
+    const existingWork = conn.prepare("SELECT id, data FROM o_agentWorkData WHERE projectId = ? AND key = ?").get(projectId, AGENT_KEY);
+    if (payload.workData != null) {
+      if (existingWork) {
+        conn.prepare("UPDATE o_agentWorkData SET data = ?, updateTime = ? WHERE id = ?").run(payload.workData, Date.now(), existingWork.id);
+      } else {
+        conn.prepare("INSERT INTO o_agentWorkData (projectId, key, data, createTime, updateTime) VALUES (?, ?, ?, ?, ?)").run(
+          projectId,
+          AGENT_KEY,
+          payload.workData,
+          Date.now(),
+          Date.now()
+        );
+      }
+    } else if (existingWork) {
+      const dataObj = safeJsonToRecord(existingWork.data);
+      delete dataObj.storySkeleton;
+      delete dataObj.adaptationStrategy;
+      conn.prepare("UPDATE o_agentWorkData SET data = ?, updateTime = ? WHERE id = ?").run(JSON.stringify(dataObj), Date.now(), existingWork.id);
+    }
+    const currentIds = conn.prepare("SELECT id FROM o_script WHERE projectId = ?").all(projectId).map((r) => r.id);
+    if (currentIds.length) {
+      const assetPlaceholders = currentIds.map(() => "?").join(",");
+      conn.prepare(`DELETE FROM o_scriptAssets WHERE scriptId IN (${assetPlaceholders})`).run(...currentIds);
+    }
+    conn.prepare("DELETE FROM o_script WHERE projectId = ?").run(projectId);
+    if (payload.scripts?.length) {
+      const insertScript = conn.prepare("INSERT INTO o_script (id, projectId, name, content, createTime) VALUES (?, ?, ?, ?, ?)");
+      for (const s of payload.scripts) insertScript.run(s.id, projectId, s.name ?? null, s.content ?? null, s.createTime ?? null);
+    }
+    if (payload.scriptAssets?.length) {
+      const insertMap = conn.prepare("INSERT INTO o_scriptAssets (scriptId, assetId) VALUES (?, ?)");
+      for (const m of payload.scriptAssets) insertMap.run(m.scriptId, m.assetId);
+    }
+    conn.prepare("UPDATE o_project SET totalEpisodes = ?, episodeDuration = ?, intro = ? WHERE id = ?").run(
+      payload.projectMeta.totalEpisodes,
+      payload.projectMeta.episodeDuration,
+      payload.projectMeta.intro,
+      projectId
+    );
+    const cutoff = mode === "keep" ? row.turnEndTime : messageTime - 2;
+    const removedSummaries = conn.prepare("SELECT relatedMessageIds FROM memories WHERE isolationKey = ? AND type = 'summary' AND createTime > ?").all(isolationKey, cutoff);
+    conn.prepare("DELETE FROM memories WHERE isolationKey = ? AND createTime > ?").run(isolationKey, cutoff);
+    const unmarkIds = /* @__PURE__ */ new Set();
+    for (const s of removedSummaries) {
+      try {
+        for (const id of JSON.parse(s.relatedMessageIds ?? "[]")) unmarkIds.add(String(id));
+      } catch {
+      }
+    }
+    if (unmarkIds.size) {
+      const placeholders = [...unmarkIds].map(() => "?").join(",");
+      conn.prepare(`UPDATE memories SET summarized = 0 WHERE id IN (${placeholders})`).run(...unmarkIds);
+    }
+    conn.prepare("DELETE FROM o_agentStateSnapshot WHERE projectId = ? AND isolationKey = ? AND userMessageTime > ?").run(
+      projectId,
+      isolationKey,
+      row.userMessageTime
+    );
+  } finally {
+    await db.client.releaseConnection(conn);
+  }
+  return {
+    restoredTo: row.userMessageTime === 0 ? "\u521D\u59CB\u72B6\u6001" : new Date(row.turnEndTime).toLocaleString(),
+    scriptCount: payload.scripts?.length ?? 0
+  };
+}
+function safeParse4(json4) {
+  try {
+    return JSON.parse(json4);
+  } catch {
+    return null;
+  }
+}
+function safeJsonToRecord(json4) {
+  try {
+    return JSON.parse(json4 ?? "{}") ?? {};
+  } catch {
+    return {};
   }
 }
 
@@ -276221,6 +282459,11 @@ var scriptAgent_default = (nsp) => {
         thinkConfig
       };
       try {
+        try {
+          await ensureBaselineSnapshot(Number(resTool.data.projectId), isolationKey);
+        } catch (baseErr) {
+          console.error("[scriptAgent] \u57FA\u7EBF\u5FEB\u7167\u521B\u5EFA\u5931\u8D25(\u4E0D\u963B\u585E\u5BF9\u8BDD):", utils_default.error(baseErr).message);
+        }
         await runDecisionAI2(ctx);
       } catch (err) {
         if (err.name !== "AbortError" && !currentController.signal.aborted) {
@@ -276228,11 +282471,39 @@ var scriptAgent_default = (nsp) => {
           msg.error(utils_default.error(err).message);
         }
       } finally {
+        try {
+          await captureSnapshot(Number(resTool.data.projectId), isolationKey, ctx.userMessageTime ?? Date.now());
+        } catch (snapErr) {
+          console.error("[scriptAgent] \u72B6\u6001\u5FEB\u7167\u521B\u5EFA\u5931\u8D25:", utils_default.error(snapErr).message);
+        }
         if (abortController === currentController) {
           abortController = null;
         }
       }
     });
+    socket.on(
+      "rollback",
+      async (data, callback) => {
+        try {
+          if (abortController) {
+            callback?.({ ok: false, message: "\u751F\u6210\u8FDB\u884C\u4E2D\uFF0C\u8BF7\u5148\u505C\u6B62\u540E\u518D\u56DE\u9000" });
+            return;
+          }
+          const mode = data?.mode === "discard" ? "discard" : "keep";
+          if (typeof data?.messageTime !== "number") {
+            callback?.({ ok: false, message: "\u53C2\u6570\u9519\u8BEF\uFF1A\u7F3A\u5C11\u6D88\u606F\u65F6\u95F4" });
+            return;
+          }
+          const result = await restoreSnapshot(Number(resTool.data.projectId), isolationKey, mode, data.messageTime);
+          console.log(`[scriptAgent] \u5DF2\u56DE\u9000\u72B6\u6001: mode=${mode} restoredTo=${result.restoredTo}`);
+          callback?.({ ok: true, ...result });
+        } catch (err) {
+          const message = utils_default.error(err).message;
+          console.error("[scriptAgent] \u56DE\u9000\u5931\u8D25:", message);
+          callback?.({ ok: false, message });
+        }
+      }
+    );
     socket.on("updateThinkConfig", (data) => {
       thinkConfig.think = data.think;
       thinkConfig.thinlLevel = data.thinlLevel;
@@ -276443,10 +282714,10 @@ async function startServe(randomPort = false) {
   });
   const router176 = await Promise.resolve().then(() => (init_router(), router_exports));
   await router176.default(app);
-  app.use((_, res, next) => {
+  app.use((_2, res, next) => {
     return res.status(404).send({ message: "API 404 Not Found" });
   });
-  app.use((err, _, res, __) => {
+  app.use((err, _2, res, __) => {
     res.locals.message = err.message;
     res.locals.error = err;
     console.error(err);
@@ -276875,4 +283146,14 @@ lodash-es/lodash.js:
 
 safe-buffer/index.js:
   (*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> *)
+
+lodash/lodash.js:
+  (**
+   * @license
+   * Lodash <https://lodash.com/>
+   * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+   * Released under MIT license <https://lodash.com/license>
+   * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+   * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+   *)
 */
