@@ -3,17 +3,31 @@ import u from "@/utils";
 import { z } from "zod";
 import { error, success } from "@/lib/responseFormat";
 import { validateFields } from "@/middleware/middleware";
-import { useSkill } from "@/utils/agent/skillsTools";
 import { tool, jsonSchema } from "ai";
 import { o_script } from "@/types/database";
 
 const router = express.Router();
+
+/** 角色结构化元数据 Schema (数字码值规范) */
+export const RoleMetaSchema = z.object({
+  species: z.number().describe("物种: 1(人类), 2(非人类/怪兽/动物/机甲/异形/其他)"),
+  gender: z.number().optional().describe("性别: 1(男), 2(女), 3(中性/其他)"),
+  ethnicity: z.number().optional().describe("族裔: 1(东亚), 2(欧美), 3(东南亚), 4(南亚), 5(拉丁), 6(非裔), 7(混血/其他)"),
+  ageGroup: z.number().optional().describe("年龄段: 1(少年12-17), 2(青年18-35), 3(中年36-55), 4(老年56+)"),
+  actualAge: z.number().optional().describe("剧本设定具体年龄数字(如25)"),
+  beautyScore: z.number().min(2.0).max(10.0).optional().describe("人类真实颜值打分(2.0-10.0，主角不一定好看，依据角色真实设定打分)"),
+  personality: z.string().optional().describe("性格与气质关键词(如'冷静干练、眼神锐利')"),
+  appearance: z.string().optional().describe("五官发型特征(如'单眼皮、鼻梁挺直、黑茶色微卷锁骨发')"),
+  clothing: z.string().optional().describe("基础常规着装(如'米白色极简亚麻衬衫搭配烟灰色休闲西裤')"),
+  figure: z.string().optional().describe("身高体型描述(如'身高168cm，体态自然放松')"),
+});
 
 /** 新资产：AI 首次识别到的资产，需要完整信息 */
 const NewAssetSchema = z.object({
   name: z.string().describe("资产名称,仅为名称不做其他任何表述"),
   desc: z.string().describe("资产描述"),
   type: z.enum(["role", "tool", "scene"]).describe("资产类型"),
+  roleMeta: RoleMetaSchema.optional().describe("若 type 为 role，必须提供结构化角色元数据；场景与道具留空"),
   scriptIds: z.array(z.number()).describe("使用该资产的剧本id数组"),
 });
 
@@ -27,6 +41,7 @@ export const AssetSchema = z.object({
   name: z.string().describe("资产名称,仅为名称不做其他任何表述"),
   desc: z.string().describe("资产描述"),
   type: z.enum(["role", "tool", "scene"]).describe("资产类型"),
+  roleMeta: RoleMetaSchema.optional().describe("角色结构化元数据"),
 });
 
 type NewAsset = z.infer<typeof NewAssetSchema>;
@@ -97,6 +112,7 @@ export default router.post(
             name: asset.name,
             type: asset.type,
             describe: asset.desc,
+            roleMeta: asset.roleMeta ? JSON.stringify(asset.roleMeta) : null,
             projectId: projectId,
             startTime: Date.now(),
           })),
@@ -176,9 +192,7 @@ export default router.post(
         const existingAssetsList = existingAssets.map((a) => `${a.name}(${a.type})`).join("、");
 
         // 拼接多集剧本内容，每集用分隔标记
-        const scriptsContent = validScripts
-          .map(({ id, script }) => `===== 【剧本ID: ${id}】${script.name || ""} =====\n${script.content}`)
-          .join("\n\n");
+        const scriptsContent = validScripts.map(({ id, script }) => `===== 【剧本ID: ${id}〛${script.name || ""} =====\n${script.content}`).join("\n\n");
 
         let collectedNew: NewAsset[] = [];
         let collectedExisting: ExistingAssetRef[] = [];
@@ -190,7 +204,7 @@ export default router.post(
                 .object({
                   newAssets: z
                     .array(NewAssetSchema)
-                    .describe("新发现的资产列表（不在已有资产列表中的），需要完整的 prompt、name、desc、type 和使用该资产的 scriptIds"),
+                    .describe("新发现的资产列表（不在已有资产列表中的），必须包含完整的 name、desc、type、roleMeta(角色专属结构化画像) 和使用该资产的 scriptIds"),
                   existingAssetRefs: z
                     .array(ExistingAssetRefSchema)
                     .describe("已有资产的引用列表（在已有资产列表中已存在的），只需给出资产名称和使用该资产的 scriptIds"),
@@ -211,20 +225,48 @@ export default router.post(
             scriptAssetExtraction = promptData?.data ?? undefined;
           }
           const existingHint = existingAssetsList
-            ? `\n\n【已有资产列表】：${existingAssetsList}\n对于已有资产，如果在剧本中出现，只需在 existingAssetRefs 中给出资产名称和对应的 scriptIds 数组即可，无需重复生成 desc/type。对于新发现的资产（不在已有列表中），请在 newAssets 中给出完整信息。`
+            ? `
+
+【已有资产列表】：${existingAssetsList}
+对于已有资产，如果在剧本中出现，只需在 existingAssetRefs 中给出资产名称和对应的 scriptIds 数组即可，无需重复生成 desc/type。对于新发现的资产（不在已有列表中），请在 newAssets 中给出完整信息。`
             : "";
-          const output = await u.Ai.Text("universalAi").invoke({
+
+          const extractionGuide = `
+【资产提取规范与角色数字画像指南】：
+1. 资产类型分为：role (角色), scene (场景), tool (道具)。
+2. 当类型为 role 时，必须在 roleMeta 中填入标准数字码值画像：
+   - species (物种): 1=人类, 2=非人类/怪兽/动物/机甲/异形/其他。
+   - gender (性别): 1=男, 2=女, 3=中性/其他。
+   - ethnicity (族裔): 1=东亚, 2=欧美, 3=东南亚, 4=南亚, 5=拉丁, 6=非裔, 7=混血/其他。
+   - ageGroup (年龄段): 1=少年(12-17), 2=青年(18-35), 3=中年(36-55), 4=老年(56+)。
+   - beautyScore (颜值打分): 2.0-10.0 连续打分（注意：主角不一定好看，严格依据故事人物设定）：
+     * 9.0-10.0: 顶级神颜、倾国倾城、校花校草顶流；
+     * 7.5-8.9: 俊美出众、白领精英高颜值；
+     * 5.5-7.4: 清秀耐看、普通生活剧/现实悬疑剧男女主、邻家大众；
+     * 4.0-5.4: 平平无奇、底层小人物、大众脸路人；
+     * 2.0-3.9: 饱经风霜、刀疤残破、特型反派/丑角。
+   - personality, appearance, clothing, figure: 简明提炼对应结构化特征。
+`;
+
+          await u.Ai.Text("universalAi").invoke({
             messages: [
               {
                 role: "system",
-                content:
-                  scriptAssetExtraction +
-                  "\n\n提取剧本中涉及的资产（角色、场景、道具），参考技能 script_assets_extract 规范，结果必须通过 resultTool 工具返回。" +
-                  "\n\n注意：本次会同时提供多集剧本，每集剧本以 ===== 【剧本ID: xxx】 ===== 分隔。你需要分析每集剧本使用了哪些资产，并在输出中用 scriptIds 数组标明每个资产在哪些剧本中出现。",
+                content: `${scriptAssetExtraction || "提取剧本中涉及的资产（角色、场景、道具）。"}
+
+${extractionGuide}
+
+提取结果必须通过 resultTool 工具返回。
+
+注意：本次会同时提供多集剧本，每集剧本以 ===== 【剧本ID: xxx】 ===== 分隔。你需要分析每集剧本使用了哪些资产，并在输出中用 scriptIds 数组标明每个资产在哪些剧本中出现。`,
               },
               {
                 role: "user",
-                content: `当前已有资产列表：${existingHint}\n\n请根据以下${validScripts.length}集剧本提取对应的剧本资产（角色、场景、道具）:\n\n${scriptsContent}`,
+                content: `当前已有资产列表：${existingHint}
+
+请根据以下${validScripts.length}集剧本提取对应的剧本资产（角色、场景、道具）:
+
+${scriptsContent}`,
               },
             ],
             tools: { resultTool },
