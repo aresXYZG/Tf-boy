@@ -70,3 +70,6 @@ _esbuild_tmp/
 data/serve/*.bak-*
 data/web_old_bak*/
 data/web_old_backup/
+
+# local backup archives
+*.zip
