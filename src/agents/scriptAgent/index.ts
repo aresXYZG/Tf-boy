@@ -24,6 +24,49 @@ export interface AgentContext {
 
 export type ContentFormat = "vertical_episode" | "series_drama" | "single_film" | "explainer_video";
 
+/** 内容形态中文标签：注入项目档案时使用，避免模型无法理解英文枚举 */
+const CONTENT_FORMAT_LABELS: Record<ContentFormat, string> = {
+  vertical_episode: "竖屏短剧",
+  series_drama: "中长连续剧",
+  single_film: "单片微电影",
+  explainer_video: "知识科普解说",
+};
+
+/** 子任务单次生成的兜底超时（毫秒）：供应商连接 stall 时流式调用不会自行失败，必须主动中断避免前端无限等待 */
+const SUB_AGENT_TIMEOUT_MS = 10 * 60 * 1000;
+/** 决策层整轮兜底超时（毫秒）：覆盖多工具循环与多次子任务调用的合法长耗时 */
+const DECISION_TIMEOUT_MS = 45 * 60 * 1000;
+
+/** 组合外部中止信号与兜底超时信号，并暴露超时判定 */
+function withTimeoutSignal(parent: AbortSignal | undefined, ms: number) {
+  const timeoutSignal = AbortSignal.timeout(ms);
+  const signal = parent ? AbortSignal.any([parent, timeoutSignal]) : timeoutSignal;
+  return {
+    signal,
+    isTimeout: () => timeoutSignal.aborted,
+  };
+}
+
+/** 读取技能包 README 标题作为中文名称，失败时回退原始 ID */
+async function getSkillDisplayName(kind: "art_skills" | "story_skills", id?: string | null): Promise<string> {
+  if (!id) return "未配置";
+  try {
+    const readmePath = path.join(u.getPath("skills"), kind, id, "README.md");
+    const first = (await fs.promises.readFile(readmePath, "utf-8"))
+      .split(/\r?\n/)
+      .find((line) => line.trim().startsWith("# "));
+    if (!first) return id;
+    const name = first
+      .replace(/^#\s+/, "")
+      .replace(/\s*·\s*.*$/, "")
+      .replace(/风格说明$/, "")
+      .trim();
+    return name || id;
+  } catch {
+    return id;
+  }
+}
+
 export interface SkillFileMap {
   skeleton: string;
   adaptation: string;
@@ -59,7 +102,7 @@ export const SCRIPT_SKILLS_MAP: Record<ContentFormat, SkillFileMap> = {
 
 /**
  * 根据项目 contentFormat 获取对应形态与阶段的技能内容
- * 若子目录专属技能因意外缺失，具备自动回退根目录原始技能的容错机制
+ * 专属技能只存放在各自 content_formats/<形态>/ 目录下，不再回退根目录
  */
 export async function getScriptSkillContent(
   projectId: string | number | undefined,
@@ -74,20 +117,17 @@ export async function getScriptSkillContent(
   const relativePath = SCRIPT_SKILLS_MAP[formatKey][phase];
   const targetPath = path.join(u.getPath("skills"), relativePath);
 
-  if (fs.existsSync(targetPath)) {
-    console.log(`[scriptAgent] 加载形态技能: format=${formatKey}, phase=${phase}, path=${relativePath}`);
-    return await fs.promises.readFile(targetPath, "utf-8");
+  if (!fs.existsSync(targetPath)) {
+    throw new Error(`[scriptAgent] 形态专属技能文件不存在: format=${formatKey}, phase=${phase}, path=${targetPath}`);
   }
 
-  // 兜底回退：如果子目录文件不存在，则回退读取根目录下原始技能
-  const fallbackPath = path.join(u.getPath("skills"), `script_execution_${phase}.md`);
-  console.warn(`[scriptAgent] 形态技能缺失，使用通用规则: format=${formatKey}, phase=${phase}, path=${fallbackPath}`);
-  return await fs.promises.readFile(fallbackPath, "utf-8");
+  console.log(`[scriptAgent] 加载形态技能: format=${formatKey}, phase=${phase}, path=${relativePath}`);
+  return await fs.promises.readFile(targetPath, "utf-8");
 }
 
 /**
- * 根据项目 contentFormat 获取对应形态的监督层技能（分形态独立审核文件）
- * 若形态专属审核文件缺失，回退根目录 script_agent_supervision.md
+ * 根据项目 contentFormat 获取对应形态的监督层技能
+ * 专属技能只存放在各自 content_formats/<形态>/ 目录下，不再回退根目录
  */
 export async function getSupervisionSkillContent(projectId: string | number | undefined): Promise<string> {
   const project = projectId ? await u.db("o_project").where("id", projectId).first() : null;
@@ -98,13 +138,31 @@ export async function getSupervisionSkillContent(projectId: string | number | un
 
   const relativePath = `content_formats/${formatKey}/script_agent_supervision.md`;
   const targetPath = path.join(u.getPath("skills"), relativePath);
-  if (fs.existsSync(targetPath)) {
-    console.log(`[scriptAgent] 加载形态监督技能: format=${formatKey}, path=${relativePath}`);
-    return await fs.promises.readFile(targetPath, "utf-8");
+  if (!fs.existsSync(targetPath)) {
+    throw new Error(`[scriptAgent] 形态专属监督技能文件不存在: format=${formatKey}, path=${targetPath}`);
   }
-  const fallbackPath = path.join(u.getPath("skills"), "script_agent_supervision.md");
-  console.warn(`[scriptAgent] 形态监督技能缺失，使用通用审核: format=${formatKey}, path=${fallbackPath}`);
-  return await fs.promises.readFile(fallbackPath, "utf-8");
+  console.log(`[scriptAgent] 加载形态监督技能: format=${formatKey}, path=${relativePath}`);
+  return await fs.promises.readFile(targetPath, "utf-8");
+}
+
+/**
+ * 根据项目 contentFormat 获取对应形态的决策层技能
+ * 决策层按形态独立，不再共用根目录通用提示词
+ */
+export async function getDecisionSkillContent(projectId: string | number | undefined): Promise<string> {
+  const project = projectId ? await u.db("o_project").where("id", projectId).first() : null;
+  const formatKey =
+    project?.contentFormat && project.contentFormat in SCRIPT_SKILLS_MAP
+      ? (project.contentFormat as ContentFormat)
+      : "vertical_episode";
+
+  const relativePath = `content_formats/${formatKey}/script_agent_decision.md`;
+  const targetPath = path.join(u.getPath("skills"), relativePath);
+  if (!fs.existsSync(targetPath)) {
+    throw new Error(`[scriptAgent] 形态专属决策技能文件不存在: format=${formatKey}, path=${targetPath}`);
+  }
+  console.log(`[scriptAgent] 加载形态决策技能: format=${formatKey}, path=${relativePath}`);
+  return await fs.promises.readFile(targetPath, "utf-8");
 }
 
 function buildMemPrompt(mem: Awaited<ReturnType<Memory["get"]>>): string {
@@ -128,8 +186,7 @@ export async function runDecisionAI(ctx: AgentContext) {
   const memory = new Memory("scriptAgent", isolationKey);
   await memory.add("user", text, { createTime: userMessageTime });
 
-  const skill = path.join(u.getPath("skills"), "script_agent_decision.md");
-  const prompt = await fs.promises.readFile(skill, "utf-8");
+  const prompt = await getDecisionSkillContent(resTool.data.projectId);
 
   const mem = buildMemPrompt(await memory.get(text));
 
@@ -137,25 +194,38 @@ export async function runDecisionAI(ctx: AgentContext) {
 
   const novelData = await u.db("o_novel").where("projectId", resTool.data.projectId).select("chapterIndex");
 
+  const formatKey: ContentFormat =
+    projectData?.contentFormat && projectData.contentFormat in CONTENT_FORMAT_LABELS
+      ? (projectData.contentFormat as ContentFormat)
+      : "vertical_episode";
+  const [artStyleName, directorManualName] = await Promise.all([
+    getSkillDisplayName("art_skills", projectData?.artStyle),
+    getSkillDisplayName("story_skills", projectData?.directorManual),
+  ]);
+  const videoRatio = projectData?.videoRatio ?? "16:9";
+  const ratioLabel = videoRatio === "9:16" ? "竖屏" : videoRatio === "16:9" ? "横屏" : "";
+  const decisionTimeout = withTimeoutSignal(abortSignal, DECISION_TIMEOUT_MS);
+
   const projectInfo = [
-    "## 项目信息",
+    "## 项目档案（既定设定）",
+    "以下设定已由用户在项目设置中确认，属于既定事实：不得再次询问、不得建议更换、不得擅自更改。",
     `小说名称：${projectData?.name ?? "未知"}`,
     `小说类型：${projectData?.type ?? "未知"}`,
     `小说简介：${projectData?.intro ?? "无"}`,
-    `内容形态：${projectData?.contentFormat ?? "vertical_episode"}`,
-    `目标改编影视视觉手册|画风：${projectData?.artStyle ?? "无"}`,
-    `目标导演手册：${projectData?.directorManual ?? "无"}`,
-    `目标改编视频画幅：${projectData?.videoRatio ?? "16:9"}`,
+    `内容形态：${CONTENT_FORMAT_LABELS[formatKey]}（${formatKey}）`,
+    `画风手册：${artStyleName}（${projectData?.artStyle ?? "未配置"}）`,
+    `导演手册：${directorManualName}（${projectData?.directorManual ?? "未配置"}）`,
+    `影片画幅：${videoRatio}${ratioLabel ? `（${ratioLabel}）` : ""}`,
     `章节数量：${novelData.length}章`,
   ].join("\n");
 
   const { fullStream } = await u.Ai.Text("scriptAgent:decisionAgent", ctx.thinkConfig.think, ctx.thinkConfig.thinlLevel).stream({
     messages: [
-      { role: "system", content: prompt },
-      { role: "assistant", content: projectInfo + "\n" + mem },
+      { role: "system", content: `${prompt}\n\n---\n\n${projectInfo}` },
+      { role: "assistant", content: mem },
       { role: "user", content: text },
     ],
-    abortSignal,
+    abortSignal: decisionTimeout.signal,
     tools: {
       ...memory.getTools(),
       ...useTools({ resTool: ctx.resTool, msg: ctx.msg }),
@@ -204,13 +274,14 @@ function createSubAgent(parentCtx: AgentContext) {
   }) {
     parentCtx.msg.complete();
     const subMsg = resTool.newMessage("assistant", name);
+    const subTimeout = withTimeoutSignal(abortSignal, SUB_AGENT_TIMEOUT_MS);
 
     let fullStream: any;
     try {
       const streamResult: any = await u.Ai.Text(key, parentCtx.thinkConfig.think, parentCtx.thinkConfig.thinlLevel).stream({
         system,
         messages: messages ?? [{ role: "user", content: prompt }],
-        abortSignal,
+        abortSignal: subTimeout.signal,
         // 执行层禁止调用写工具：正文统一走"XML 输出 → persist 自动落库"，避免模型双写/污染
         tools: {
           ...extraTools,
@@ -225,25 +296,47 @@ function createSubAgent(parentCtx: AgentContext) {
     } catch (err: any) {
       // 子Agent 异常必须落日志：之前异常只作为 tool error 传给决策层，后端看不到真实原因
       console.error(`[scriptAgent] subAgent 异常 key=${key} name=${name}:`, u.error(err).message);
-      subMsg.error(`子任务执行异常：${u.error(err).message}`);
+      const errMsg = subTimeout.isTimeout()
+        ? `子任务超时中断（超过 ${Math.round(SUB_AGENT_TIMEOUT_MS / 60000)} 分钟无响应），请检查模型服务状态后重试`
+        : `子任务执行异常：${u.error(err).message}`;
+      subMsg.error(errMsg);
       throw err;
     }
 
-    const fullResponse = await consumeFullStream(fullStream, subMsg);
+    let fullResponse: string;
+    try {
+      fullResponse = await consumeFullStream(fullStream, subMsg);
+    } catch (err: any) {
+      if (subTimeout.isTimeout()) {
+        const errMsg = `子任务超时中断（超过 ${Math.round(SUB_AGENT_TIMEOUT_MS / 60000)} 分钟无响应），请检查模型服务状态后重试`;
+        console.error(`[scriptAgent] subAgent 超时 key=${key} name=${name}`);
+        subMsg.error(errMsg);
+        throw new Error(errMsg);
+      }
+      throw err;
+    }
 
     if (persist) {
       try {
         await persist(fullResponse);
       } catch (err: any) {
         console.error(`[scriptAgent] persist 落库异常 key=${key}:`, u.error(err).message);
+        subMsg.error(`写入工作区失败：${u.error(err).message}`);
+        // 不再吞掉：必须让决策层感知写入失败并可重试，否则会出现"模型声称已完成但工作区为空"
+        throw err;
       }
     }
 
     if (fullResponse.trim()) {
-      await memory.add(memoryKey, removeAllXmlTags(fullResponse), {
-        name,
-        createTime: new Date(subMsg.datetime).getTime(),
-      });
+      try {
+        await memory.add(memoryKey, removeAllXmlTags(fullResponse), {
+          name,
+          createTime: new Date(subMsg.datetime).getTime(),
+        });
+      } catch (memErr: any) {
+        // 记忆失败不应导致"剧本已写入但整体报错"，降级记录日志即可
+        console.error(`[scriptAgent] memory.add 失败(数据已写入，仅记忆缺失) key=${key}:`, u.error(memErr).message);
+      }
     }
 
     parentCtx.msg = resTool.newMessage("assistant", "视频策划");
@@ -262,7 +355,8 @@ function createSubAgent(parentCtx: AgentContext) {
     execute: async ({ prompt }) => {
       const systemPrompt = await getScriptSkillContent(projectId, "skeleton");
 
-      const formatPrompt = "\n你必须使用如下XML格式写入工作区：\n<storySkeleton>故事骨架内容</storySkeleton>";
+      const formatPrompt =
+        "\n你必须使用如下XML格式写入工作区：\n<storySkeleton>故事骨架内容</storySkeleton>\n注意：系统自动解析XML落库，禁止输出\"正在写入/已写入工作区\"等叙述，完整正文必须包含在标签内。";
 
       return runAgent({
         key: "scriptAgent:storySkeletonAgent",
@@ -273,7 +367,12 @@ function createSubAgent(parentCtx: AgentContext) {
         messages: [{ role: "user", content: prompt + formatPrompt }],
         persist: async (resp) => {
           const content = extractXmlContent(resp, "storySkeleton");
-          if (content) await persistPlanData(resTool.data.projectId, { storySkeleton: content });
+          if (!content) {
+            throw new Error(
+              `模型回复中未找到 <storySkeleton>...</storySkeleton> 输出（响应${resp.length}字，可能被截断或格式不符），骨架未写入工作区，请重新派发并要求按XML格式输出完整正文`,
+            );
+          }
+          await persistPlanData(resTool.data.projectId, { storySkeleton: content });
         },
       });
     },
@@ -285,7 +384,8 @@ function createSubAgent(parentCtx: AgentContext) {
     execute: async ({ prompt }) => {
       const systemPrompt = await getScriptSkillContent(projectId, "adaptation");
 
-      const formatPrompt = "\n你必须使用如下XML格式写入工作区：\n<adaptationStrategy>改编策略内容</adaptationStrategy>";
+      const formatPrompt =
+        "\n你必须使用如下XML格式写入工作区：\n<adaptationStrategy>改编策略内容</adaptationStrategy>\n注意：系统自动解析XML落库，禁止输出\"正在写入/已写入工作区\"等叙述，完整正文必须包含在标签内。";
 
       return runAgent({
         key: "scriptAgent:adaptationStrategyAgent",
@@ -296,7 +396,12 @@ function createSubAgent(parentCtx: AgentContext) {
         messages: [{ role: "user", content: prompt + formatPrompt }],
         persist: async (resp) => {
           const content = extractXmlContent(resp, "adaptationStrategy");
-          if (content) await persistPlanData(resTool.data.projectId, { adaptationStrategy: content });
+          if (!content) {
+            throw new Error(
+              `模型回复中未找到 <adaptationStrategy>...</adaptationStrategy> 输出（响应${resp.length}字，可能被截断或格式不符），改编策略未写入工作区，请重新派发并要求按XML格式输出完整正文`,
+            );
+          }
+          await persistPlanData(resTool.data.projectId, { adaptationStrategy: content });
         },
       });
     },
@@ -315,7 +420,7 @@ function createSubAgent(parentCtx: AgentContext) {
 
       const novelData = await u.db("o_novel").where("projectId", resTool.data.projectId).select("chapterIndex");
 
-      const formatPrompt = `\n你必须使用如下XML格式写入工作区：\nXML不得添加任何额外标签<scriptItem name="剧本名称">剧本内容</scriptItem><scriptItem name="剧本名称">剧本内容</scriptItem><scriptItem name="剧本名称">剧本内容</scriptItem>`;
+      const formatPrompt = `\n你必须使用如下XML格式写入工作区：\nXML不得添加任何额外标签<scriptItem name="剧本名称">剧本内容</scriptItem><scriptItem name="剧本名称">剧本内容</scriptItem><scriptItem name="剧本名称">剧本内容</scriptItem>\n注意：系统自动解析XML落库，禁止输出"正在写入/已写入工作区"等叙述；每集剧本完整正文（含场景、对白、动作描述）必须完整包含在对应<scriptItem>标签内，不得省略或用概要代替。`;
 
       return runAgent({
         key: "scriptAgent:scriptAgent",
@@ -329,6 +434,12 @@ function createSubAgent(parentCtx: AgentContext) {
         memoryKey: "assistant:execution:script",
         persist: async (resp) => {
           const items = extractScriptItems(resp);
+          console.log(`[scriptAgent] script persist: 响应${resp.length}字，提取到 ${items.length} 个 scriptItem`);
+          if (items.length === 0) {
+            throw new Error(
+              `模型回复中未找到 <scriptItem name="...">剧本内容</scriptItem> 格式输出（响应${resp.length}字，可能被截断或格式不符），剧本未写入工作区，请重新派发并要求按XML格式输出完整正文`,
+            );
+          }
           for (const item of items) {
             const row = await u.db("o_script").where({ projectId: resTool.data.projectId, name: item.name }).first();
             if (row) {
@@ -442,10 +553,24 @@ function extractScriptItems(text: string): { name: string; content: string }[] {
   const items: { name: string; content: string }[] = [];
   const re = /<scriptItem\s+name="([^"]*)"[^>]*>([\s\S]*?)<\/scriptItem>/g;
   let m: RegExpExecArray | null;
+  let lastClosedEnd = 0;
   while ((m = re.exec(text)) !== null) {
     const name = (m[1] || "").trim();
     const content = m[2].trim();
     if (name || content) items.push({ name, content });
+    lastClosedEnd = m.index + m[0].length;
+  }
+  // 截断救援：流被中途掐断时最后的 scriptItem 没有闭合标签，按已有内容写入，
+  // 避免整集剧本因缺一个 </scriptItem> 而完全丢失
+  const tail = text.slice(lastClosedEnd);
+  const unclosed = tail.match(/<scriptItem\s+name="([^"]*)"[^>]*>([\s\S]*)$/);
+  if (unclosed) {
+    const name = (unclosed[1] || "").trim();
+    const content = unclosed[2].trim();
+    if (name || content) {
+      console.warn(`[scriptAgent] 检测到未闭合的 scriptItem（响应可能被截断），按已有内容写入: ${name || "(未命名)"}`);
+      items.push({ name, content });
+    }
   }
   return items;
 }
