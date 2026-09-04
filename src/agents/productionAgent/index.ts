@@ -27,6 +27,14 @@ export interface AgentContext {
 export type ContentFormat = "vertical_episode" | "series_drama" | "single_film" | "explainer_video";
 type ProductionFormatPhase = "directorPlan" | "storyboardTable";
 
+/** 内容形态中文标签：注入项目信息时使用，避免模型无法理解英文枚举 */
+const CONTENT_FORMAT_LABELS: Record<ContentFormat, string> = {
+  vertical_episode: "竖屏短剧",
+  series_drama: "中长连续剧",
+  single_film: "单片微电影",
+  explainer_video: "知识科普解说",
+};
+
 interface ProductionFormatSkillMap {
   directorPlan: string;
   storyboardTable: string;
@@ -115,7 +123,7 @@ export async function runDecisionAI(ctx: AgentContext) {
   // const isRef = findData.mode.every((i: any) => Array.isArray(i));
 
   const contentFormat = normalizeContentFormat(projectInfo.contentFormat);
-  const modelInfo = `项目使用的模型如下：\n内容形态：${contentFormat}\n导演手册：${projectInfo.directorManual || "未配置"}\n图像模型：${imageModelName}\n视频模型：${videoModelName}\n多参：${isRef ? "是" : "否"}`;
+  const modelInfo = `项目使用的模型如下：\n内容形态：${CONTENT_FORMAT_LABELS[contentFormat]}（${contentFormat}）\n导演手册：${projectInfo.directorManual || "未配置"}\n图像模型：${imageModelName}\n视频模型：${videoModelName}\n多参：${isRef ? "是" : "否"}`;
 
   const mem = buildMemPrompt(await memory.get(text));
 
