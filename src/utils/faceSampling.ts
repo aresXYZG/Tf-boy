@@ -1,4 +1,21 @@
 import u from "@/utils";
+import _ from "lodash";
+
+/**
+ * 角色结构化元数据（数字码值规范）
+ */
+export interface RoleMeta {
+  species?: number; // 物种: 1(人类), 2(非人类/其他)
+  gender?: number; // 性别: 1(男), 2(女), 3(中性/其他)
+  ethnicity?: number; // 族裔: 1(东亚), 2(欧美), 3(东南亚), 4(南亚), 5(拉丁), 6(非裔), 7(混血/其他)
+  ageGroup?: number; // 年龄段: 1(少年), 2(青年), 3(中年), 4(老年)
+  actualAge?: number; // 具体年龄数字
+  beautyScore?: number; // 颜值打分: 2.0 ~ 10.0
+  personality?: string; // 性格与气质关键词
+  appearance?: string; // 五官发型外貌特征
+  clothing?: string; // 基础常规着装
+  figure?: string; // 身高体型描述
+}
 
 export interface FaceSampleResult {
   referenceList: { type: "image"; base64: string }[];
@@ -6,118 +23,202 @@ export interface FaceSampleResult {
   faceSummaryPrompt: string;
 }
 
+// 码值转中文语义映射字典
+export const ETHNICITY_MAP: Record<number, string> = {
+  1: "东亚",
+  2: "欧美",
+  3: "东南亚",
+  4: "南亚",
+  5: "拉丁",
+  6: "非裔",
+  7: "混血",
+};
+
+export const AGE_GROUP_MAP: Record<number, string> = {
+  1: "少年",
+  2: "青年",
+  3: "中年",
+  4: "老年",
+};
+
+export const GENDER_MAP: Record<number, string> = {
+  1: "男",
+  2: "女",
+  3: "中性",
+};
+
+/** 颜值分缺失时的中性兜底值（不再用旧 beautyLevel 高/中映射） */
+const DEFAULT_BEAUTY_SCORE = 6.5;
+
 /**
- * 根据角色描述文本（推断性别/人种/年龄段），从 o_faceAsset 表中抽样 2 张人脸底图
+ * 单张人脸加权随机挑选（带温度系数，防止确定性死板锁定）
  */
-export async function sampleDualFaceAssets(roleDesc: string, roleName: string = ""): Promise<FaceSampleResult> {
-  const fullText = `${roleName} ${roleDesc}`;
+function weightedPickOne(candidates: any[], targetScore: number, temperature: number = 0.8): any {
+  if (candidates.length === 0) return null;
+  if (candidates.length === 1) return candidates[0];
 
-  // 1. 性别推断（默认女）
-  let gender = "女";
-  if (/男|男主|少年|叔|公|兄|弟|爷|先生|帅哥|小伙|boy|man|male/i.test(fullText)) {
-    gender = "男";
-  } else if (/女|女主|少女|姐|妹|婆|女士|美女|姑娘|girl|woman|female/i.test(fullText)) {
-    gender = "女";
+  const diffs = candidates.map((item) => {
+    const score = typeof item.beautyScore === "number" && !isNaN(item.beautyScore) ? item.beautyScore : DEFAULT_BEAUTY_SCORE;
+    return Math.abs(score - targetScore);
+  });
+
+  const weights = diffs.map((d) => Math.exp(-d / Math.max(0.1, temperature)));
+  const sumWeights = _.sum(weights);
+
+  let rand = Math.random() * sumWeights;
+  for (let i = 0; i < candidates.length; i++) {
+    rand -= weights[i];
+    if (rand <= 0) return candidates[i];
+  }
+  return candidates[candidates.length - 1];
+}
+
+/**
+ * 结构化人脸资产抽样函数（基于数字码值全等匹配与颜值加权采样）
+ */
+export async function sampleAssetReferences(roleMeta?: RoleMeta | null, roleName: string = ""): Promise<FaceSampleResult> {
+  // 1. 非人类角色：直接返回空参考，不注入人脸融合
+  if (roleMeta && roleMeta.species !== undefined && roleMeta.species !== 1) {
+    return {
+      referenceList: [],
+      faceAssetIds: [],
+      faceSummaryPrompt: "",
+    };
   }
 
-  // 2. 人种推断（默认东亚）
-  let ethnicity = "东亚";
-  if (/欧美|白人|西方|金发|碧眼|caucasian|western|white/i.test(fullText)) {
-    ethnicity = "欧美";
-  } else if (/东南亚|泰国|越南|印尼|菲律宾|马来|thai|vietnam|indonesia/i.test(fullText)) {
-    ethnicity = "东南亚";
-  } else if (/南亚|印度|巴基斯坦|孟加拉|斯里兰卡|indian|pakistan/i.test(fullText)) {
-    ethnicity = "南亚";
-  } else if (/拉丁|拉美|巴西|墨西哥|阿根廷|西班牙裔|latino|latin|hispanic|mexican|brazil/i.test(fullText)) {
-    ethnicity = "拉丁";
-  } else if (/混血|中西|half|mixed/i.test(fullText)) {
-    ethnicity = "其他";
-  } else if (/非裔|黑人|black|african/i.test(fullText)) {
-    ethnicity = "非裔";
-  }
+  // 2. 提取并规范人类属性码值
+  const genderCode = roleMeta?.gender ?? 2; // 默认女
+  const ethnicityCode = roleMeta?.ethnicity ?? 1; // 默认东亚
+  const ageGroupCode = roleMeta?.ageGroup ?? 2; // 默认青年
+  const targetScore = Math.max(2.0, Math.min(10.0, roleMeta?.beautyScore ?? 6.5));
 
-  // 3. 年龄段推断（默认青年）
-  let ageGroup = "青年";
-  if (/幼|少儿|童|萝莉|正太|孩|child|kid/i.test(fullText)) {
-    ageGroup = "少年";
-  } else if (/少年|高中生|初中生|学生|青涩|teen/i.test(fullText)) {
-    ageGroup = "少年";
-  } else if (/中年|大叔|熟男|熟女|3\d岁|4\d岁|middle/i.test(fullText)) {
-    ageGroup = "中年";
-  } else if (/老|爷|婆|年迈|白发沧桑|6\d岁|7\d岁|elder/i.test(fullText)) {
-    ageGroup = "老年";
-  }
+  const genderLabel = GENDER_MAP[genderCode] || "女";
+  const ethnicityLabel = ETHNICITY_MAP[ethnicityCode] || "东亚";
+  const ageGroupLabel = AGE_GROUP_MAP[ageGroupCode] || "青年";
 
-  // 3.5 颜值偏好推断：描述中强调颜值（主角/帅哥/美女/惊艳等）→ 优先高颜值；强调普通/路人 → 优先中档
-  let beautyPrefer: string | undefined;
-  if (/颜值|美女|帅哥|惊艳|绝美|俊朗|俊美|英俊|倾国|盛世美颜|好看|漂亮|帅气|beautiful|handsome|gorgeous/i.test(fullText)) {
-    beautyPrefer = "高";
-  } else if (/普通|路人|平平|其貌不扬|一般|大众脸|ordinary|plain|average/i.test(fullText)) {
-    beautyPrefer = "中";
-  }
+  // 3. 数据库全等查询（仅抽人类底图；species 为 integer 列，gender/ethnicity 为 varchar 码值列须按字符串 '1' 匹配）
+  let candidates = await u
+    .db("o_faceAsset")
+    .where({ species: 1, gender: String(genderCode), ethnicity: String(ethnicityCode) })
+    .select("*");
 
-  // 4. 从数据库中查询匹配的人脸资产
-  let candidates = await u.db("o_faceAsset").where({ gender, ethnicity }).select("*");
+  // 级联降级1：按性别匹配
   if (candidates.length < 2) {
-    // 降级：仅按性别匹配
-    candidates = await u.db("o_faceAsset").where({ gender }).select("*");
+    candidates = await u.db("o_faceAsset").where({ species: 1, gender: String(genderCode) }).select("*");
   }
+
+  // 级联降级2：全量人类底图匹配
   if (candidates.length < 2) {
-    // 再次降级：全量候选
-    candidates = await u.db("o_faceAsset").select("*");
+    candidates = await u.db("o_faceAsset").where("species", 1).select("*");
   }
 
-  // 4.5 按颜值偏好排序：高颜值优先置顶（主角脸），中档排后（路人/群演）
-  if (beautyPrefer) {
-    const rank = (b: string | undefined) => (b === beautyPrefer ? 0 : b === "高" ? 1 : b === "中" ? 2 : 3);
-    candidates = [...candidates].sort((a: any, b: any) => rank(a.beautyLevel) - rank(b.beautyLevel));
-  }
-
-  // 如果数据库中没有足够的人脸资产，返回空引用
   if (candidates.length === 0) {
     return {
       referenceList: [],
       faceAssetIds: [],
-      faceSummaryPrompt: `【角色特征建议】：${ethnicity}${ageGroup}${gender}，骨相立体自然，杜绝模板化网红脸。`,
+      faceSummaryPrompt: `【角色特征建议】：全新原创${ageGroupLabel}${genderLabel}角色，骨相立体自然，杜绝模板化假脸。`,
     };
   }
 
-  // 随机洗牌抽取 2 张（如果只有 1 张就用 1 张）
-  const shuffled = candidates.sort(() => 0.5 - Math.random());
-  const selected = shuffled.slice(0, 2);
+  // 4. 颜值打分容差过滤 (±1.5 分区间加权采样)
+  let windowCandidates = candidates.filter((item) => {
+    const score = typeof item.beautyScore === "number" && !isNaN(item.beautyScore) ? item.beautyScore : DEFAULT_BEAUTY_SCORE;
+    return Math.abs(score - targetScore) <= 1.5;
+  });
+  if (windowCandidates.length < 3) windowCandidates = candidates;
 
+  // 5. 非对称加权抽样：图2 (70%五官主导) + 图1 (30%骨相辅助)
+  const primaryFace = weightedPickOne(windowCandidates, targetScore, 0.8);
+  const remainingCandidates = candidates.filter((c) => c.id !== primaryFace.id);
+  const secondaryFace = remainingCandidates.length > 0 ? weightedPickOne(remainingCandidates, targetScore, 1.0) : primaryFace;
+
+  const selected = primaryFace.id === secondaryFace.id ? [primaryFace] : [secondaryFace, primaryFace];
   const referenceList: { type: "image"; base64: string }[] = [];
   const faceAssetIds: number[] = [];
 
   for (const item of selected) {
-    if (item.id !== undefined) {
-      faceAssetIds.push(item.id);
-    }
+    if (item.id !== undefined) faceAssetIds.push(item.id);
     if (item.filePath) {
       try {
         const base64 = await u.oss.getImageBase64(item.filePath);
-        if (base64) {
-          referenceList.push({ type: "image", base64 });
-        }
+        if (base64) referenceList.push({ type: "image", base64 });
       } catch (e) {
-        console.warn("读取人脸资产base64失败:", item.filePath, e);
+        console.warn("读取人脸底图Base64失败:", item.filePath, e);
       }
     }
   }
 
+  // 6. 组装双底图特征解耦融合 Prompt
+  // 不注入底图的具体 description：模型本身看得见垫图，文字复述特征反而会把融合锁死在少数词上
+  // 主次分工：图2 定结构五官气质（像谁），图1 只借骨相立体感与皮肤质感（质感氛围）
   let faceSummaryPrompt = "";
   if (selected.length >= 2) {
-    const f1 = selected[0];
-    const f2 = selected[1];
-    faceSummaryPrompt = `【双参考底图特征融合】：全新原创${ethnicity}${ageGroup}${gender}角色，融合两张参考底图：图2（主要参考70%：${f2.description || "主导五官神韵与生活化面孔"}）与图1（辅助参考30%：${f1.description || "提供骨相立体度与下颌线条"}），严禁机械克隆单张底图。`;
+    faceSummaryPrompt = `【双真人参考底图融合（核心必守）】：
+基于两张参考底图生成全新原创${ageGroupLabel}${genderLabel}角色（严禁直接复制任一张）：
+- 图2（主要参考70%）：人物脸部结构、五官比例、眼型神韵、唇形与核心气质以图2为主；
+- 图1（辅助参考30%）：只借少量下颌线与鼻骨立体轮廓、皮肤质感、面部状态与肖像氛围；
+两图解耦重构为独立原创角色。`;
   } else if (selected.length === 1) {
-    const f = selected[0];
-    faceSummaryPrompt = `【参考底图特征融合】：全新原创${ethnicity}${ageGroup}${gender}角色，参考底图（${f.description || "提供面部骨相与五官气质"}），生成全新原创面容。`;
+    faceSummaryPrompt = `【单真人参考底图融合（核心必守）】：
+基于参考底图生成全新原创${ageGroupLabel}${genderLabel}角色（严禁直接复制），参考底图提供面部骨相、五官气质与肖像质感。`;
   }
 
-  return {
-    referenceList,
-    faceAssetIds,
-    faceSummaryPrompt,
-  };
+  return { referenceList, faceAssetIds, faceSummaryPrompt };
+}
+
+/**
+ * 兼容旧接口的适配封装
+ */
+export async function sampleDualFaceAssets(roleDesc: string, roleName: string = ""): Promise<FaceSampleResult> {
+  // 解析简单的关键词转为码值
+  const fullText = `${roleName} ${roleDesc}`;
+  let gender = 2; // 女
+  if (/男|男主|少年|叔|公|兄|弟|爷|先生|帅哥|小伙|boy|man|male/i.test(fullText)) {
+    gender = 1;
+  }
+  let ethnicity = 1; // 东亚
+  if (/欧美|白人|西方|金发|碧眼|caucasian|western|white/i.test(fullText)) {
+    ethnicity = 2;
+  } else if (/东南亚|泰国|越南|印尼|菲律宾|马来/i.test(fullText)) {
+    ethnicity = 3;
+  } else if (/南亚|印度|巴基斯坦/i.test(fullText)) {
+    ethnicity = 4;
+  } else if (/拉丁|拉美|巴西|墨西哥/i.test(fullText)) {
+    ethnicity = 5;
+  } else if (/非裔|黑人|black|african/i.test(fullText)) {
+    ethnicity = 6;
+  } else if (/混血|中西|half|mixed/i.test(fullText)) {
+    ethnicity = 7;
+  }
+
+  let ageGroup = 2; // 青年
+  if (/幼|少儿|童|萝莉|正太|孩|少年|学生|teen/i.test(fullText)) {
+    ageGroup = 1;
+  } else if (/中年|大叔|熟男|熟女|3\d岁|4\d岁/i.test(fullText)) {
+    ageGroup = 3;
+  } else if (/老|爷|婆|年迈|白发|6\d岁|7\d岁|elder/i.test(fullText)) {
+    ageGroup = 4;
+  }
+
+  let beautyScore = 6.5;
+  if (/绝美|盛世美颜|神颜|倾国/i.test(fullText)) {
+    beautyScore = 9.2;
+  } else if (/颜值|美女|帅哥|惊艳|俊朗|好看|漂亮|帅气/i.test(fullText)) {
+    beautyScore = 8.0;
+  } else if (/普通|路人|平平|一般|大众脸/i.test(fullText)) {
+    beautyScore = 4.8;
+  } else if (/沧桑|刀疤|破相|丑|残疾/i.test(fullText)) {
+    beautyScore = 3.5;
+  }
+
+  return sampleAssetReferences(
+    {
+      species: 1,
+      gender,
+      ethnicity,
+      ageGroup,
+      beautyScore,
+    },
+    roleName,
+  );
 }

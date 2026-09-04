@@ -8,36 +8,61 @@ import { validateFields } from "@/middleware/middleware";
 const router = express.Router();
 
 /**
- * 将模型返回的性别字段归一化为标准值（男/女/未知）。
- * 不同视觉模型可能返回 男/女、男性/女性、male/female、man/woman、M/F 等格式，
- * 统一转换，避免因格式不匹配导致性别落成"未知"。
+ * 数字码值字典（与 faceSampling.ts / extractAssets.ts 全系统统一）
+ * 存储规范：gender/ethnicity/ageGroup 为历史 varchar 列，码值一律以字符串（如 '1'）写入/查询。
+ * 严禁直接绑数字——SQLite 会把 REAL 1.0 转成文本 '1.0'，与 '1' 互不匹配。
  */
-function normalizeGender(raw: any): string | undefined {
-  if (raw === null || raw === undefined) return undefined;
-  const s = String(raw).trim().toLowerCase();
-  if (!s) return undefined;
-  if (/^男$|^男性$|^male$|^man$|^m$|^boy$|^先生$/.test(s)) return "男";
-  if (/^女$|^女性$|^female$|^woman$|^w$|^f$|^girl$|^女士$/.test(s)) return "女";
-  if (/未知|unknown|不确定|无法|无|n\/a|na$/.test(s)) return "未知";
-  // 兜底：无法识别的文本保持"未知"（绝不猜测）
-  return "未知";
+const GENDER_LABEL: Record<number, string> = { 1: "男", 2: "女", 3: "中性" };
+const ETHNICITY_LABEL: Record<number, string> = { 1: "东亚", 2: "欧美", 3: "东南亚", 4: "南亚", 5: "拉丁", 6: "非裔", 7: "混血" };
+const AGE_GROUP_LABEL: Record<number, string> = { 1: "少年", 2: "青年", 3: "中年", 4: "老年" };
+
+/** 将 Vision 返回值收敛为合法数字码值，非法值返回 undefined */
+function toCode(raw: any, min: number, max: number): number | undefined {
+  const n = typeof raw === "string" ? Number(raw) : raw;
+  if (typeof n !== "number" || !Number.isFinite(n)) return undefined;
+  const int = Math.round(n);
+  return int >= min && int <= max ? int : undefined;
+}
+
+/** 颜值分收敛到 2.0~10.0 连续区间，保留 1 位小数 */
+function toBeautyScore(raw: any): number | undefined {
+  const n = typeof raw === "string" ? Number(raw) : raw;
+  if (typeof n !== "number" || !Number.isFinite(n)) return undefined;
+  return Math.round(Math.max(2, Math.min(10, n)) * 10) / 10;
+}
+
+/** 标签数组清洗：去空、去重、上限 8 个 */
+function toTags(raw: any): string[] {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set<string>();
+  const list: string[] = [];
+  for (const item of raw) {
+    const s = typeof item === "string" ? item.trim() : "";
+    if (s && !seen.has(s)) {
+      seen.add(s);
+      list.push(s);
+      if (list.length >= 8) break;
+    }
+  }
+  return list;
 }
 
 export default router.post(
   "/",
   validateFields({
     name: z.string().optional(),
-    fileUrl: z.string(), // base64
-    gender: z.string().optional(),
-    ageGroup: z.string().optional(),
-    ethnicity: z.string().optional(),
+    fileUrl: z.string(), // base64（可带 data:image/xxx;base64, 前缀）
+    species: z.number().int().min(1).max(2).optional(), // 1: 人类, 2: 非人类
+    gender: z.number().int().min(1).max(3).optional(), // 1: 男, 2: 女, 3: 中性/其他
+    ethnicity: z.number().int().min(1).max(7).optional(), // 1: 东亚 ... 7: 混血/其他
+    ageGroup: z.number().int().min(1).max(4).optional(), // 1: 少年 ... 4: 老年
+    beautyScore: z.number().min(2).max(10).optional(), // 2.0 ~ 10.0 连续客观打分
     tags: z.array(z.string()).optional(),
     description: z.string().optional(),
-    beautyLevel: z.string().optional(),
     model: z.string().optional(), // 允许用户自行指定用于智能打标的 Vision 模型，如 "openai:gpt-4o" 或 "universalAi"
   }),
   async (req, res) => {
-    const { name, fileUrl, gender, ageGroup, ethnicity, tags, description, beautyLevel, model = "faceAssetVisionAgent" } = req.body;
+    const { name, fileUrl, species, gender, ethnicity, ageGroup, beautyScore, tags, description, model = "faceAssetVisionAgent" } = req.body;
 
     try {
       // 解析真实 MIME 类型与 base64，避免 PNG/WebP 被强制当作 JPEG 导致 Vision 解析失败
@@ -50,46 +75,52 @@ export default router.post(
 
       await u.oss.writeFile(imagePath, Buffer.from(realBase64, "base64"));
 
+      let autoSpecies = species;
       let autoGender = gender;
-      let autoAgeGroup = ageGroup;
       let autoEthnicity = ethnicity;
-      let autoBeauty = beautyLevel;
+      let autoAgeGroup = ageGroup;
+      let autoBeautyScore = beautyScore;
       let autoTags = tags || [];
       let autoDesc = description;
 
-      // 尝试用 Vision 模型打标：依次尝试用户指定模型 → 通用AI（universalAi），全部失败则跳过打标
-      if (model !== "none" && (!autoGender || !autoAgeGroup || !autoEthnicity || !autoBeauty || autoTags.length === 0 || !autoDesc)) {
+      // Vision 智能打标：用户未传的字段交给模型识别，依次尝试 指定模型 → universalAi
+      if (
+        model !== "none" &&
+        (!autoSpecies || !autoGender || !autoEthnicity || !autoAgeGroup || autoBeautyScore === undefined || autoTags.length === 0 || !autoDesc)
+      ) {
         const modelCandidates = [...new Set([model || "faceAssetVisionAgent", "universalAi"])].filter(Boolean) as string[];
 
         for (const tryModel of modelCandidates) {
           try {
             const aiRes = await u.Ai.Text(tryModel as any).invoke({
-              system: `你是一位专业的人像面部特征与骨相分析专家。请仔细分析上传的人脸照片，输出严格的 JSON 格式结果，不要包含任何 markdown 代码块标记以外的闲聊文字。
-JSON 格式要求如下：
-{
-  "gender": "男" | "女" | "未知",
-  "ageGroup": "少年" | "青年" | "中年" | "老年",
-  "ethnicity": "东亚" | "东南亚" | "南亚" | "欧美" | "拉丁" | "非裔" | "其他",
-  "beautyLevel": "高" | "中",
-  "tags": ["高鼻梁", "内双", "下颌线条清晰", "微单眼皮", "剑眉", "桃花眼", "故事感神态"... 3-6个特征词],
-  "description": "50字以内概括其面部骨相立体度、五官神态、眼型特征与皮肤质感"
-}
-注意：
-1. 必须严格依据照片中人物的真实生理特征判断性别；如果照片模糊、遮挡或无法明确判断性别，一律返回 "未知"，严禁猜测或默认。
-2. beautyLevel 表示颜值等级：五官比例协调、骨相立体、无明显瑕疵为 "高"；五官端正、略有瑕疵为 "中"。基于客观面部特征评估，不要刻意讨好。`,
+              system: `你是一名资深电影选角导演与角色视觉总监，同时是人像骨相分析专家。请以苛刻、客观、冷静的工业级眼光分析上传的人脸照片，严格按【标准数字码值字典】输出结构化元数据。
+
+【标准数字码值字典】
+species（物种）：1=人类；2=非人类（动物/怪兽/机甲/异形/拟人生物等）
+gender（性别）：1=男；2=女；3=中性/难以界定
+ethnicity（族裔）：1=东亚；2=欧美（高加索）；3=东南亚；4=南亚；5=拉丁；6=非裔；7=混血/其他
+ageGroup（年龄段）：1=少年(12-17)；2=青年(18-35)；3=中年(36-55)；4=老年(56+)
+beautyScore（客观颜值连续打分 2.0~10.0）——严禁谄媚与分数通胀，必须以真实人类社会正态分布为基准：
+- 9.0~10.0 顶级神颜：骨相皮相近乎完美、无死角黄金比例，稀世罕见（极少给出）
+- 7.5~8.9 俊美出众：明星/模特/高颜值素人，五官立体或极具辨识度
+- 5.5~7.4 清秀耐看/邻家生活感：正常五官，稍有个人特色，现实剧男女主常见档位
+- 4.0~5.4 平平无奇/大众脸：五官无亮点，可能有轻微凸嘴、不对称、塌鼻梁等小瑕疵
+- 2.0~3.9 沧桑特型/丑角：明显不对称、大疤痕、严重衰老或特定反向特征
+
+tags：3~6 个结构化特征词，聚焦骨相、五官硬特征与神态（如 "高鼻梁"、"内双"、"下颌线清晰"、"眼神冷峻"），避免空泛形容词
+description：50 字以内，重点提炼骨相结构（眉弓/鼻骨/颧骨/下颌折角）、眼型神韵与皮肤质感，供双底图融合 Prompt 使用
+
+只输出如下纯 JSON，禁止 markdown 代码块、注释或任何多余文字：
+{"species":1,"gender":1,"ethnicity":1,"ageGroup":2,"beautyScore":6.8,"tags":["单眼皮","鼻梁高挺","下颌线清晰","眼神内敛"],"description":"骨相立体自然的东亚青年男性，眉眼深邃，下颌折角清晰，眼神坚毅冷峻"}`,
               messages: [
                 {
                   role: "user",
                   content: [
-                    // AI SDK v6 ImagePart 标准格式：image 传「纯 base64」（不能带 data: 前缀，否则被当 URL fetch），mediaType 声明图片格式
-                    {
-                      type: "image" as const,
-                      image: realBase64,
-                      mediaType: `image/${mimeType}`,
-                    },
+                    // AI SDK v6 ImagePart 标准格式：image 传「纯 base64」（不能带 data: 前缀），mediaType 声明图片格式
+                    { type: "image" as const, image: realBase64, mediaType: `image/${mimeType}` },
                     {
                       type: "text" as const,
-                      text: "请分析此真人人脸的骨相特征、五官神韵、性别、年龄段与人种，并按规范输出 JSON。",
+                      text: "请以选角总监视角分析这张人像，按标准数字码值字典输出纯 JSON。特别注意：beautyScore 必须落在真实人群正态分布区间，普通人严禁超过 7.4。",
                     },
                   ],
                 },
@@ -99,40 +130,44 @@ JSON 格式要求如下：
             const jsonMatch = aiRes.text.match(/\{[\s\S]*\}/);
             if (jsonMatch) {
               const parsed = JSON.parse(jsonMatch[0]);
-              if (!autoGender && parsed.gender) autoGender = normalizeGender(parsed.gender);
-              if (!autoAgeGroup && parsed.ageGroup) autoAgeGroup = parsed.ageGroup;
-              if (!autoEthnicity && parsed.ethnicity) autoEthnicity = parsed.ethnicity;
-              if (!autoBeauty && parsed.beautyLevel && ["高", "中"].includes(parsed.beautyLevel)) autoBeauty = parsed.beautyLevel;
-              if (autoTags.length === 0 && Array.isArray(parsed.tags)) autoTags = parsed.tags;
-              if (!autoDesc && parsed.description) autoDesc = parsed.description;
+              if (autoSpecies === undefined) autoSpecies = toCode(parsed.species, 1, 2);
+              if (autoGender === undefined) autoGender = toCode(parsed.gender, 1, 3);
+              if (autoEthnicity === undefined) autoEthnicity = toCode(parsed.ethnicity, 1, 7);
+              if (autoAgeGroup === undefined) autoAgeGroup = toCode(parsed.ageGroup, 1, 4);
+              if (autoBeautyScore === undefined) autoBeautyScore = toBeautyScore(parsed.beautyScore);
+              if (autoTags.length === 0) autoTags = toTags(parsed.tags);
+              if (!autoDesc && typeof parsed.description === "string") autoDesc = parsed.description.trim();
             }
             // 至少拿到一个有效结果就停止重试
-            if (autoGender || autoAgeGroup || autoEthnicity || autoBeauty || autoTags.length || autoDesc) break;
+            if (autoGender || autoEthnicity || autoAgeGroup || autoBeautyScore !== undefined || autoTags.length || autoDesc) break;
           } catch (visionErr) {
             console.warn(`[addFaceAsset] Vision 模型 ${tryModel} 打标失败，尝试下一个:`, u.error(visionErr).message);
           }
         }
       }
 
-      // 兜底：无法确定的字段一律标注「未知/未标注」，绝不伪造虚假内容
-      autoGender = autoGender || "未知";
-      autoAgeGroup = autoAgeGroup || "";
-      autoEthnicity = autoEthnicity || "";
-      autoBeauty = autoBeauty || "";
+      // 兜底：无法识别的字段不猜测（species 默认人类 1，人脸库本身就是人类底图库；其余留空待人工补录）
+      autoSpecies = autoSpecies ?? 1;
       autoTags = autoTags && autoTags.length ? autoTags : [];
       autoDesc = autoDesc || "";
 
-      const [id] = await u.db("o_faceAsset").insert({
-        name: name || `${autoEthnicity || "未知"}${autoAgeGroup || ""}${autoGender}_${Date.now().toString().slice(-4)}`,
+      const fallbackName = `${ETHNICITY_LABEL[autoEthnicity ?? 7] || "未知"}${AGE_GROUP_LABEL[autoAgeGroup ?? 2] || ""}${
+        GENDER_LABEL[autoGender ?? 3] || ""
+      }_${Date.now().toString().slice(-4)}`;
+
+      const insertData = {
+        name: name || fallbackName,
         filePath: imagePath,
-        gender: autoGender,
-        ageGroup: autoAgeGroup,
-        ethnicity: autoEthnicity,
-        beautyLevel: autoBeauty,
+        species: autoSpecies,
+        gender: autoGender != null ? String(autoGender) : null,
+        ethnicity: autoEthnicity != null ? String(autoEthnicity) : null,
+        ageGroup: autoAgeGroup != null ? String(autoAgeGroup) : null,
+        beautyScore: autoBeautyScore ?? null,
         tags: JSON.stringify(autoTags),
         description: autoDesc,
         createTime: Date.now(),
-      });
+      };
+      const [id] = await u.db("o_faceAsset").insert(insertData);
 
       let smallUrl = "";
       try {
@@ -144,14 +179,10 @@ JSON 格式要求如下：
       res.status(200).send(
         success({
           id,
-          name: name || `${autoEthnicity || "未知"}${autoAgeGroup || ""}${autoGender}`,
+          ...insertData,
+          name: insertData.name,
           fileUrl: smallUrl,
-          gender: autoGender,
-          ageGroup: autoAgeGroup,
-          ethnicity: autoEthnicity,
-          beautyLevel: autoBeauty,
           tags: autoTags,
-          description: autoDesc,
         }),
       );
     } catch (e) {

@@ -1,4 +1,4 @@
-// @db-hash 8d763322a9cda1d2cb7640e2f34348ed
+// @db-hash dd64ab59751cd9866f64a5253248e700
 //该文件由脚本自动生成，请勿手动修改
 
 export interface memories {
@@ -25,6 +25,17 @@ export interface o_agentDeploy {
   'temperature'?: number | null;
   'type'?: string | null;
   'vendorId'?: string | null;
+}
+export interface o_agentStateSnapshot {
+  'createTime': number;
+  'id'?: number;
+  'isolationKey': string;
+  'payload'?: string | null;
+  'projectId': number;
+  'refId'?: number | null;
+  'stateHash': string;
+  'turnEndTime': number;
+  'userMessageTime': number;
 }
 export interface o_agentWorkData {
   'createTime'?: number | null;
@@ -56,6 +67,7 @@ export interface o_assets {
   'promptErrorReason'?: string | null;
   'promptState'?: string | null;
   'remark'?: string | null;
+  'roleMeta'?: string | null;
   'scriptId'?: number | null;
   'startTime'?: number | null;
   'type'?: string | null;
@@ -81,7 +93,7 @@ export interface o_eventChapter {
 }
 export interface o_faceAsset {
   'ageGroup'?: string | null;
-  'beautyLevel'?: string | null;
+  'beautyScore'?: number | null;
   'createTime'?: number | null;
   'description'?: string | null;
   'ethnicity'?: string | null;
@@ -89,7 +101,9 @@ export interface o_faceAsset {
   'gender'?: string | null;
   'id'?: number;
   'name'?: string | null;
+  'species'?: number | null;
   'tags'?: string | null;
+  'useCount'?: number | null;
 }
 export interface o_image {
   'assetsId'?: number | null;
@@ -247,6 +261,7 @@ export interface o_videoTrack {
 export interface DB {
   "memories": memories;
   "o_agentDeploy": o_agentDeploy;
+  "o_agentStateSnapshot": o_agentStateSnapshot;
   "o_agentWorkData": o_agentWorkData;
   "o_artStyle": o_artStyle;
   "o_assets": o_assets;

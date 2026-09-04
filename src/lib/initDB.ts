@@ -1036,6 +1036,22 @@ export default async (knex: Knex, forceInit: boolean = false): Promise<void> => 
         table.unique(["assetsAudioId", "assetsRoleId"]);
       },
     },
+    // 剧本Agent状态快照表（按对话轮次记录工作区状态，支持回退）
+    {
+      name: "o_agentStateSnapshot",
+      builder: (table) => {
+        table.increments("id").primary();
+        table.integer("projectId").notNullable();
+        table.text("isolationKey").notNullable();
+        table.integer("userMessageTime").notNullable(); // 该轮用户消息时间戳；0=初始基线
+        table.integer("turnEndTime").notNullable(); // 快照生成时间（轮次结束时间）
+        table.text("stateHash").notNullable(); // 状态内容哈希（用于去重）
+        table.text("payload"); // 状态JSON；与上一张相同时为null
+        table.integer("refId"); // 去重引用：指向持有相同载荷的快照id
+        table.integer("createTime").notNullable();
+        table.index(["projectId", "isolationKey"]);
+      },
+    },
     // 人脸参考资产库表
     {
       name: "o_faceAsset",
@@ -1043,10 +1059,9 @@ export default async (knex: Knex, forceInit: boolean = false): Promise<void> => 
         table.increments("id").primary();
         table.string("name");
         table.text("filePath");
-        table.string("gender"); // "男" | "女"
-        table.string("ageGroup"); // "少年" | "青年" | "中年" | "老年"
-        table.string("ethnicity"); // "东亚" | "欧美" | "混血" | "非裔" | "其他"
-        table.string("beautyLevel"); // 颜值等级: "高" | "中" | "普通"
+        table.string("gender"); // 数字码值字符串: "1"男 | "2"女 | "3"中性
+        table.string("ageGroup"); // 数字码值字符串: "1"少年 | "2"青年 | "3"中年 | "4"老年
+        table.string("ethnicity"); // 数字码值字符串: "1"东亚 ~ "7"混血/其他
         table.text("tags"); // JSON 字符串数组，如 ["内双", "高鼻梁", "下颌清晰"]
         table.text("description"); // 详细面容骨相神态描述
         table.integer("createTime");

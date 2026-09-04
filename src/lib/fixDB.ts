@@ -67,12 +67,16 @@ export default async (knex: Knex): Promise<void> => {
   await addColumn("o_agentDeploy", "maxOutputTokens", "integer");
   await addColumn("o_assets", "audioBindState", "integer");
   await addColumn("o_assets", "faceAssetIds", "text"); // 记录使用的两张人脸资产ID，如 "[1, 5]"
+  await addColumn("o_assets", "roleMeta", "text"); // 记录角色结构化元数据JSON(数字码值+打分)
   await addColumn("o_modelPrompt", "fileName", "string");
   await addColumn("o_modelPrompt", "path", "string");
   await addColumn("o_project", "contentFormat", "string");
   await addColumn("o_project", "episodeDuration", "integer");
   await addColumn("o_project", "totalEpisodes", "integer");
-  await addColumn("o_faceAsset", "beautyLevel", "string"); // 颜值等级: "高" | "中" | "普通"
+  await addColumn("o_faceAsset", "species", "integer"); // 物种: 1(人类), 2(非人类)
+  await addColumn("o_faceAsset", "beautyScore", "float"); // 颜值打分: 2.0 ~ 10.0
+  await addColumn("o_faceAsset", "useCount", "integer"); // 被使用次数
+  await dropColumn("o_faceAsset", "beautyLevel"); // 已废弃：由 beautyScore 连续分完全取代
 
   // 确保 o_faceAsset 表存在
   if (!(await knex.schema.hasTable("o_faceAsset"))) {
@@ -80,12 +84,30 @@ export default async (knex: Knex): Promise<void> => {
       table.increments("id").primary();
       table.string("name");
       table.text("filePath");
+      table.integer("species").defaultTo(1); // 1: 人类
       table.string("gender"); // "男" | "女"
       table.string("ageGroup"); // "少年" | "青年" | "中年" | "老年"
       table.string("ethnicity"); // "东亚" | "欧美" | "混血" | "非裔" | "其他"
+      table.float("beautyScore").defaultTo(7.0); // 颜值打分 2.0 ~ 10.0
       table.text("tags"); // JSON 数组，如 ["单眼皮", "高鼻梁"]
       table.text("description"); // 视觉分析详细描述
       table.integer("createTime");
+      table.integer("useCount").defaultTo(0);
+    });
+  }
+  // 确保 o_agentStateSnapshot 表存在（剧本Agent按轮次状态快照/回退）
+  if (!(await knex.schema.hasTable("o_agentStateSnapshot"))) {
+    await knex.schema.createTable("o_agentStateSnapshot", (table) => {
+      table.increments("id").primary();
+      table.integer("projectId").notNullable();
+      table.text("isolationKey").notNullable();
+      table.integer("userMessageTime").notNullable();
+      table.integer("turnEndTime").notNullable();
+      table.text("stateHash").notNullable();
+      table.text("payload");
+      table.integer("refId");
+      table.integer("createTime").notNullable();
+      table.index(["projectId", "isolationKey"]);
     });
   }
   const vendorDataSelect = await u.db("o_vendorConfig").whereIn("id", ["deepseek", "atlascloud"]).select("*");
