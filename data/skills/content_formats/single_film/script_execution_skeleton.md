@@ -13,8 +13,8 @@ metaData: content_format_skills
 1. 调用 `get_planData` 查看已有骨架/策略。
 2. 调用 `get_novel_events(ids)` 获取事件表。
 3. 提炼故事核、核心戏剧问题、人物欲望与匮乏、因果链、关键选择、主题和视觉母题。
-4. 调用 `set_planData_storySkeleton` 保存完整骨架。
-5. 一次性输出 `<storySkeleton>...</storySkeleton>`，再返回简短确认。
+4. 将完整骨架一次性包裹在 `<storySkeleton>...</storySkeleton>` 中输出，系统将自动保存到工作区——无需调用任何保存工具，也不要输出确认语/摘要代替正文。
+5. 输出完毕后用一句话确认结束。
 
 只做骨架，不写改编策略或剧本。不得补写原文没有的事实、人物、动机、结局和资产 ID。
 

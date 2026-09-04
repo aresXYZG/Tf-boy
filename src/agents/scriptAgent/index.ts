@@ -85,6 +85,28 @@ export async function getScriptSkillContent(
   return await fs.promises.readFile(fallbackPath, "utf-8");
 }
 
+/**
+ * 根据项目 contentFormat 获取对应形态的监督层技能（分形态独立审核文件）
+ * 若形态专属审核文件缺失，回退根目录 script_agent_supervision.md
+ */
+export async function getSupervisionSkillContent(projectId: string | number | undefined): Promise<string> {
+  const project = projectId ? await u.db("o_project").where("id", projectId).first() : null;
+  const formatKey =
+    project?.contentFormat && project.contentFormat in SCRIPT_SKILLS_MAP
+      ? (project.contentFormat as ContentFormat)
+      : "vertical_episode";
+
+  const relativePath = `content_formats/${formatKey}/script_agent_supervision.md`;
+  const targetPath = path.join(u.getPath("skills"), relativePath);
+  if (fs.existsSync(targetPath)) {
+    console.log(`[scriptAgent] 加载形态监督技能: format=${formatKey}, path=${relativePath}`);
+    return await fs.promises.readFile(targetPath, "utf-8");
+  }
+  const fallbackPath = path.join(u.getPath("skills"), "script_agent_supervision.md");
+  console.warn(`[scriptAgent] 形态监督技能缺失，使用通用审核: format=${formatKey}, path=${fallbackPath}`);
+  return await fs.promises.readFile(fallbackPath, "utf-8");
+}
+
 function buildMemPrompt(mem: Awaited<ReturnType<Memory["get"]>>): string {
   let memoryContext = "";
   if (mem.rag.length) {
@@ -168,6 +190,7 @@ function createSubAgent(parentCtx: AgentContext) {
     memoryKey,
     tools: extraTools,
     messages,
+    persist,
   }: {
     key: `${string}:${string}`;
     prompt: string;
@@ -176,6 +199,8 @@ function createSubAgent(parentCtx: AgentContext) {
     memoryKey: string;
     tools?: Record<string, any>;
     messages?: { role: "user" | "assistant" | "system"; content: string }[];
+    /** 从模型完整回复中解析并落库（替代模型调用 set_planData_* 工具） */
+    persist?: (fullResponse: string) => Promise<void>;
   }) {
     parentCtx.msg.complete();
     const subMsg = resTool.newMessage("assistant", name);
@@ -186,7 +211,15 @@ function createSubAgent(parentCtx: AgentContext) {
         system,
         messages: messages ?? [{ role: "user", content: prompt }],
         abortSignal,
-        tools: { ...extraTools, ...useTools({ resTool, msg: subMsg }) },
+        // 执行层禁止调用写工具：正文统一走"XML 输出 → persist 自动落库"，避免模型双写/污染
+        tools: {
+          ...extraTools,
+          ...Object.fromEntries(
+            Object.entries(useTools({ resTool, msg: subMsg })).filter(
+              ([n]) => !["set_planData", "set_planData_storySkeleton", "set_planData_adaptationStrategy"].includes(n),
+            ),
+          ),
+        },
       });
       fullStream = streamResult.fullStream ?? streamResult;
     } catch (err: any) {
@@ -197,6 +230,14 @@ function createSubAgent(parentCtx: AgentContext) {
     }
 
     const fullResponse = await consumeFullStream(fullStream, subMsg);
+
+    if (persist) {
+      try {
+        await persist(fullResponse);
+      } catch (err: any) {
+        console.error(`[scriptAgent] persist 落库异常 key=${key}:`, u.error(err).message);
+      }
+    }
 
     if (fullResponse.trim()) {
       await memory.add(memoryKey, removeAllXmlTags(fullResponse), {
@@ -230,6 +271,10 @@ function createSubAgent(parentCtx: AgentContext) {
         name: "编剧",
         memoryKey: "assistant:execution:storySkeleton",
         messages: [{ role: "user", content: prompt + formatPrompt }],
+        persist: async (resp) => {
+          const content = extractXmlContent(resp, "storySkeleton");
+          if (content) await persistPlanData(resTool.data.projectId, { storySkeleton: content });
+        },
       });
     },
   });
@@ -249,6 +294,10 @@ function createSubAgent(parentCtx: AgentContext) {
         name: "编剧",
         memoryKey: "assistant:execution:adaptationStrategy",
         messages: [{ role: "user", content: prompt + formatPrompt }],
+        persist: async (resp) => {
+          const content = extractXmlContent(resp, "adaptationStrategy");
+          if (content) await persistPlanData(resTool.data.projectId, { adaptationStrategy: content });
+        },
       });
     },
   });
@@ -278,6 +327,17 @@ function createSubAgent(parentCtx: AgentContext) {
         ],
         name: "编剧",
         memoryKey: "assistant:execution:script",
+        persist: async (resp) => {
+          const items = extractScriptItems(resp);
+          for (const item of items) {
+            const row = await u.db("o_script").where({ projectId: resTool.data.projectId, name: item.name }).first();
+            if (row) {
+              await u.db("o_script").where({ id: row.id }).update({ content: item.content });
+            } else {
+              await u.db("o_script").insert({ projectId: resTool.data.projectId, name: item.name, content: item.content, createTime: Date.now() });
+            }
+          }
+        },
       });
     },
   });
@@ -286,8 +346,7 @@ function createSubAgent(parentCtx: AgentContext) {
     description: "运行监督层subAgent执行独立任务，完成后返回结果",
     inputSchema: jsonSchema<{ prompt: string }>(promptInput),
     execute: async ({ prompt }) => {
-      const skill = path.join(u.getPath("skills"), "script_agent_supervision.md");
-      const systemPrompt = await fs.promises.readFile(skill, "utf-8");
+      const systemPrompt = await getSupervisionSkillContent(projectId);
 
       return runAgent({
         key: "scriptAgent:supervisionAgent",
@@ -363,4 +422,47 @@ function removeAllXmlTags(text: string): string {
   text = text.replace(/<([a-zA-Z][\w-]*)(\s+[^>]*)?\/>/g, "");
   text = text.replace(/<\/?[a-zA-Z][\w-]*(\s+[^>]*)?>/g, "");
   return text.trim();
+}
+
+/** 从模型完整回复中提取指定标签内的正文：取最后一个开标签到闭标签之间的内容，与前端 useChat.parseXmlTag 逻辑一致 */
+function extractXmlContent(text: string, tag: string): string | null {
+  const openRe = new RegExp(`<${tag}(\\s[^>]*)?>`, "g");
+  let last: RegExpExecArray | null = null;
+  let m: RegExpExecArray | null;
+  while ((m = openRe.exec(text)) !== null) last = m;
+  if (!last) return null;
+  const start = last.index + last[0].length;
+  const closeIdx = text.indexOf(`</${tag}>`, start);
+  if (closeIdx === -1) return text.slice(start).trim();
+  return text.slice(start, closeIdx).trim();
+}
+
+/** 提取全部 <scriptItem name="...">...</scriptItem>，与前端逐集解析一致 */
+function extractScriptItems(text: string): { name: string; content: string }[] {
+  const items: { name: string; content: string }[] = [];
+  const re = /<scriptItem\s+name="([^"]*)"[^>]*>([\s\S]*?)<\/scriptItem>/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    const name = (m[1] || "").trim();
+    const content = m[2].trim();
+    if (name || content) items.push({ name, content });
+  }
+  return items;
+}
+
+/** 落库到 o_agentWorkData（与前端 /scriptAgent/setPlanData 一致：upsert 单行 JSON） */
+async function persistPlanData(projectId: number, patch: { storySkeleton?: string; adaptationStrategy?: string }) {
+  const existing = await u.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).first();
+  let dataObj: Record<string, any> = {};
+  if (existing?.data) {
+    try { dataObj = JSON.parse(existing.data) ?? {}; } catch { dataObj = {}; }
+  }
+  if (patch.storySkeleton !== undefined) dataObj.storySkeleton = patch.storySkeleton;
+  if (patch.adaptationStrategy !== undefined) dataObj.adaptationStrategy = patch.adaptationStrategy;
+  const jsonStr = JSON.stringify(dataObj);
+  if (existing) {
+    await u.db("o_agentWorkData").where({ projectId, key: "scriptAgent" }).update({ data: jsonStr });
+  } else {
+    await u.db("o_agentWorkData").insert({ projectId, key: "scriptAgent", data: jsonStr, createTime: Date.now(), updateTime: Date.now() });
+  }
 }

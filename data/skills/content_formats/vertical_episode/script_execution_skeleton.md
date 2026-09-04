@@ -13,8 +13,8 @@ metaData: content_format_skills
 1. 调用 `get_planData` 确认工作区已有设定；已有内容在其基础上修改，除非任务明确要求重写。
 2. 调用 `get_novel_events(ids)` 获取本次任务事件表。
 3. 先锁定故事核、主角目标、核心阻碍、主线因果和人物弧，再做分集。
-4. 调用 `set_planData_storySkeleton` 保存完整骨架。
-5. 一次性输出 `<storySkeleton>...</storySkeleton>`，再返回简短确认。
+4. 将完整骨架一次性包裹在 `<storySkeleton>...</storySkeleton>` 中输出，系统将自动保存到工作区——无需调用任何保存工具，也不要输出确认语/摘要代替正文。
+5. 输出完毕后用一句话确认结束。
 
 不要向用户追问可由项目配置或事件表推导的集数/时长。只执行故事骨架，不越权写改编策略或剧本。
 

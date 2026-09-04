@@ -13,8 +13,8 @@ metaData: content_format_skills
 1. 调用 `get_planData` 获取故事骨架。
 2. 调用 `get_novel_events(ids)` 核对原文事件和删改边界。
 3. 建立内容处理、场景合并、人物行动、视听转译和结局回收策略。
-4. 调用 `set_planData_adaptationStrategy` 保存完整策略。
-5. 一次性输出 `<adaptationStrategy>...</adaptationStrategy>`，再返回简短确认。
+4. 将完整策略一次性包裹在 `<adaptationStrategy>...</adaptationStrategy>` 中输出，系统将自动保存到工作区——无需调用任何保存工具，也不要输出确认语/摘要代替正文。
+5. 输出完毕后用一句话确认结束。
 
 只执行策略，不写完整剧本或分镜。不得添加原文和骨架未支持的事实、人物、动机、结局或资产 ID。
 

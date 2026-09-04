@@ -13,8 +13,8 @@ metaData: content_format_skills
 1. 调用 `get_novel_events(ids)` 获取事件表。
 2. 调用 `get_planData` 获取故事骨架。
 3. 核对主线、人物弧、支线边界、世界规则、伏笔和逐集目标。
-4. 调用 `set_planData_adaptationStrategy` 保存策略。
-5. 一次性输出 `<adaptationStrategy>...</adaptationStrategy>`，再返回简短确认。
+4. 将完整策略一次性包裹在 `<adaptationStrategy>...</adaptationStrategy>` 中输出，系统将自动保存到工作区——无需调用任何保存工具，也不要输出确认语/摘要代替正文。
+5. 输出完毕后用一句话确认结束。
 
 只执行改编策略，不写剧本或制作分镜。不得添加没有原文/骨架依据的事实、人物、线索和结局。
 

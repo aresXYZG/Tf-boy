@@ -108,8 +108,8 @@
 ```
 输入：事件表 + 项目配置
 处理：依据当前 contentFormat 建立故事/内容骨架、因果链、结构单元、删改边界和体量
-输出：planData.storySkeleton
-工具：get_planData + get_novel_events → set_planData_storySkeleton
+输出：planData.storySkeleton（执行层将完整正文包裹在 <storySkeleton> 中输出，由系统自动落库）
+工具：get_planData + get_novel_events → 输出 <storySkeleton>（执行层无需、也不得调用写入工具）
 质量门：形态匹配、核心问题/故事核清楚、事件覆盖、因果连续、无未经依据的新增
 前置条件：事件提取已完成
 ```
@@ -128,8 +128,8 @@
 ```
 输入：事件表 + planData.storySkeleton + 项目配置
 处理：依据当前 contentFormat 制定内容处理、删改重组、语言/视听转译与连续性策略
-输出：planData.adaptationStrategy
-工具：get_planData + get_novel_events → set_planData_adaptationStrategy
+输出：planData.adaptationStrategy（执行层将完整策略包裹在 <adaptationStrategy> 中输出，由系统自动落库）
+工具：get_planData + get_novel_events → 输出 <adaptationStrategy>（执行层无需、也不得调用写入工具）
 质量门：策略与骨架一致、保留核心因果/人物或知识边界、无未经依据的新增、未混入其他形态规则
 前置条件：阶段1（故事骨架）通过审核
 ```

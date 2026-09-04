@@ -12,10 +12,10 @@ description: 知识科普解说阶段2（认知、语言与视觉转译策略）
 1. 调用 `get_novel_events` 获取本次任务的原文事件/知识单元。
 2. 调用 `get_planData` 获取 `storySkeleton`。
 3. 以原文事件和骨架中的 Claim Chain 为事实底座，制定改编策略。
-4. 调用 `set_planData_adaptationStrategy` 保存完整策略。
-5. 输出一次且仅一次 `<adaptationStrategy>...</adaptationStrategy>`，再用一句话确认结束。
+4. 将完整策略一次性包裹在 `<adaptationStrategy>...</adaptationStrategy>` 中输出，系统将自动保存到工作区——无需调用任何保存工具，也不要输出确认语/摘要代替正文。
+5. 输出完毕后用一句话确认结束。
 
-除上述读取和写入外，不调用其他工具。不得补充原文未提供的数字、年份、研究、实验结果、案例或因果结论。
+除上述读取外，不调用其他工具。不得补充原文未提供的数字、年份、研究、实验结果、案例或因果结论。
 
 ## 二、核心原则
 
@@ -125,6 +125,7 @@ description: 知识科普解说阶段2（认知、语言与视觉转译策略）
 ## 六、输出结构
 
 ```markdown
+<adaptationStrategy>
 # 知识科普解说改编策略：《[议题名称]》
 
 ## 1. 策略总纲
@@ -168,6 +169,7 @@ description: 知识科普解说阶段2（认知、语言与视觉转译策略）
 - 可压缩：
 - 仅材料支持时使用：
 - 禁止添加：
+</adaptationStrategy>
 ```
 
 ## 九、适用边界说明

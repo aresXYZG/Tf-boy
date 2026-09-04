@@ -12,8 +12,8 @@ description: 通用剧本阶段2（改编策略）执行技能。仅在内容形
 1. 调用 `get_novel_events(ids)` 获取本次任务事件。
 2. 调用 `get_planData` 获取 `storySkeleton`。
 3. 核对核心问题/故事核、因果链、主体动机、结构单元、事实边界和项目时长/画幅。
-4. 制定改编策略，调用 `set_planData_adaptationStrategy` 保存完整内容。
-5. 一次性输出 `<adaptationStrategy>...</adaptationStrategy>`，再返回简短确认。
+4. 将完整策略一次性包裹在 `<adaptationStrategy>...</adaptationStrategy>` 中输出，系统将自动保存到工作区——无需调用任何保存工具，也不要输出确认语/摘要代替正文。
+5. 输出完毕后用一句话确认结束。
 
 只执行改编策略，不写最终剧本或制作分镜。不得凭空新增事实、人物、数字、年份、案例、设定、结局或资产 ID。
 
