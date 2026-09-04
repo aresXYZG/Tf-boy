@@ -1,4 +1,4 @@
-// @db-hash dd64ab59751cd9866f64a5253248e700
+// @db-hash 29fa1dbf03a615c339f1d91d551001a3
 //该文件由脚本自动生成，请勿手动修改
 
 export interface memories {
@@ -94,16 +94,12 @@ export interface o_eventChapter {
 export interface o_faceAsset {
   'ageGroup'?: string | null;
   'beautyScore'?: number | null;
-  'createTime'?: number | null;
-  'description'?: string | null;
   'ethnicity'?: string | null;
   'filePath'?: string | null;
   'gender'?: string | null;
   'id'?: number;
   'name'?: string | null;
   'species'?: number | null;
-  'tags'?: string | null;
-  'useCount'?: number | null;
 }
 export interface o_image {
   'assetsId'?: number | null;
